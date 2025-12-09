@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="ybp0.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignWidth="900" d:DesignHeight="550">
+
+    <!-- RESOURCES -->
+    <UserControl.Resources>
+
+        <!-- Main light background: subtle blue -> white -->
+        <LinearGradientBrush x:Key="MainBackground" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#E6F9FF" Offset="0.0" />
+            <GradientStop Color="#FFFFFF" Offset="1.0" />
+        </LinearGradientBrush>
+
+        <!-- Glass / acrylic brush for central tile -->
+        <LinearGradientBrush x:Key="GlassBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#F7FFFF" Offset="0.0"/>
+            <GradientStop Color="#DFF9FF" Offset="0.35"/>
+            <GradientStop Color="#BFF3FB" Offset="1.0"/>
+        </LinearGradientBrush>
+
+        <!-- Subtle inner sheen (white translucent) -->
+        <LinearGradientBrush x:Key="SheenBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#AAFFFFFF" Offset="0.0"/>
+            <GradientStop Color="#33FFFFFF" Offset="0.45"/>
+            <GradientStop Color="#00FFFFFF" Offset="0.6"/>
+        </LinearGradientBrush>
+
+        <!-- Light teal drop shadow used for depth (soft, airy) -->
+        <DropShadowEffect x:Key="SoftTealShadow"
+                          Color="#A0CFF5"
+                          BlurRadius="28"
+                          ShadowDepth="8"
+                          Opacity="0.28"/>
+
+        <!-- Inner subtle highlight overlay geometry (used as Rectangle Fill) -->
+        <LinearGradientBrush x:Key="HighlightOverlay" StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#55FFFFFF" Offset="0.0"/>
+            <GradientStop Color="#22FFFFFF" Offset="0.35"/>
+            <GradientStop Color="#00FFFFFF" Offset="1.0"/>
+        </LinearGradientBrush>
+
+        <!-- Text style for welcome -->
+        <Style x:Key="WelcomeTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#007FAF"/>
+            <!-- bright teal/blue -->
+        </Style>
+
+        <!-- Placeholder text style inside tile -->
+        <Style x:Key="TileTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="#025B7A"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="TextAlignment" Value="Center"/>
+        </Style>
+
+    </UserControl.Resources>
+
+    <!-- LAYOUT -->
+    <Grid Background="{StaticResource MainBackground}">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- welcome -->
+            <RowDefinition Height="*"/>
+            <!-- spacer + central tile -->
+        </Grid.RowDefinitions>
+
+        <!-- Welcome message (bound to VM property WelcomeMessage) -->
+        <StackPanel Grid.Row="0" Margin="28,28,28,12">
+            <TextBlock Text="{Binding WelcomeMessage}"
+                       Style="{StaticResource WelcomeTextStyle}"/>
+        </StackPanel>
+
+        <!-- Central area: single glossy rounded tile -->
+        <Grid Grid.Row="1">
+            <Border
+                Width="520"
+                Height="260"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                CornerRadius="24"
+                Background="{StaticResource GlassBrush}"
+                Effect="{StaticResource SoftTealShadow}">
+                <!-- layered content for gel/gloss effect -->
+                <Grid>
+
+                    <!-- subtle inner blur-look rectangle (slightly inset) -->
+                    <Border CornerRadius="20" Margin="6"
+                            Background="#80FFFFFF"/>
+
+                    <!-- main content area (transparent to show glass) -->
+                    <Grid Margin="10">
+                        <!-- center aligned placeholder text -->
+                        <TextBlock Text="Your Daily Focus"
+                                   Style="{StaticResource TileTextStyle}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- glossy sheen at top-left -->
+                        <Rectangle HorizontalAlignment="Left"
+                                   VerticalAlignment="Top"
+                                   Width="260" Height="110"
+                                   RadiusX="18" RadiusY="18"
+                                   Fill="{StaticResource SheenBrush}"
+                                   Opacity="0.75"
+                                   Margin="6">
+                            <Rectangle.RenderTransform>
+                                <SkewTransform AngleX="-6" AngleY="0"/>
+                            </Rectangle.RenderTransform>
+                        </Rectangle>
+
+                        <!-- faint circular glow behind tile center -->
+                        <Ellipse Width="320" Height="320"
+                                 Fill="#20AEEFFF"
+                                 HorizontalAlignment="Center"
+                                 VerticalAlignment="Center"
+                                 Opacity="0.08"
+                                 IsHitTestVisible="False"/>
+
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+    </Grid>
+</UserControl>
