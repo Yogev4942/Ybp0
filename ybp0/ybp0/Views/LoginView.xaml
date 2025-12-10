@@ -6,183 +6,291 @@
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Grid Background="#121212">
+    
+    <!-- Background matching main window -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#004D40" Offset="0"/>
+                <GradientStop Color="#00897B" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Glassy Login Card -->
         <Border Grid.Row="1"
-                Width="350"
-                Background="#1E1E1E"
+                Width="380"
+                Padding="40,35"
                 CornerRadius="20"
-                Padding="30"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Effect="{DynamicResource ShadowEffect}">
+                VerticalAlignment="Center">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#33FFFFFF" Offset="0"/>
+                    <GradientStop Color="#22FFFFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#00FFCC" BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
+            </Border.Effect>
 
             <StackPanel>
-                <TextBlock Text="Welcome"
+                <!-- Welcome Text -->
+                <TextBlock Text="Welcome Back"
                            Foreground="White"
-                           FontSize="22"
+                           FontSize="28"
                            FontWeight="Bold"
                            HorizontalAlignment="Center"
-                           Margin="0,0,0,10" />
+                           Margin="0,0,0,8" />
 
-                <TextBlock Text="Sign up to continue"
-                           Foreground="#888"
-                           FontSize="13"
-                           HorizontalAlignment="Center"
-                           Margin="0,0,0,25"/>
-
-                <TextBlock Text="{Binding ErrorMessage}"
-                           Foreground="#FF6B6B"
+                <TextBlock Text="Sign in to continue"
+                           Foreground="#CCFFFFFF"
                            FontSize="14"
                            HorizontalAlignment="Center"
-                           Margin="0, -15, 0, 10" />
+                           Margin="0,0,0,30"/>
 
-                <!-- Username/Email Input -->
-                <StackPanel Margin="0,0,0,15">
-                    <TextBlock Text="Username" Foreground="#aaa" FontSize="13" Margin="0,0,0,5"/>
-                    <Border Background="#262626" CornerRadius="8" BorderBrush="#333" BorderThickness="1">
-                        <TextBox Height="35"
+                <!-- Error Message -->
+                <TextBlock Text="{Binding ErrorMessage}"
+                           Foreground="#FF6B9E"
+                           FontSize="13"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,15"
+                           TextWrapping="Wrap"/>
+
+                <!-- Username Input -->
+                <StackPanel Margin="0,0,0,18">
+                    <TextBlock Text="Username" 
+                               Foreground="#DDFFFFFF" 
+                               FontSize="13" 
+                               Margin="0,0,0,6"/>
+                    <Border Background="#22FFFFFF" 
+                            CornerRadius="12" 
+                            BorderBrush="#44FFFFFF" 
+                            BorderThickness="1">
+                        <TextBox Height="38"
                                  Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
                                  Background="Transparent"
                                  Foreground="White"
                                  BorderThickness="0"
-                                 Padding="10"/>
+                                 Padding="12"
+                                 FontSize="14"/>
                     </Border>
                 </StackPanel>
 
                 <!-- Password Input -->
-                <StackPanel Margin="0,0,0,10">
-                    <TextBlock Text="Password" Foreground="#aaa" FontSize="13" Margin="0,0,0,5"/>
-                    <Border Background="#262626" CornerRadius="8" BorderBrush="#333" BorderThickness="1">
-                        <TextBox Height="35"
+                <StackPanel Margin="0,0,0,12">
+                    <TextBlock Text="Password" 
+                               Foreground="#DDFFFFFF" 
+                               FontSize="13" 
+                               Margin="0,0,0,6"/>
+                    <Border Background="#22FFFFFF" 
+                            CornerRadius="12" 
+                            BorderBrush="#44FFFFFF" 
+                            BorderThickness="1">
+                        <TextBox Height="38"
                               Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
                               Background="Transparent"
                               Foreground="White"
                               BorderThickness="0"
-                              Padding="10"/>
-
+                              Padding="12"
+                              FontSize="14"/>
                     </Border>
                 </StackPanel>
 
-                <!-- Forgot Password / Navigate to Sign Up -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,0,15">
-
-                    <!-- Forgot Password -->
+                <!-- Forgot Password / Register Links -->
+                <StackPanel Orientation="Horizontal" 
+                          HorizontalAlignment="Right" 
+                          Margin="0,0,0,20">
                     <Button Content="Forgot Password?"
-            Command="{Binding ForgotPasswordCommand}"
-            Background="Transparent"
-            BorderThickness="0"
-            Foreground="#66CFFF"
-            FontSize="12"
-            FontWeight="SemiBold"
-            Cursor="Hand"
-            Padding="4">
+                            Command="{Binding ForgotPasswordCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="#80E8FF"
+                            FontSize="12"
+                            Cursor="Hand"
+                            Padding="4">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Foreground" Value="#66CFFF"/>
-                                <Setter Property="Opacity" Value="0.8"/>
+                                <Setter Property="Opacity" Value="0.85"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Opacity" Value="1"/>
+                                        <Setter Property="Foreground" Value="#AAFFFF"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
 
-                    <!-- Sign Up -->
+                    <TextBlock Text=" | " 
+                              Foreground="#66FFFFFF" 
+                              VerticalAlignment="Center" 
+                              Margin="6,0"/>
+
                     <Button Content="Register"
-            Command="{Binding NavigateToSignUpCommand}"
-            Background="Transparent"
-            BorderThickness="0"
-            Foreground="#A588FC"
-            FontSize="12"
-            FontWeight="Bold"
-            Cursor="Hand"
-            Padding="4">
+                            Command="{Binding NavigateToSignUpCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="#69F0AE"
+                            FontSize="12"
+                            FontWeight="Bold"
+                            Cursor="Hand"
+                            Padding="4">
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Opacity" Value="0.8"/>
+                                <Setter Property="Opacity" Value="0.9"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter Property="Opacity" Value="1"/>
+                                        <Setter Property="Foreground" Value="#8FFFB3"/>
                                     </Trigger>
                                 </Style.Triggers>
                             </Style>
                         </Button.Style>
                     </Button>
-
                 </StackPanel>
 
-
-                <!-- Login button -->
+                <!-- Sign In Button -->
                 <Button Content="Sign In"
-                    Command="{Binding LoginCommand}"
-                    Height="40"
-                    Background="#a588fc"
-                    Foreground="White"
-                    FontWeight="SemiBold"
-                    BorderThickness="0"
-                    Cursor="Hand"
-                    Margin="0,0,0,20">
-
+                        Command="{Binding LoginCommand}"
+                        Height="45"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Cursor="Hand"
+                        Margin="0,0,0,20"
+                        BorderThickness="0">
+                    <Button.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#26A69A" Offset="0"/>
+                            <GradientStop Color="#00897B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Button.Background>
+                    <Button.Foreground>White</Button.Foreground>
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border x:Name="border"
-                    Background="{TemplateBinding Background}"
-                    CornerRadius="10">
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="12">
+                                <Border.Effect>
+                                    <DropShadowEffect x:Name="glow" 
+                                                    Color="#00FFCC" 
+                                                    BlurRadius="0" 
+                                                    ShadowDepth="0" 
+                                                    Opacity="0"/>
+                                </Border.Effect>
                                 <ContentPresenter HorizontalAlignment="Center"
-                                  VerticalAlignment="Center"/>
+                                                VerticalAlignment="Center"/>
                             </Border>
-
                             <ControlTemplate.Triggers>
-
-                                <!-- Hover -->
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="border" Property="Opacity" Value="0.9"/>
+                                    <Trigger.EnterActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="glow"
+                                                               Storyboard.TargetProperty="BlurRadius"
+                                                               To="20" Duration="0:0:0.2"/>
+                                                <DoubleAnimation Storyboard.TargetName="glow"
+                                                               Storyboard.TargetProperty="Opacity"
+                                                               To="0.6" Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.EnterActions>
+                                    <Trigger.ExitActions>
+                                        <BeginStoryboard>
+                                            <Storyboard>
+                                                <DoubleAnimation Storyboard.TargetName="glow"
+                                                               Storyboard.TargetProperty="BlurRadius"
+                                                               To="0" Duration="0:0:0.2"/>
+                                                <DoubleAnimation Storyboard.TargetName="glow"
+                                                               Storyboard.TargetProperty="Opacity"
+                                                               To="0" Duration="0:0:0.2"/>
+                                            </Storyboard>
+                                        </BeginStoryboard>
+                                    </Trigger.ExitActions>
                                 </Trigger>
-
-                                <!-- Pressed -->
                                 <Trigger Property="IsPressed" Value="True">
-                                    <Setter TargetName="border" Property="Opacity" Value="0.7"/>
-                                    <Setter TargetName="border" Property="RenderTransform">
-                                        <Setter.Value>
-                                            <ScaleTransform ScaleX="0.97" ScaleY="0.97"/>
-                                        </Setter.Value>
-                                    </Setter>
+                                    <Setter TargetName="border" Property="Opacity" Value="0.8"/>
                                 </Trigger>
-
-                                <!-- Disabled -->
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter TargetName="border" Property="Opacity" Value="0.5"/>
-                                </Trigger>
-
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
 
-                <!-- Social login -->
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,15">
-                    <Rectangle Width="50" Height="1" Fill="#333"/>
-                    <TextBlock Text="    Or Continue With:  " Foreground="#777" FontSize="12"/>
-                    <Rectangle Width="50" Height="1" Fill="#333"/>
+                <!-- Social Login Separator -->
+                <StackPanel Orientation="Horizontal" 
+                          HorizontalAlignment="Center" 
+                          Margin="0,0,0,18">
+                    <Rectangle Width="60" Height="1" Fill="#44FFFFFF"/>
+                    <TextBlock Text="  or continue with  " 
+                              Foreground="#AAFFFFFF" 
+                              FontSize="11"
+                              VerticalAlignment="Center"/>
+                    <Rectangle Width="60" Height="1" Fill="#44FFFFFF"/>
                 </StackPanel>
 
+                <!-- Social Login Buttons -->
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Button Width="40" Height="40" Background="#1877F2" BorderThickness="0" Margin="5,0" Style="{StaticResource {x:Type Button}}">
-                        <TextBlock Text="f" FontSize="20" Foreground="White" FontWeight="Bold"/>
+                    <Button Width="45" Height="45" 
+                           Background="#1877F2" 
+                           BorderThickness="0" 
+                           Margin="8,0"
+                           Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                       CornerRadius="12">
+                                    <TextBlock Text="f" 
+                                              FontSize="22" 
+                                              Foreground="White" 
+                                              FontWeight="Bold"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
                     </Button>
-                    <Button Width="40" Height="40" Background="#000000" BorderThickness="0" Margin="5,0" Style="{StaticResource {x:Type Button}}">
-                        <TextBlock Text="" FontSize="18" Foreground="White"/>
+                    
+                    <Button Width="45" Height="45" 
+                           Background="#000000" 
+                           BorderThickness="0" 
+                           Margin="8,0"
+                           Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                       CornerRadius="12">
+                                    <TextBlock Text="" 
+                                              FontSize="20" 
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
                     </Button>
-                    <Button Width="40" Height="40" Background="#DB4437" BorderThickness="0" Margin="5,0" Style="{StaticResource {x:Type Button}}">
-                        <TextBlock Text="G" FontSize="18" Foreground="White"/>
+                    
+                    <Button Width="45" Height="45" 
+                           Background="#DB4437" 
+                           BorderThickness="0" 
+                           Margin="8,0"
+                           Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" 
+                                       CornerRadius="12">
+                                    <TextBlock Text="G" 
+                                              FontSize="20" 
+                                              Foreground="White"
+                                              HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
                     </Button>
                 </StackPanel>
             </StackPanel>

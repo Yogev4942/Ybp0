@@ -21,6 +21,8 @@ namespace ViewModels
         /// <param name="password"></param>
         /// <returns></returns>
         bool ValidateLogin(string username, string password);
+
+        bool UserExist(string username, string email);
     }
 
 }

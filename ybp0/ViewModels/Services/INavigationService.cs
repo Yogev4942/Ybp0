@@ -8,9 +8,10 @@ namespace ViewModels
 {
     public interface INavigationService
     {
-        void NavigateTo<TViewModel>(params object[] parameters) where TViewModel : BaseViewModel;
+        void NavigateTo<TViewModel>(object parameters = null) where TViewModel : BaseViewModel;
+        void NavigateTo(Type viewModelType, object parameter = null); // New Type-based method
         void GoBack();
-        void OnLoginSuccess();
-
+        void OnLoginSuccess();   // keep this so LoginViewModel can trigger the behavior you liked
     }
 }
+

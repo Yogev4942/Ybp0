@@ -47,6 +47,14 @@ namespace ViewModels.Services
                 Joindate = row["Joindate"]?.ToString()
             };
         }
+        public bool UserExist(string username, string email)
+        {
+            var dt = _database.ExecuteQuery(
+                "SELECT * FROM UserTbl WHERE Username = ? AND Email = ?",
+                username, email
+            );
+            return dt.Rows.Count > 0;
+        }
 
     }
 }

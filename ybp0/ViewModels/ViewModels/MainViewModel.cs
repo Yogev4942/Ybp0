@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Models;
+using System;
+using System.Net.NetworkInformation;
 using System.Windows.Input;
 using ViewModels.Services;
 
@@ -7,6 +9,12 @@ namespace ViewModels.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
+        public BaseViewModel CurrentViewModel
+        {
+            get => _currentViewModel;
+            set => SetProperty(ref _currentViewModel, value);
+        }
+
         private bool _isLoggedIn;
         public bool IsLoggedIn
         {
@@ -15,63 +23,63 @@ namespace ViewModels.ViewModels
         }
 
         public static IDatabaseService Database { get; } = new DatabaseService();
-        public INavigationService Navigation { get; private set; }
+        public INavigationService Navigation { get; }
 
-        public BaseViewModel CurrentViewModel
-        {
-            get => _currentViewModel;
-            set => SetProperty(ref _currentViewModel, value);
-        }
-
-        public ICommand NavigateCommand { get; }
+        public ICommand NavigateCommand { get; } // Generic generic command
 
         public MainViewModel()
         {
+            // create navigation service with factory + setter + onLogin callback
             Navigation = new NavigationService(
-     CreateViewModelWithParams,
-     vm => CurrentViewModel = vm
- );
-
-            CurrentViewModel = new LoginViewModel(Database, Navigation);
-
-        }
-
-
-        private void SetCurrentViewModel(object viewModel)
-        {
-            if (viewModel is BaseViewModel vm)
-            {
-                CurrentViewModel = vm;
-            }
-        }
-
-        private void Navigate(object parameter)
-        {
-            if (parameter == null) return;
-
-            if (parameter is Type targetType)
-            {
-                var vm = CreateViewModel(targetType);
-                if (vm != null)
+                factory: CreateViewModel,
+                setCurrentViewModel: vm =>
+                {
                     CurrentViewModel = vm;
-            }
+
+                    // Hide top nav on Login/Register, show otherwise
+                    IsLoggedIn = !(vm is LoginViewModel) && !(vm is RegisterViewModel);
+                },
+                onLogin: () =>
+                {
+                    // called when OnLoginSuccess invoked from navigation service
+                    // set IsLoggedIn here (optional, also handled above when current view changes)
+                    IsLoggedIn = true;
+                }
+            );
+
+            // Generic logic: Command Parameter must be a Type
+            NavigateCommand = new RelayCommand(param => 
+            {
+                if (param is Type type)
+                {
+                    Navigation.NavigateTo(type);
+                }
+            });
+
+            // start on login
+            Navigation.NavigateTo<LoginViewModel>();
         }
 
-        private BaseViewModel CreateViewModel(Type type)
+        private BaseViewModel CreateViewModel(Type type, object parameter)
         {
             if (type == typeof(LoginViewModel))
                 return new LoginViewModel(Database, Navigation);
 
+            if (type == typeof(RegisterViewModel))
+                return new RegisterViewModel(Database, Navigation);
+
             if (type == typeof(HomeViewModel))
-                return new HomeViewModel();
+            {
+                // if you passed the logged user object in parameter, pass it to HomeViewModel
+                return new HomeViewModel(Database, Navigation, (User)parameter);
+            }
 
             if (type == typeof(CalendarViewModel))
                 return new CalendarViewModel();
 
-            if (type == typeof(RegisterViewModel))
-                return new RegisterViewModel(Database,Navigation);
-
+            // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }
     }
+
 }
