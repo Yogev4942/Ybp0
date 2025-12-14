@@ -28,8 +28,10 @@ namespace ViewModels.ViewModels
         {
             this._databaseService = databaseService;
             this._navigationService = navigationService;
+            GoBackCommand = new RelayCommand(_ => _navigationService.NavigateTo<LoginViewModel>());
         }
         public ICommand RegisterCommand;
+        public ICommand GoBackCommand { get; }
 
         public bool Register()
         {

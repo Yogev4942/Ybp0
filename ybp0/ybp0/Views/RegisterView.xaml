@@ -42,6 +42,82 @@
                 </Border.Effect>
 
                 <StackPanel>
+                    <!-- Back Button - Secondary Style -->
+                    <Button Content="← Back"
+                            Command="{Binding GoBackCommand}"
+                            HorizontalAlignment="Left"
+                            Height="32"
+                            Padding="12,0"
+                            FontSize="13"
+                            Cursor="Hand"
+                            Margin="0,0,0,15">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border"
+                                        Background="Transparent"
+                                        BorderBrush="#55FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="10"
+                                        Padding="{TemplateBinding Padding}">
+                                    <Border.Effect>
+                                        <DropShadowEffect x:Name="glow" 
+                                                        Color="#80E8FF" 
+                                                        BlurRadius="0" 
+                                                        ShadowDepth="0" 
+                                                        Opacity="0"/>
+                                    </Border.Effect>
+                                    <ContentPresenter 
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        TextBlock.Foreground="#AAFFFFFF"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Trigger.EnterActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation Storyboard.TargetName="border"
+                                                                   Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                                   To="#22FFFFFF" Duration="0:0:0.2"/>
+                                                    <ColorAnimation Storyboard.TargetName="border"
+                                                                   Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                                   To="#80E8FF" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetName="glow"
+                                                                   Storyboard.TargetProperty="BlurRadius"
+                                                                   To="12" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetName="glow"
+                                                                   Storyboard.TargetProperty="Opacity"
+                                                                   To="0.5" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.EnterActions>
+                                        <Trigger.ExitActions>
+                                            <BeginStoryboard>
+                                                <Storyboard>
+                                                    <ColorAnimation Storyboard.TargetName="border"
+                                                                   Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
+                                                                   To="Transparent" Duration="0:0:0.2"/>
+                                                    <ColorAnimation Storyboard.TargetName="border"
+                                                                   Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                                                   To="#55FFFFFF" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetName="glow"
+                                                                   Storyboard.TargetProperty="BlurRadius"
+                                                                   To="0" Duration="0:0:0.2"/>
+                                                    <DoubleAnimation Storyboard.TargetName="glow"
+                                                                   Storyboard.TargetProperty="Opacity"
+                                                                   To="0" Duration="0:0:0.2"/>
+                                                </Storyboard>
+                                            </BeginStoryboard>
+                                        </Trigger.ExitActions>
+                                    </Trigger>
+                                    <Trigger Property="IsPressed" Value="True">
+                                        <Setter TargetName="border" Property="Opacity" Value="0.7"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+
                     <!-- Title -->
                     <TextBlock Text="Create Account"
                               Foreground="White"
@@ -115,7 +191,7 @@
                                 FontSize="14"
                                 Foreground="White"
                                 Background="Transparent"
-                                Text="{Binding Password}"/>
+                                Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </StackPanel>
 
