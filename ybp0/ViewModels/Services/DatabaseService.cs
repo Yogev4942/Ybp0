@@ -55,6 +55,27 @@ namespace ViewModels.Services
             );
             return dt.Rows.Count > 0;
         }
+        public bool RegisterUser(string username, string email, string password)
+        {
+            try
+            {
+                int affectedRows = _database.ExecuteNonQuery(
+                    "INSERT INTO UserTbl (Username, Email, [Password], Joindate) VALUES (?, ?, ?, ?)",
+                    username,
+                    email,
+                    password,
+                    DateTime.Now
+                );
+
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                // Optional: log error
+                System.Diagnostics.Debug.WriteLine($"Register error: {ex.Message}");
+                return false;
+            }
+        }
 
     }
 }

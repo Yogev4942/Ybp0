@@ -23,6 +23,8 @@ namespace ViewModels
         bool ValidateLogin(string username, string password);
 
         bool UserExist(string username, string email);
+
+        bool RegisterUser(string username, string email, string password);
     }
 
 }

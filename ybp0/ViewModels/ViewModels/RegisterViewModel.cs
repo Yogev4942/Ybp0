@@ -35,11 +35,19 @@ namespace ViewModels.ViewModels
         {
             if (_databaseService.UserExist(Username,Email))
             {
+                ErrorMsg = "Username or email exists";
                 return false;
             }
             try
             {
-
+                if (_databaseService.RegisterUser(Username,Email,Password))
+                {
+                    _navigationService.NavigateTo<HomeViewModel>();
+                }
+                else
+                {
+                    ErrorMsg = "Error Creating user";
+                }
             }
             catch (Exception ex)
             {

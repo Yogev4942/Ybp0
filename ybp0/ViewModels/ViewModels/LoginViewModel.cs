@@ -79,9 +79,6 @@ namespace ViewModels.ViewModels
                         _navigationService.OnLoginSuccess();
                         // Login successful - navigate to home/dashboard
                         _navigationService.NavigateTo<HomeViewModel>();
-
-                        // Optional: Store current user somewhere for app-wide access
-                        // CurrentUser.Instance = currentUser;
                     }
                     else
                     {
