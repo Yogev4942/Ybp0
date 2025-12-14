@@ -29,12 +29,19 @@ namespace ViewModels.ViewModels
             this._databaseService = databaseService;
             this._navigationService = navigationService;
             GoBackCommand = new RelayCommand(_ => _navigationService.NavigateTo<LoginViewModel>());
+            RegisterCommand = new RelayCommand(_ => Register());
         }
         public ICommand RegisterCommand;
         public ICommand GoBackCommand { get; }
 
         public bool Register()
         {
+            if (Username == null || Password == null || Email == null)
+            {
+                ErrorMsg = "Fill out all fields";
+
+                return false;
+            }
             if (_databaseService.UserExist(Username,Email))
             {
                 ErrorMsg = "Username or email exists";
@@ -42,6 +49,7 @@ namespace ViewModels.ViewModels
             }
             try
             {
+                ErrorMsg = string.Empty;
                 if (_databaseService.RegisterUser(Username,Email,Password))
                 {
                     _navigationService.NavigateTo<HomeViewModel>();

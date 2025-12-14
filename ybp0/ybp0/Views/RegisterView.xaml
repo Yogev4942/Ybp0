@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <!-- Background matching main window -->
     <Grid>
         <Grid.Background>
@@ -132,7 +132,11 @@
                               HorizontalAlignment="Center"
                               Margin="0,0,0,25"/>
 
-                    <TextBlock Text=""
+                    <TextBlock Text="{Binding ErrorMsg}"
+                                Foreground="Red"
+                                 FontSize="14"
+                                 HorizontalAlignment="Center"
+                                 Margin="0,0,0,25"
                         />
 
                     <!-- Email -->
@@ -174,9 +178,7 @@
                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
                         </Border>
                     </StackPanel>
-
-                    <!-- Password -->
-                    <StackPanel Margin="0,0,0,25">
+                    <StackPanel>
                         <TextBlock Text="Password" 
                                   Foreground="#DDFFFFFF" 
                                   FontSize="13" 
@@ -194,6 +196,8 @@
                                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </StackPanel>
+
+                    <!-- Password -->
 
                     <!-- Register Button -->
                     <Button Content="Create Account"
