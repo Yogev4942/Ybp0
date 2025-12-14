@@ -19,5 +19,11 @@
         <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
             <views:RegisterView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WorkoutViewModel}">
+            <views:WorkoutView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ExerciseViewModel}">
+            <views:ExerciseView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

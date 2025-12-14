@@ -5,122 +5,140 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="200" d:DesignWidth="300">
-    <!-- This Border gives the "Round Palette" look -->
-    <Border Background="#2D2D30" 
-            CornerRadius="15" 
-            Padding="15"
-            Margin="5">
-        <Border.Effect>
-            <!-- Adds a slight shadow for depth -->
-            <DropShadowEffect BlurRadius="10" ShadowDepth="2" Opacity="0.3"/>
-        </Border.Effect>
-
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <!-- Exercise Name -->
-                <RowDefinition Height="Auto"/>
-                <!-- Column Headers -->
-                <RowDefinition Height="*"/>
-                <!-- List of Sets -->
-                <RowDefinition Height="Auto"/>
-                <!-- Add Button -->
-            </Grid.RowDefinitions>
-
-            <!-- 1. Exercise Name -->
-            <TextBlock x:Name="TxtExerciseName" 
-                       Text="Bench Press" 
-                       Foreground="White" 
-                       FontSize="18" 
-                       FontWeight="Bold" 
-                       Margin="0,0,0,10"
-                       HorizontalAlignment="Left"/>
-
-            <!-- 2. Column Headers (Reps / Weight) -->
-            <Grid Grid.Row="1" Margin="0,0,0,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" MinWidth="30"/>
-                    <!-- Set # -->
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <!-- Delete Btn Space -->
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="#" Foreground="#AAAAAA" FontSize="12"/>
-                <TextBlock Grid.Column="1" Text="Reps" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="2" Text="Kg/Lbs" Foreground="#AAAAAA" FontSize="12" HorizontalAlignment="Center"/>
-            </Grid>
-
-            <!-- 3. Dynamic List of Sets -->
-            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-                <ItemsControl x:Name="SetsList">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0,0,0,8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="30"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <!-- Set Number -->
-                                <TextBlock Text="{Binding SetNumber}" 
-                                           Foreground="White" 
-                                           VerticalAlignment="Center" 
-                                           FontWeight="Bold"/>
-
-                                <!-- Reps Input -->
-                                <TextBox Text="{Binding Reps}" 
-                                         Grid.Column="1"
-                                         Margin="4,0"
-                                         Padding="5"
-                                         Background="#404040"
-                                         Foreground="White"
-                                         BorderThickness="0"
-                                         HorizontalContentAlignment="Center"/>
-
-                                <!-- Weight Input -->
-                                <TextBox Text="{Binding Weight}" 
-                                         Grid.Column="2"
-                                         Margin="4,0"
-                                         Padding="5"
-                                         Background="#404040"
-                                         Foreground="White"
-                                         BorderThickness="0"
-                                         HorizontalContentAlignment="Center"/>
-
-                                <!-- Delete Set Button (Optional) -->
-                                <Button Content="X" 
-                                        Grid.Column="3"
-                                        Width="20" Height="20"
-                                        FontSize="10"
-                                        Background="Transparent"
-                                        Foreground="Red"
-                                        BorderThickness="0"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-
-            <!-- 4. Add Set Button -->
-            <Button Grid.Row="3" 
-                    Content="+ Add Set" 
-                    Background="#3A3A3E"
-                    Foreground="White"
-                    BorderThickness="0"
-                    Height="30"
-                    Margin="0,10,0,0">
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="8"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
+             x:Name="uc"
+             d:DesignHeight="250" d:DesignWidth="600">
+    
+    <!-- Light, Colorful Design matching CalendarView -->
+    <StackPanel>
+        <TextBlock x:Name="ExerciseName"
+                   Text="Exercise Name" 
+                   FontSize="18" 
+                   FontWeight="Bold" 
+                   Foreground="#333" 
+                   Margin="0,0,0,10"/>
+        
+        <!-- Sets Header -->
+        <Grid Margin="0,0,0,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="40"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Set" Foreground="#666" FontSize="12" FontWeight="SemiBold"/>
+            <TextBlock Grid.Column="1" Text="Reps" Foreground="#666" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Column="2" Text="kg" Foreground="#666" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center"/>
         </Grid>
-    </Border>
-
+        
+        <!-- Sets List -->
+        <ItemsControl x:Name="SetsList">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Grid Margin="0,5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" MinWidth="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <!-- Set Number Badge -->
+                        <Border Grid.Column="0" Background="{Binding SetColor}" CornerRadius="6" Padding="6,3" Width="30">
+                            <TextBlock Text="{Binding SetNumber}" Foreground="White" FontWeight="Bold" HorizontalAlignment="Center"/>
+                        </Border>
+                        
+                        <!-- Reps Input -->
+                        <Border Grid.Column="1" Background="#F5F5F5" CornerRadius="6" Margin="8,0,4,0" Padding="8,5">
+                            <TextBox Text="{Binding Reps, UpdateSourceTrigger=PropertyChanged}" 
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="#333" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     TextAlignment="Center"/>
+                        </Border>
+                        
+                        <!-- Weight Input -->
+                        <Border Grid.Column="2" Background="#F5F5F5" CornerRadius="6" Margin="4,0,8,0" Padding="8,5">
+                            <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" 
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="#333" 
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     TextAlignment="Center"/>
+                        </Border>
+                        
+                        <!-- Delete Set Button -->
+                        <Button Grid.Column="3" 
+                                Content="✕" 
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="#999"
+                                FontSize="14"
+                                Padding="5"
+                                Cursor="Hand"
+                                ToolTip="Remove Set">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#FFEBEE"/>
+                                                        <Setter Property="Foreground" Value="#F44336"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        
+        <!-- Add Set Button -->
+        <Button Content="+ Add Set" 
+                Margin="0,10,0,0"
+                Background="#E8F5E9"
+                BorderThickness="1"
+                BorderBrush="#C8E6C9"
+                Foreground="#2E7D32"
+                FontSize="13"
+                FontWeight="SemiBold"
+                Padding="12,6"
+                Cursor="Hand"
+                HorizontalAlignment="Center">
+            <Button.Style>
+                <Style TargetType="Button">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="Button">
+                                <Border x:Name="border" 
+                                        Background="{TemplateBinding Background}" 
+                                        BorderBrush="{TemplateBinding BorderBrush}"
+                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                        CornerRadius="8" 
+                                        Padding="{TemplateBinding Padding}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="border" Property="Background" Value="#C8E6C9"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </Button.Style>
+        </Button>
+    </StackPanel>
 </UserControl>
