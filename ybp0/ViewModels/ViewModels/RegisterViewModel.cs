@@ -28,7 +28,7 @@ namespace ViewModels.ViewModels
         {
             this._databaseService = databaseService;
             this._navigationService = navigationService;
-            GoBackCommand = new RelayCommand(_ => _navigationService.NavigateTo<LoginViewModel>());
+            GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
             RegisterCommand = new RelayCommand(_ => Register());
         }
         public ICommand RegisterCommand;
@@ -36,7 +36,7 @@ namespace ViewModels.ViewModels
 
         public bool Register()
         {
-            if (Username == null || Password == null || Email == null)
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Email))
             {
                 ErrorMsg = "Fill out all fields";
 
@@ -52,7 +52,7 @@ namespace ViewModels.ViewModels
                 ErrorMsg = string.Empty;
                 if (_databaseService.RegisterUser(Username,Email,Password))
                 {
-                    _navigationService.NavigateTo<HomeViewModel>();
+                    GoBackCommand.Execute(null);
                 }
                 else
                 {

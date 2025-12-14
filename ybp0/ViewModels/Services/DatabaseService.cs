@@ -21,9 +21,10 @@ namespace ViewModels.Services
 
         public bool ValidateLogin(string username, string password)
         {
-            string sql = $"SELECT * FROM UserTbl WHERE Username='{username}' AND Password='{password}'";
-
-            var result = _database.ExecuteQuery(sql);
+            var result = _database.ExecuteQuery(
+                "SELECT * FROM UserTbl WHERE Username = ? AND Password = ?",
+                username, password
+            );
 
             return result.Rows.Count > 0;
         }
@@ -50,7 +51,7 @@ namespace ViewModels.Services
         public bool UserExist(string username, string email)
         {
             var dt = _database.ExecuteQuery(
-                "SELECT * FROM UserTbl WHERE Username = ? AND Email = ?",
+                "SELECT * FROM UserTbl WHERE Username = ? OR Email = ?",
                 username, email
             );
             return dt.Rows.Count > 0;

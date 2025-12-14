@@ -178,7 +178,7 @@
                                 Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
                         </Border>
                     </StackPanel>
-                    <StackPanel>
+                    <StackPanel Margin="0,0,0,25">
                         <TextBlock Text="Password" 
                                   Foreground="#DDFFFFFF" 
                                   FontSize="13" 
@@ -188,11 +188,12 @@
                                 BorderBrush="#55FFFFFF"
                                 BorderThickness="1"
                                 Padding="12">
-                            <TextBlock
+                            <TextBox 
                                 x:Name="PasswordBox"
+                                BorderThickness="0"
+                                Background="Transparent"
                                 FontSize="14"
                                 Foreground="White"
-                                Background="Transparent"
                                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
                         </Border>
                     </StackPanel>
