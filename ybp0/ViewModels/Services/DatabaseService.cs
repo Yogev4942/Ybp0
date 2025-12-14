@@ -61,11 +61,12 @@ namespace ViewModels.Services
             try
             {
                 int affectedRows = _database.ExecuteNonQuery(
-                    "INSERT INTO UserTbl (Username, Email, [Password], Joindate) VALUES (?, ?, ?, ?)",
+                    "INSERT INTO [UserTbl] ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
                     username,
                     email,
                     password,
-                    DateTime.Now
+                    DateTime.Today,
+                    0
                 );
 
                 return affectedRows > 0;

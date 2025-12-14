@@ -31,8 +31,8 @@ namespace ViewModels.ViewModels
             GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
             RegisterCommand = new RelayCommand(_ => Register());
         }
-        public ICommand RegisterCommand;
-        public ICommand GoBackCommand { get; }
+        public ICommand RegisterCommand { get; private set; }
+        public ICommand GoBackCommand { get; private set; }
 
         public bool Register()
         {
@@ -57,13 +57,15 @@ namespace ViewModels.ViewModels
                 else
                 {
                     ErrorMsg = "Error Creating user";
+                    return false;
                 }
             }
             catch (Exception ex)
             {
-                ErrorMsg = "An error occurred during login. Please try again.";
-                // For debugging - remove in production
-                System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
+                ErrorMsg = $"Register error: {ex.Message}";
+                // For debugging - keep in output window
+                System.Diagnostics.Debug.WriteLine($"Register error: {ex}");
+                return false;
             }
             return true;
         }
