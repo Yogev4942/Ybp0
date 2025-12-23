@@ -47,12 +47,22 @@ namespace ViewModels.ViewModels
                 }
             );
 
-            // Generic logic: Command Parameter must be a Type
+            // Generic logic: Command Parameter can be Type or string
             NavigateCommand = new RelayCommand(param => 
             {
                 if (param is Type type)
                 {
                     Navigation.NavigateTo(type);
+                }
+                else if (param is string name)
+                {
+                    // Handle string-based navigation for views that can't use x:Type
+                    switch (name)
+                    {
+                        case "Feed":
+                            Navigation.NavigateTo<FeedViewModel>();
+                            break;
+                    }
                 }
             });
 
@@ -75,7 +85,10 @@ namespace ViewModels.ViewModels
             }
 
             if (type == typeof(CalendarViewModel))
-                return new CalendarViewModel();
+                return new CalendarViewModel(Database,Navigation);
+
+            if (type == typeof(FeedViewModel))
+                return new FeedViewModel();
 
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);

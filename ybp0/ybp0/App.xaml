@@ -25,5 +25,8 @@
         <DataTemplate DataType="{x:Type vm:ExerciseViewModel}">
             <views:ExerciseView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:FeedViewModel}">
+            <views:FeedView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

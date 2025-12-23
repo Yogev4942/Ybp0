@@ -5,123 +5,22 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="900">
+             d:DesignHeight="300" d:DesignWidth="400">
     
-    <!-- Background matching CalendarView theme -->
-    <Grid>
-        <Grid.Background>
-            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#E8F5E9" Offset="0.0" />
-                <GradientStop Color="#E0F2F1" Offset="1.0" />
-            </LinearGradientBrush>
-        </Grid.Background>
-
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <!-- Header Section -->
-        <Border Grid.Row="0" 
-                Padding="30,25"
-                Margin="20,20,20,10">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#26A69A" Offset="0"/>
-                    <GradientStop Color="#00897B" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <DropShadowEffect Color="#00FFCC" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
-            </Border.Effect>
-            
-            <StackPanel>
-                <TextBlock Text="🏋️ Today's Workout" 
-                           FontSize="32" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="Chest and Triceps - Push Day" 
-                           FontSize="14" 
-                           Foreground="#DDFFFFFF" 
-                           HorizontalAlignment="Center"
-                           Margin="0,5,0,0"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Workout Content -->
-        <ScrollViewer Grid.Row="1" Margin="20,10,20,20" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                
-                <!-- Exercise 1: Bench Press -->
-                <Border CornerRadius="16" 
-                        Margin="6,6,6,10" 
-                        Padding="20">
+    <!-- Simple list of exercises for embedding in day cards -->
+    <ItemsControl ItemsSource="{Binding Exercises}">
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Border CornerRadius="8" 
+                        Margin="0,8,0,0" 
+                        Padding="12">
                     <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#55FFFFFF" Offset="0"/>
-                            <GradientStop Color="#33FFFFFF" Offset="1"/>
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="White" Opacity="0.5"/>
                     </Border.Background>
-                    <Border.Effect>
-                        <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
-                    </Border.Effect>
                     
-                    <local:ExerciseView x:Name="Exercise1"/>
+                    <local:ExerciseView/>
                 </Border>
-
-                <!-- Exercise 2: Incline Dumbbell Press -->
-                <Border CornerRadius="16" 
-                        Margin="6,6,6,10" 
-                        Padding="20">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#55FFFFFF" Offset="0"/>
-                            <GradientStop Color="#33FFFFFF" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <DropShadowEffect Color="#66BB6A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
-                    </Border.Effect>
-                    
-                    <local:ExerciseView x:Name="Exercise2"/>
-                </Border>
-
-                <!-- Exercise 3: Cable Flyes -->
-                <Border CornerRadius="16" 
-                        Margin="6,6,6,10" 
-                        Padding="20">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#55FFFFFF" Offset="0"/>
-                            <GradientStop Color="#33FFFFFF" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <DropShadowEffect Color="#42A5F5" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
-                    </Border.Effect>
-                    
-                    <local:ExerciseView x:Name="Exercise3"/>
-                </Border>
-
-                <!-- Exercise 4: Tricep Pushdowns -->
-                <Border CornerRadius="16" 
-                        Margin="6,6,6,10" 
-                        Padding="20">
-                    <Border.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                            <GradientStop Color="#55FFFFFF" Offset="0"/>
-                            <GradientStop Color="#33FFFFFF" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Border.Background>
-                    <Border.Effect>
-                        <DropShadowEffect Color="#AB47BC" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
-                    </Border.Effect>
-                    
-                    <local:ExerciseView x:Name="Exercise4"/>
-                </Border>
-                
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
 </UserControl>

@@ -63,6 +63,9 @@
     <Compile Include="Views\ExerciseView.xaml.cs">
       <DependentUpon>ExerciseView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\FeedView.xaml.cs">
+      <DependentUpon>FeedView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\HomeView.xaml.cs">
       <DependentUpon>HomeView.xaml</DependentUpon>
     </Compile>
@@ -92,6 +95,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ExerciseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\FeedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
