@@ -12,10 +12,12 @@ namespace Models
         private string username;
         private string password;
         private string joindate;
+        private bool istrainer;
 
         public string Email { get => email; set => email = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
         public string Joindate { get => joindate; set => joindate = value; }
+        public bool IsTrainer { get => istrainer; set => istrainer = value; }
     }
 }

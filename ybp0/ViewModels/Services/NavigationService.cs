@@ -66,7 +66,6 @@ namespace ViewModels
             }
 
             // navigate to home (you can change to pass a parameter if needed)
-            this.NavigateTo<HomeViewModel>();
         }
     }
 }

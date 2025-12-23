@@ -45,7 +45,8 @@ namespace ViewModels.Services
                 Username = row["Username"].ToString(),
                 Email = row["Email"]?.ToString(),
                 Password = row["Password"].ToString(),
-                Joindate = row["Joindate"]?.ToString()
+                Joindate = row["Joindate"]?.ToString(),
+                IsTrainer = row["IsTrainer"] != DBNull.Value && Convert.ToBoolean(row["IsTrainer"])
             };
         }
         public bool UserExist(string username, string email)
