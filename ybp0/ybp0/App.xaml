@@ -4,9 +4,12 @@
              xmlns:local="clr-namespace:ybp0"
              xmlns:vm="clr-namespace:ViewModels.ViewModels;assembly=ViewModels"
              xmlns:views="clr-namespace:ybp0.Views"
+             xmlns:converters="clr-namespace:ybp0.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:StringToColorBrushConverter x:Key="StringToColorBrushConverter"/>
         <DataTemplate DataType="{x:Type vm:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>

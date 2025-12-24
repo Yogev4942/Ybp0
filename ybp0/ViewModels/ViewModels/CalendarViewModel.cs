@@ -13,6 +13,7 @@ namespace ViewModels.ViewModels
     {
         private readonly IDatabaseService _dbService;
         private readonly INavigationService _navService;
+        private readonly User _currUser;
         private int _userId;
         private int _weekPlanId;
         private ObservableCollection<DayViewModel> _days;
@@ -35,12 +36,81 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _days, value);
         }
 
-        public CalendarViewModel(IDatabaseService dbService,INavigationService navigationService)
+        public CalendarViewModel(IDatabaseService dbService,INavigationService navigationService,User user)
         {
             _dbService = dbService;
             _navService = navigationService;
+            _currUser = user;
             Days = new ObservableCollection<DayViewModel>();
+
+            // ================================================
+            // TODO: REMOVE THIS SAMPLE DATA WHEN CONNECTING TO DATABASE
+            // Call LoadWeekPlan(userId, weekPlanId) instead
+            LoadSampleData();
+            // ================================================
         }
+
+        // ================================================
+        // SAMPLE DATA - DELETE THIS METHOD WHEN READY FOR DATABASE
+        // ================================================
+        private void LoadSampleData()
+        {
+            string[] dayNames = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+            string[] accentColors = { "#FF6B6B", "#26A69A", "#66BB6A", "#42A5F5", "#AB47BC", "#FF9800", "#7E57C2" };
+            
+            // Sample workout names (index 0 = Sunday rest day)
+            string[] workoutNames = { "Rest Day", "Chest & Triceps", "Back & Biceps", "Legs", "Shoulders", "Full Body", "Cardio & Core" };
+            bool[] restDays = { true, false, false, false, false, false, false };
+
+            // Sample exercises per day
+            string[][] sampleExercises = new string[][]
+            {
+                new string[] { },  // Sunday - rest
+                new string[] { "Bench Press", "Dumbbell Flyes", "Tricep Dips" },
+                new string[] { "Pull-ups", "Barbell Rows", "Bicep Curls" },
+                new string[] { "Squats", "Leg Press", "Calf Raises" },
+                new string[] { "Overhead Press", "Lateral Raises", "Face Pulls" },
+                new string[] { "Deadlifts", "Push-ups", "Planks" },
+                new string[] { "Running", "Ab Crunches", "Leg Raises" }
+            };
+
+            for (int i = 0; i < 7; i++)
+            {
+                var dayVm = new DayViewModel(_dbService, 1)
+                {
+                    DayName = dayNames[i],
+                    Date = DateTime.Today.AddDays(i - (int)DateTime.Today.DayOfWeek),
+                    WorkoutName = workoutNames[i],
+                    IsRestDay = restDays[i],
+                    AccentColor = accentColors[i]
+                };
+
+                // Add sample exercises
+                if (!restDays[i])
+                {
+                    foreach (var exerciseName in sampleExercises[i])
+                    {
+                        var exerciseVm = new SampleExerciseViewModel(exerciseName, accentColors[i]);
+                        dayVm.Exercises.Add(exerciseVm);
+                    }
+                }
+
+                Days.Add(dayVm);
+            }
+        }
+
+        // Simple sample exercise class - DELETE WHEN USING REAL DATABASE
+        private class SampleExerciseViewModel : ExerciseViewModel
+        {
+            public SampleExerciseViewModel(string name, string color) 
+                : base(null, 0, new Models.Exercise { Id = 0, ExerciseName = name }, color)
+            {
+                Sets = new ObservableCollection<SetViewModel>();
+            }
+        }
+        // ================================================
+        // END SAMPLE DATA
+        // ================================================
 
         public void LoadWeekPlan(int userId, int weekPlanId)
         {

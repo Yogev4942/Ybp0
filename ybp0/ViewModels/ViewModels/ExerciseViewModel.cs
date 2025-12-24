@@ -63,6 +63,9 @@ namespace ViewModels.ViewModels
 
         private void LoadSets()
         {
+            // Skip loading from DB if no database service (for sample data)
+            if (_dbService == null) return;
+
             var sessionSets = _dbService.GetSessionSets(_workoutSessionId, _exerciseId);
 
             foreach (var sessionSet in sessionSets)
@@ -95,8 +98,8 @@ namespace ViewModels.ViewModels
 
             Sets.Add(newSet);
 
-            // Trigger immediate save for the new set
-            if (int.TryParse(reps, out int r) && double.TryParse(weight, out double w))
+            // Trigger immediate save for the new set (skip if no DB service)
+            if (_dbService != null && int.TryParse(reps, out int r) && double.TryParse(weight, out double w))
             {
                 _dbService.SaveSessionSet(_workoutSessionId, _exerciseId, newSetNumber, r, w);
             }
@@ -106,8 +109,8 @@ namespace ViewModels.ViewModels
         {
             if (set == null) return;
 
-            // Delete from database if it has an ID
-            if (set.Id > 0)
+            // Delete from database if it has an ID (skip if no DB service)
+            if (_dbService != null && set.Id > 0)
             {
                 _dbService.DeleteSessionSet(set.Id);
             }

@@ -21,6 +21,13 @@ namespace ViewModels.ViewModels
         private bool _isRestDay;
         private int? _workoutSessionId;
         private ObservableCollection<ExerciseViewModel> _exercises;
+        private string _accentColor;
+
+        public string AccentColor
+        {
+            get => _accentColor;
+            set => SetProperty(ref _accentColor, value);
+        }
 
         public string DayName
         {

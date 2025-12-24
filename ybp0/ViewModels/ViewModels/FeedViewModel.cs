@@ -1,3 +1,4 @@
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,11 @@ namespace ViewModels.ViewModels
     /// </summary>
     public class FeedViewModel : BaseViewModel
     {
+        private readonly User _activeUser;
+        private readonly IDatabaseService _databaseService;
+        private readonly INavigationService _navigationService;
+
+
         private string _welcomeMessage;
 
         public string WelcomeMessage
@@ -19,8 +25,11 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _welcomeMessage, value);
         }
 
-        public FeedViewModel()
+        public FeedViewModel(IDatabaseService database, INavigationService navigation, User user)
         {
+            _databaseService = database;
+            _navigationService = navigation;
+            _activeUser = user;
             WelcomeMessage = "Feed coming soon!";
         }
     }

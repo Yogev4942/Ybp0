@@ -120,6 +120,8 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\InverseBoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\StringToColorBrushConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

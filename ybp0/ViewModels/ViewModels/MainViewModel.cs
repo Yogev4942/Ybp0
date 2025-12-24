@@ -1,5 +1,6 @@
 ﻿using Models;
 using System;
+using System.CodeDom;
 using System.Net.NetworkInformation;
 using System.Windows.Input;
 using ViewModels.Services;
@@ -85,11 +86,10 @@ namespace ViewModels.ViewModels
             }
 
             if (type == typeof(CalendarViewModel))
-                return new CalendarViewModel(Database,Navigation);
+                return new CalendarViewModel(Database,Navigation, (User)parameter);
 
             if (type == typeof(FeedViewModel))
-                return new FeedViewModel();
-
+                return new FeedViewModel(Database,Navigation,(User)parameter);
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

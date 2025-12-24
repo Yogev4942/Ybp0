@@ -7,20 +7,62 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="400">
     
-    <!-- Simple list of exercises for embedding in day cards -->
-    <ItemsControl ItemsSource="{Binding Exercises}">
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
-                <Border CornerRadius="8" 
-                        Margin="0,8,0,0" 
-                        Padding="12">
-                    <Border.Background>
-                        <SolidColorBrush Color="White" Opacity="0.5"/>
-                    </Border.Background>
-                    
-                    <local:ExerciseView/>
-                </Border>
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
-    </ItemsControl>
+    <!-- Matching CalendarView glassmorphism style - embeddable in day cards -->
+    <StackPanel>
+        <!-- Workout Name Badge -->
+        <Border Background="{Binding AccentColor, FallbackValue=#26A69A}" 
+                CornerRadius="8" 
+                Padding="8,5"
+                Margin="0,0,0,12"
+                Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}">
+            <TextBlock Text="{Binding WorkoutName, FallbackValue='Workout'}" 
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="White" 
+                       HorizontalAlignment="Center"/>
+        </Border>
+        
+        <!-- Rest Day Badge -->
+        <Border Background="#FF6B6B" 
+                CornerRadius="8" 
+                Padding="8,5"
+                Margin="0,0,0,12"
+                Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
+            <TextBlock Text="Rest Day" 
+                       FontSize="12"
+                       FontWeight="SemiBold"
+                       Foreground="White" 
+                       HorizontalAlignment="Center"/>
+        </Border>
+        
+        <!-- Rest Day Content -->
+        <TextBlock Text="Recovery &amp; Stretching" 
+                   FontSize="11"
+                   Foreground="#888" 
+                   TextWrapping="Wrap"
+                   HorizontalAlignment="Center"
+                   TextAlignment="Center"
+                   Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
+        
+        <!-- Exercises List (when not rest day) -->
+        <ScrollViewer MaxHeight="180" 
+                      VerticalScrollBarVisibility="Auto"
+                      Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}">
+            <ItemsControl ItemsSource="{Binding Exercises}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border CornerRadius="8" 
+                                Margin="0,4,0,4" 
+                                Padding="10">
+                            <Border.Background>
+                                <SolidColorBrush Color="White" Opacity="0.6"/>
+                            </Border.Background>
+                            
+                            <local:ExerciseView DataContext="{Binding}"/>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </StackPanel>
 </UserControl>
