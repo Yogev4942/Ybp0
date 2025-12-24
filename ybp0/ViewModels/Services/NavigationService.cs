@@ -12,6 +12,17 @@ namespace ViewModels
         private readonly Stack<BaseViewModel> _stack;
         private readonly Action _onLogin; // may be null
 
+        // Cache for singleton ViewModels (page-level views)
+        private readonly Dictionary<Type, BaseViewModel> _viewModelCache = new Dictionary<Type, BaseViewModel>();
+
+        // Types that should be cached (singleton pattern)
+        private static readonly HashSet<Type> _cachedTypes = new HashSet<Type>
+        {
+            typeof(HomeViewModel),
+            typeof(CalendarViewModel),
+            typeof(FeedViewModel)
+        };
+
         public NavigationService(
             Func<Type, object, BaseViewModel> factory,
             Action<BaseViewModel> setCurrentViewModel,
@@ -37,8 +48,24 @@ namespace ViewModels
             if (!typeof(BaseViewModel).IsAssignableFrom(viewModelType))
                 throw new ArgumentException("Type must inherit from BaseViewModel", nameof(viewModelType));
 
-            // create new viewmodel instance (factory handles DI)
-            var vm = _factory(viewModelType, parameters);
+            BaseViewModel vm;
+
+            // Check if this type should be cached (singleton)
+            if (_cachedTypes.Contains(viewModelType))
+            {
+                // Try to get from cache first
+                if (!_viewModelCache.TryGetValue(viewModelType, out vm))
+                {
+                    // Create and cache if not found
+                    vm = _factory(viewModelType, parameters);
+                    _viewModelCache[viewModelType] = vm;
+                }
+            }
+            else
+            {
+                // Non-cached types: always create new instance
+                vm = _factory(viewModelType, parameters);
+            }
 
             // push and make current
             _stack.Push(vm);
