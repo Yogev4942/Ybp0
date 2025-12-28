@@ -15,7 +15,6 @@ namespace Models
         protected string joindate;
         protected bool isTrainer;
         protected string bio;
-        protected string birthdate;
         protected string gender;
 
         // Public properties
@@ -26,7 +25,6 @@ namespace Models
         public string Bio { get => bio; set => bio = value; }
         public string Gender { get => gender; set => gender = value; }
         public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
-        public string Birthdate { get => birthdate; set => birthdate = value; }
 
         // Abstract method that each user type must implement
         public abstract string GetUserType();

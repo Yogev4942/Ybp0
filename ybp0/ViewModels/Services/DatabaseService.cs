@@ -56,7 +56,6 @@ namespace ViewModels.Services
                     Password = userRow["Password"].ToString(),
                     Joindate = userRow["JoinDate"]?.ToString(),
                     Bio = userRow["Bio"]?.ToString(),
-                    Birthdate = userRow["BirthDate"]?.ToString(),
                     Gender = userRow["Gender"]?.ToString(),
                     IsTrainer = true
                 };
@@ -96,7 +95,6 @@ namespace ViewModels.Services
                     Password = userRow["Password"].ToString(),
                     Joindate = userRow["JoinDate"]?.ToString(),
                     Bio = userRow["Bio"]?.ToString(),
-                    Birthdate = userRow["BirthDate"]?.ToString(),
                     Gender = userRow["Gender"]?.ToString(),
                     IsTrainer = false
                 };
@@ -162,29 +160,14 @@ namespace ViewModels.Services
         {
             try
             {
-                // Insert into UserTbl
+                // Insert into UserTbl only - simplified for now
+                // JoinDate is formatted as string for Access compatibility
+                string joinDateStr = DateTime.Now.ToString("yyyy-MM-dd");
+                
                 _database.ExecuteNonQuery(
                     @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
                       VALUES (?, ?, ?, ?, ?)",
-                    username, email, password, DateTime.Now, false
-                );
-
-                // Get the new user ID
-                var dt = _database.ExecuteQuery(
-                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? ORDER BY Id DESC",
-                    username
-                );
-
-                if (dt.Rows.Count == 0)
-                    return false;
-
-                int userId = Convert.ToInt32(dt.Rows[0]["Id"]);
-
-                // Insert into TraineesTbl
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO TraineesTbl ([UserId], [FitnessGoal], [CurrentWeight], [Height], [IsActive]) 
-                      VALUES (?, ?, ?, ?, ?)",
-                    userId, fitnessGoal, currentWeight, height, true
+                    username, email, password, joinDateStr, 0
                 );
 
                 return true;
@@ -192,7 +175,7 @@ namespace ViewModels.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Register trainee error: {ex.Message}");
-                return false;
+                throw; // Re-throw to see the actual error
             }
         }
 
@@ -201,29 +184,14 @@ namespace ViewModels.Services
         {
             try
             {
-                // Insert into UserTbl
+                // Insert into UserTbl only - simplified for now
+                // JoinDate is formatted as string for Access compatibility
+                string joinDateStr = DateTime.Now.ToString("yyyy-MM-dd");
+                
                 _database.ExecuteNonQuery(
                     @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
                       VALUES (?, ?, ?, ?, ?)",
-                    username, email, password, DateTime.Now, true
-                );
-
-                // Get the new user ID
-                var dt = _database.ExecuteQuery(
-                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? ORDER BY Id DESC",
-                    username
-                );
-
-                if (dt.Rows.Count == 0)
-                    return false;
-
-                int userId = Convert.ToInt32(dt.Rows[0]["Id"]);
-
-                // Insert into TrainersTbl
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO TrainersTbl ([UserId], [Specialization], [HourlyRate], [MaxTrainees], [TotalTrainees], [Rating], [TotalRatings]) 
-                      VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    userId, specialization, hourlyRate, maxTrainees, 0, 0.0, 0
+                    username, email, password, joinDateStr, -1
                 );
 
                 return true;
@@ -231,7 +199,7 @@ namespace ViewModels.Services
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"Register trainer error: {ex.Message}");
-                return false;
+                throw; // Re-throw to see the actual error
             }
         }
 

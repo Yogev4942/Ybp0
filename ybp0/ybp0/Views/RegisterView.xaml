@@ -154,7 +154,7 @@
                                       FontSize="13" 
                                       Margin="0,0,0,8"/>
                             <Border CornerRadius="12"
-                                    Background="#33FFFFFF"
+                                    Background="Transparent"
                                     BorderBrush="#55FFFFFF"
                                     BorderThickness="1"
                                     Padding="8,4">
@@ -162,7 +162,7 @@
                                     SelectedValue="{Binding SelectedUserType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                     SelectedValuePath="Content"
                                     FontSize="14"
-                                    Foreground="White"
+                                    Foreground="Transparent"
                                     Background="Transparent"
                                     BorderThickness="0">
                                     <ComboBoxItem Content="Trainee" IsSelected="True"/>
