@@ -157,6 +157,84 @@ namespace ViewModels.Services
             }
         }
 
+        public bool RegisterTrainee(string username, string email, string password,
+                                   string fitnessGoal, double currentWeight, double height)
+        {
+            try
+            {
+                // Insert into UserTbl
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
+                      VALUES (?, ?, ?, ?, ?)",
+                    username, email, password, DateTime.Now, false
+                );
+
+                // Get the new user ID
+                var dt = _database.ExecuteQuery(
+                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? ORDER BY Id DESC",
+                    username
+                );
+
+                if (dt.Rows.Count == 0)
+                    return false;
+
+                int userId = Convert.ToInt32(dt.Rows[0]["Id"]);
+
+                // Insert into TraineesTbl
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO TraineesTbl ([UserId], [FitnessGoal], [CurrentWeight], [Height], [IsActive]) 
+                      VALUES (?, ?, ?, ?, ?)",
+                    userId, fitnessGoal, currentWeight, height, true
+                );
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Register trainee error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public bool RegisterTrainer(string username, string email, string password,
+                                   string specialization, double hourlyRate, int maxTrainees)
+        {
+            try
+            {
+                // Insert into UserTbl
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
+                      VALUES (?, ?, ?, ?, ?)",
+                    username, email, password, DateTime.Now, true
+                );
+
+                // Get the new user ID
+                var dt = _database.ExecuteQuery(
+                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? ORDER BY Id DESC",
+                    username
+                );
+
+                if (dt.Rows.Count == 0)
+                    return false;
+
+                int userId = Convert.ToInt32(dt.Rows[0]["Id"]);
+
+                // Insert into TrainersTbl
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO TrainersTbl ([UserId], [Specialization], [HourlyRate], [MaxTrainees], [TotalTrainees], [Rating], [TotalRatings]) 
+                      VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    userId, specialization, hourlyRate, maxTrainees, 0, 0.0, 0
+                );
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Register trainer error: {ex.Message}");
+                return false;
+            }
+        }
+
         // Session Management
         public WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date)
         {

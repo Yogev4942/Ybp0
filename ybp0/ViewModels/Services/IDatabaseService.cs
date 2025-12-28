@@ -27,6 +27,12 @@ namespace ViewModels
 
         bool RegisterUser(string username, string email, string password);
 
+        bool RegisterTrainee(string username, string email, string password,
+                             string fitnessGoal, double currentWeight, double height);
+
+        bool RegisterTrainer(string username, string email, string password,
+                             string specialization, double hourlyRate, int maxTrainees);
+
         // Session Management
         WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date);
         void CompleteWorkoutSession(int sessionId);
