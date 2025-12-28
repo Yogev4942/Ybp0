@@ -113,7 +113,6 @@ namespace ViewModels.ViewModels
         private void OnNavigateToSignUp(object parameter)
         {
             _navigationService.NavigateTo<RegisterViewModel>();
-            ErrorMessage = "Sign up feature coming soon!";
         }
     }
 }
