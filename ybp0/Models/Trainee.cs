@@ -19,8 +19,6 @@ namespace Models
         private double height;
         private ActivityLevel activityLevel;         // "Sedentary", "Lightly Active", "Moderately Active", "Very Active"
         private int currentWeekPlanId;
-        private bool isActive;                // Is currently following a program
-        private string notes;                 // Personal notes about fitness journey
 
         public int? TrainerId { get => trainerId; set => trainerId = value; }
         public string FitnessGoal { get => fitnessGoal; set => fitnessGoal = value; }
@@ -29,10 +27,6 @@ namespace Models
         internal ActivityLevel ActivityLevel { get => activityLevel; set => activityLevel = value; }
 
         public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
-        public bool IsActive { get => isActive; set => isActive = value; }
-        public string Notes { get => notes; set => notes = value; }
-
-        // Trainer relationship
         public Trainer AssignedTrainer { get; set; }
 
         // Calculated properties

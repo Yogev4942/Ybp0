@@ -13,9 +13,9 @@ namespace Models
         protected string username;
         protected string password;
         protected string joindate;
-        protected string profilePicture;
+        protected bool isTrainer;
         protected string bio;
-        protected int age;
+        protected string birthdate;
         protected string gender;
 
         // Public properties
