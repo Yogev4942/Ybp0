@@ -23,10 +23,10 @@ namespace Models
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
         public string Joindate { get => joindate; set => joindate = value; }
-        public string ProfilePicture { get => profilePicture; set => profilePicture = value; }
         public string Bio { get => bio; set => bio = value; }
-        public int Age { get => age; set => age = value; }
         public string Gender { get => gender; set => gender = value; }
+        public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
+        public string Birthdate { get => birthdate; set => birthdate = value; }
 
         // Abstract method that each user type must implement
         public abstract string GetUserType();

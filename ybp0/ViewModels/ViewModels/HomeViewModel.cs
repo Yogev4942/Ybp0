@@ -32,7 +32,7 @@ namespace ViewModels.ViewModels
 
         private string GenerateWelcomeMessage()
         {
-            string role = _activeUser.IsTrainer ? "Trainer" : "Trainee";
+            string role = _activeUser is Trainer ? "Trainer" : "Trainee";
 
             var messages = _activeUser.IsTrainer
                 ? new List<string>

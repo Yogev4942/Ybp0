@@ -30,24 +30,101 @@ namespace ViewModels.Services
         }
         public User GetUserByUsernameAndPassword(string username, string password)
         {
-            var dt = _database.ExecuteQuery(
+            // Get user from UserTbl
+            var userDt = _database.ExecuteQuery(
                 "SELECT * FROM UserTbl WHERE Username = ? AND Password = ?",
                 username, password
             );
 
-            if (dt.Rows.Count == 0)
+            if (userDt.Rows.Count == 0)
                 return null;
 
-            var row = dt.Rows[0];
-            return new User
+            var userRow = userDt.Rows[0];
+            int userId = Convert.ToInt32(userRow["Id"]);
+            bool isTrainer = userRow["IsTrainer"] != DBNull.Value && Convert.ToBoolean(userRow["IsTrainer"]);
+
+            User user;
+
+            if (isTrainer)
             {
-                Id = Convert.ToInt32(row["Id"]),
-                Username = row["Username"].ToString(),
-                Email = row["Email"]?.ToString(),
-                Password = row["Password"].ToString(),
-                Joindate = row["Joindate"]?.ToString(),
-                IsTrainer = row["IsTrainer"] != DBNull.Value && Convert.ToBoolean(row["IsTrainer"])
-            };
+                // Create Trainer object
+                var trainer = new Trainer
+                {
+                    Id = userId,
+                    Username = userRow["Username"].ToString(),
+                    Email = userRow["Email"]?.ToString(),
+                    Password = userRow["Password"].ToString(),
+                    Joindate = userRow["JoinDate"]?.ToString(),
+                    Bio = userRow["Bio"]?.ToString(),
+                    Birthdate = userRow["BirthDate"]?.ToString(),
+                    Gender = userRow["Gender"]?.ToString(),
+                    IsTrainer = true
+                };
+
+                // Get trainer-specific data from TrainersTbl
+                var trainerDt = _database.ExecuteQuery(
+                    "SELECT * FROM TrainersTbl WHERE UserId = ?",
+                    userId
+                );
+
+                if (trainerDt.Rows.Count > 0)
+                {
+                    var trainerRow = trainerDt.Rows[0];
+                    trainer.Specialization = trainerRow["Specialization"]?.ToString();
+                    trainer.HourlyRate = trainerRow["HourlyRate"] != DBNull.Value ?
+                        Convert.ToDouble(trainerRow["HourlyRate"]) : 0;
+                    trainer.MaxTrainees = trainerRow["MaxTrainees"] != DBNull.Value ?
+                        Convert.ToInt32(trainerRow["MaxTrainees"]) : 10;
+                    trainer.TotalTrainees = trainerRow["TotalTrainees"] != DBNull.Value ?
+                        Convert.ToInt32(trainerRow["TotalTrainees"]) : 0;
+                    trainer.Rating = trainerRow["Rating"] != DBNull.Value ?
+                        Convert.ToDouble(trainerRow["Rating"]) : 0;
+                    trainer.TotalRatings = trainerRow["TotalRatings"] != DBNull.Value ?
+                        Convert.ToInt32(trainerRow["TotalRatings"]) : 0;
+                }
+
+                user = trainer;
+            }
+            else
+            {
+                // Create Trainee object
+                var trainee = new Trainee
+                {
+                    Id = userId,
+                    Username = userRow["Username"].ToString(),
+                    Email = userRow["Email"]?.ToString(),
+                    Password = userRow["Password"].ToString(),
+                    Joindate = userRow["JoinDate"]?.ToString(),
+                    Bio = userRow["Bio"]?.ToString(),
+                    Birthdate = userRow["BirthDate"]?.ToString(),
+                    Gender = userRow["Gender"]?.ToString(),
+                    IsTrainer = false
+                };
+
+                // Get trainee-specific data from TraineesTbl
+                var traineeDt = _database.ExecuteQuery(
+                    "SELECT * FROM TraineesTbl WHERE UserId = ?",
+                    userId
+                );
+
+                if (traineeDt.Rows.Count > 0)
+                {
+                    var traineeRow = traineeDt.Rows[0];
+                    trainee.TrainerId = traineeRow["TrainerId"] != DBNull.Value ?
+                        Convert.ToInt32(traineeRow["TrainerId"]) : (int?)null;
+                    trainee.FitnessGoal = traineeRow["FitnessGoal"]?.ToString();
+                    trainee.CurrentWeight = traineeRow["CurrentWeight"] != DBNull.Value ?
+                        Convert.ToDouble(traineeRow["CurrentWeight"]) : 0;
+                    trainee.Height = traineeRow["Height"] != DBNull.Value ?
+                        Convert.ToDouble(traineeRow["Height"]) : 0;
+                    trainee.CurrentWeekPlanId = traineeRow["CurrentWeekPlanId"] != DBNull.Value ?
+                        Convert.ToInt32(traineeRow["CurrentWeekPlanId"]) : 0;
+                }
+
+                user = trainee;
+            }
+
+            return user;
         }
         public bool UserExist(string username, string email)
         {

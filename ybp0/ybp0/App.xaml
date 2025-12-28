@@ -31,5 +31,8 @@
         <DataTemplate DataType="{x:Type vm:FeedViewModel}">
             <views:FeedView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PostViewModel}">
+            <views:PostView />
+        </DataTemplate>
     </Application.Resources>
 </Application>
