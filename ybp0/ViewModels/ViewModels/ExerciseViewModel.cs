@@ -41,8 +41,15 @@ namespace ViewModels.ViewModels
 
         public string SetColor => _setColor;
 
+        // Public property for exercise identification (needed by parent)
+        public int ExerciseId => _exerciseId;
+
+        // Event to request removal from parent DayViewModel
+        public event EventHandler RequestRemove;
+
         public ICommand AddSetCommand { get; }
         public ICommand RemoveSetCommand { get; }
+        public ICommand RemoveExerciseCommand { get; }
 
         public ExerciseViewModel(IDatabaseService dbService, int workoutSessionId, Exercise exercise, string setColor = "#26A69A")
         {
@@ -57,6 +64,7 @@ namespace ViewModels.ViewModels
 
             AddSetCommand = new RelayCommand(param => AddSet());
             RemoveSetCommand = new RelayCommand(param => RemoveSet(param as SetViewModel));
+            RemoveExerciseCommand = new RelayCommand(_ => RequestRemove?.Invoke(this, EventArgs.Empty));
 
             LoadSets();
         }

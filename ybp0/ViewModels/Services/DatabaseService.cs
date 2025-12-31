@@ -415,5 +415,134 @@ namespace ViewModels.Services
             );
         }
 
+        // =========================================
+        // NEW: Exercise Management Methods
+        // =========================================
+
+        public List<Exercise> GetAllExercises()
+        {
+            var dt = _database.ExecuteQuery("SELECT * FROM ExercisesTbl ORDER BY ExerciseName");
+            var exercises = new List<Exercise>();
+
+            foreach (System.Data.DataRow row in dt.Rows)
+            {
+                exercises.Add(new Exercise
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    ExerciseName = row["ExerciseName"].ToString(),
+                    MuscleGroup = row["MuscleGroup"]?.ToString()
+                });
+            }
+            return exercises;
+        }
+
+        public void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId)
+        {
+            // Check if this exercise already exists in session sets
+            var existingDt = _database.ExecuteQuery(
+                "SELECT Id FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                workoutSessionId, exerciseId
+            );
+
+            if (existingDt.Rows.Count == 0)
+            {
+                // Add a default first set with 0 reps and 0 weight
+                _database.ExecuteNonQuery(
+                    "INSERT INTO WorkoutSessionSetsTbl ([WorkoutSessionId], [ExerciseId], [SetNumber], [Reps], [Weight]) VALUES (?, ?, ?, ?, ?)",
+                    workoutSessionId, exerciseId, 1, 0, 0.0
+                );
+            }
+        }
+
+        public void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId)
+        {
+            // Delete all sets for this exercise in this session
+            _database.ExecuteNonQuery(
+                "DELETE FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                workoutSessionId, exerciseId
+            );
+        }
+
+        public int? GetWeekPlanOwnerUserId(int weekPlanId)
+        {
+            // Get the UserId from TraineesTbl where CurrentWeekPlanId matches
+            var dt = _database.ExecuteQuery(
+                "SELECT UserId FROM TraineesTbl WHERE CurrentWeekPlanId = ?",
+                weekPlanId
+            );
+
+            if (dt.Rows.Count > 0)
+            {
+                return Convert.ToInt32(dt.Rows[0]["UserId"]);
+            }
+            return null;
+        }
+
+        public List<Trainee> GetTraineesByTrainerId(int trainerId)
+        {
+            var dt = _database.ExecuteQuery(
+                @"SELECT u.*, t.* 
+                  FROM UserTbl u 
+                  INNER JOIN TraineesTbl t ON u.Id = t.UserId
+                  WHERE t.TrainerId = ?",
+                trainerId
+            );
+
+            var trainees = new List<Trainee>();
+            foreach (System.Data.DataRow row in dt.Rows)
+            {
+                trainees.Add(new Trainee
+                {
+                    Id = Convert.ToInt32(row["UserId"]),
+                    Username = row["Username"]?.ToString(),
+                    Email = row["Email"]?.ToString(),
+                    CurrentWeekPlanId = row["CurrentWeekPlanId"] != DBNull.Value ?
+                        Convert.ToInt32(row["CurrentWeekPlanId"]) : 0
+                });
+            }
+            return trainees;
+        }
+
+        public int? GetUserWeekPlanId(int userId)
+        {
+            var dt = _database.ExecuteQuery(
+                "SELECT Id FROM WeekPlansTbl WHERE UserId = ?",
+                userId
+            );
+
+            if (dt.Rows.Count == 0)
+                return null;
+
+            return Convert.ToInt32(dt.Rows[0]["Id"]);
+        }
+
+        public int CreateEmptyWeekPlan(int userId, string planName)
+        {
+            // Insert new weekplan
+            _database.ExecuteNonQuery(
+                "INSERT INTO WeekPlansTbl (UserId, PlanName) VALUES (?, ?)",
+                userId, planName
+            );
+
+            // Get the newly created weekplan ID
+            var dt = _database.ExecuteQuery(
+                "SELECT TOP 1 Id FROM WeekPlansTbl WHERE UserId = ? ORDER BY Id DESC",
+                userId
+            );
+
+            int weekPlanId = Convert.ToInt32(dt.Rows[0]["Id"]);
+
+            // Create 7 empty days (Sunday = 0, Saturday = 6)
+            for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
+            {
+                _database.ExecuteNonQuery(
+                    "INSERT INTO WeekPlanDaysTbl (WeekplanId, DayOfWeek, WorkoutId, RestDay) VALUES (?, ?, NULL, ?)",
+                    weekPlanId, dayOfWeek, false
+                );
+            }
+
+            return weekPlanId;
+        }
+
     }
 }

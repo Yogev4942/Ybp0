@@ -45,6 +45,19 @@ namespace ViewModels
 
         // Week Plan
         System.Data.DataTable GetWeekPlanDays(int weekPlanId);
+
+        // Exercise Management
+        List<Exercise> GetAllExercises();
+        void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId);
+        void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId);
+
+        // WeekPlan Validation
+        int? GetWeekPlanOwnerUserId(int weekPlanId);
+        List<Trainee> GetTraineesByTrainerId(int trainerId);
+
+        // WeekPlan Management
+        int? GetUserWeekPlanId(int userId);
+        int CreateEmptyWeekPlan(int userId, string planName);
     }
 
 }

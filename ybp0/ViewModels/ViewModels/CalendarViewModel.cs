@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ViewModels.Services;
 
 namespace ViewModels.ViewModels
@@ -23,17 +24,40 @@ namespace ViewModels.ViewModels
             get => _userId;
             set => SetProperty(ref _userId, value);
         }
-
         public int WeekPlanId
         {
             get => _weekPlanId;
             set => SetProperty(ref _weekPlanId, value);
         }
-
         public ObservableCollection<DayViewModel> Days
         {
             get => _days;
             set => SetProperty(ref _days, value);
+        }
+        // Display WeekPlanId as string for UI binding
+        private string _displayWeekPlanId;
+        public string DisplayWeekPlanId
+        {
+            get => _displayWeekPlanId;
+            set
+            {
+                if (SetProperty(ref _displayWeekPlanId, value))
+                {
+                    // Attempt to validate and change weekplan when value changes
+                    if (int.TryParse(value, out int newWeekPlanId) && newWeekPlanId != _weekPlanId)
+                    {
+                        TryChangeWeekPlan(newWeekPlanId);
+                    }
+                }
+            }
+        }
+
+        // Label showing current WeekPlan owner
+        private string _weekPlanOwnerLabel;
+        public string WeekPlanOwnerLabel
+        {
+            get => _weekPlanOwnerLabel;
+            set => SetProperty(ref _weekPlanOwnerLabel, value);
         }
 
         public CalendarViewModel(IDatabaseService dbService,INavigationService navigationService,User user)
@@ -43,74 +67,22 @@ namespace ViewModels.ViewModels
             _currUser = user;
             Days = new ObservableCollection<DayViewModel>();
 
-            // ================================================
-            // TODO: REMOVE THIS SAMPLE DATA WHEN CONNECTING TO DATABASE
-            // Call LoadWeekPlan(userId, weekPlanId) instead
-            LoadSampleData();
-            // ================================================
-        }
-
-        // ================================================
-        // SAMPLE DATA - DELETE THIS METHOD WHEN READY FOR DATABASE
-        // ================================================
-        private void LoadSampleData()
-        {
-            string[] dayNames = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
-            string[] accentColors = { "#FF6B6B", "#26A69A", "#66BB6A", "#42A5F5", "#AB47BC", "#FF9800", "#7E57C2" };
+            // Auto-create or load weekplan
+            int? weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
             
-            // Sample workout names (index 0 = Sunday rest day)
-            string[] workoutNames = { "Rest Day", "Chest & Triceps", "Back & Biceps", "Legs", "Shoulders", "Full Body", "Cardio & Core" };
-            bool[] restDays = { true, false, false, false, false, false, false };
-
-            // Sample exercises per day
-            string[][] sampleExercises = new string[][]
+            if (!weekPlanId.HasValue)
             {
-                new string[] { },  // Sunday - rest
-                new string[] { "Bench Press", "Dumbbell Flyes", "Tricep Dips" },
-                new string[] { "Pull-ups", "Barbell Rows", "Bicep Curls" },
-                new string[] { "Squats", "Leg Press", "Calf Raises" },
-                new string[] { "Overhead Press", "Lateral Raises", "Face Pulls" },
-                new string[] { "Deadlifts", "Push-ups", "Planks" },
-                new string[] { "Running", "Ab Crunches", "Leg Raises" }
-            };
-
-            for (int i = 0; i < 7; i++)
-            {
-                var dayVm = new DayViewModel(_dbService, 1)
-                {
-                    DayName = dayNames[i],
-                    Date = DateTime.Today.AddDays(i - (int)DateTime.Today.DayOfWeek),
-                    WorkoutName = workoutNames[i],
-                    IsRestDay = restDays[i],
-                    AccentColor = accentColors[i]
-                };
-
-                // Add sample exercises
-                if (!restDays[i])
-                {
-                    foreach (var exerciseName in sampleExercises[i])
-                    {
-                        var exerciseVm = new SampleExerciseViewModel(exerciseName, accentColors[i]);
-                        dayVm.Exercises.Add(exerciseVm);
-                    }
-                }
-
-                Days.Add(dayVm);
+                // Create empty weekplan for user
+                weekPlanId = _dbService.CreateEmptyWeekPlan(_currUser.Id, "My Week Plan");
             }
+
+            // Load the weekplan
+            LoadWeekPlan(_currUser.Id, weekPlanId.Value);
+            DisplayWeekPlanId = weekPlanId.Value.ToString();
+            WeekPlanOwnerLabel = "Your Plan";
         }
 
-        // Simple sample exercise class - DELETE WHEN USING REAL DATABASE
-        private class SampleExerciseViewModel : ExerciseViewModel
-        {
-            public SampleExerciseViewModel(string name, string color) 
-                : base(null, 0, new Models.Exercise { Id = 0, ExerciseName = name }, color)
-            {
-                Sets = new ObservableCollection<SetViewModel>();
-            }
-        }
-        // ================================================
-        // END SAMPLE DATA
-        // ================================================
+
 
         public void LoadWeekPlan(int userId, int weekPlanId)
         {
@@ -120,7 +92,7 @@ namespace ViewModels.ViewModels
             Days.Clear();
 
             // Day names in order (Sunday first)
-            string[] dayNames = { "SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT" };
+            string[] dayNames = { "SUNDAY", "MONDAY", "TUESDAY", "WEDNSDAY", "THURSDAY", "FRIDAY", "SATURDAY" };
 
             // Load week plan days from database
             var weekPlanDays = GetWeekPlanDays(weekPlanId);
@@ -183,6 +155,72 @@ namespace ViewModels.ViewModels
             return days;
         }
 
+        /// <summary>
+        /// Validates and changes the weekplan if user has permission
+        /// </summary>
+        private void TryChangeWeekPlan(int newWeekPlanId)
+        {
+            if (!CanUserModifyWeekPlan(newWeekPlanId))
+            {
+                // Reset to current value if not allowed
+                _displayWeekPlanId = _weekPlanId.ToString();
+                OnPropertyChanged(nameof(DisplayWeekPlanId));
+                WeekPlanOwnerLabel = "⚠ Permission denied";
+                return;
+            }
+
+            // Find the owner user Id for this weekplan
+            var ownerUserId = _dbService.GetWeekPlanOwnerUserId(newWeekPlanId);
+            if (!ownerUserId.HasValue)
+            {
+                WeekPlanOwnerLabel = "⚠ Invalid WeekPlan ID";
+                _displayWeekPlanId = _weekPlanId.ToString();
+                OnPropertyChanged(nameof(DisplayWeekPlanId));
+                return;
+            }
+
+            // Load the new weekplan
+            LoadWeekPlan(ownerUserId.Value, newWeekPlanId);
+
+            // Update owner label
+            if (ownerUserId.Value == _currUser.Id)
+            {
+                WeekPlanOwnerLabel = "Your Plan";
+            }
+            else
+            {
+                WeekPlanOwnerLabel = "Trainee's Plan";
+            }
+        }
+
+        /// <summary>
+        /// Checks if the current user can modify the specified weekplan
+        /// </summary>
+        private bool CanUserModifyWeekPlan(int weekPlanId)
+        {
+            // Get owner of this weekplan
+            var ownerUserId = _dbService.GetWeekPlanOwnerUserId(weekPlanId);
+            if (!ownerUserId.HasValue)
+            {
+                return false; // Invalid weekplan
+            }
+
+            // User can modify their own weekplan
+            if (ownerUserId.Value == _currUser.Id)
+            {
+                return true;
+            }
+
+            // Trainers can modify their trainees' weekplans
+            if (_currUser.IsTrainer && _currUser.CanModifyOtherUserWorkouts())
+            {
+                var trainees = _dbService.GetTraineesByTrainerId(_currUser.Id);
+                return trainees.Any(t => t.Id == ownerUserId.Value);
+            }
+
+            return false;
+        }
+
         private class WeekPlanDayData
         {
             public int Id { get; set; }
@@ -193,3 +231,4 @@ namespace ViewModels.ViewModels
         }
     }
 }
+

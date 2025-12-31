@@ -10,6 +10,7 @@ namespace ViewModels.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
+        private User _currUser;
         public BaseViewModel CurrentViewModel
         {
             get => _currentViewModel;
@@ -81,15 +82,15 @@ namespace ViewModels.ViewModels
 
             if (type == typeof(HomeViewModel))
             {
-                // if you passed the logged user object in parameter, pass it to HomeViewModel
+                _currUser = (User)parameter;
                 return new HomeViewModel(Database, Navigation, (User)parameter);
             }
 
             if (type == typeof(CalendarViewModel))
-                return new CalendarViewModel(Database,Navigation, (User)parameter);
+                return new CalendarViewModel(Database,Navigation, _currUser);
 
             if (type == typeof(FeedViewModel))
-                return new FeedViewModel(Database,Navigation,(User)parameter);
+                return new FeedViewModel(Database,Navigation,_currUser);
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

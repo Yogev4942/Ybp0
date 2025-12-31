@@ -35,18 +35,43 @@
                 <DropShadowEffect Color="#00FFCC" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
             </Border.Effect>
             
-            <StackPanel>
-                <TextBlock Text="💪 Weekly Workout Plan" 
-                           FontSize="32" 
-                           FontWeight="Bold" 
-                           Foreground="White" 
-                           HorizontalAlignment="Center"/>
-                <TextBlock Text="Plan your training schedule" 
-                           FontSize="14" 
-                           Foreground="#DDFFFFFF" 
-                           HorizontalAlignment="Center"
-                           Margin="0,5,0,0"/>
-            </StackPanel>
+            <Grid>
+                <StackPanel>
+                    <TextBlock Text="💪 Weekly Workout Plan" 
+                               FontSize="32" 
+                               FontWeight="Bold" 
+                               Foreground="White" 
+                               HorizontalAlignment="Center"/>
+                    <TextBlock Text="Plan your training schedule" 
+                               FontSize="14" 
+                               Foreground="#DDFFFFFF" 
+                               HorizontalAlignment="Center"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+
+                <!-- Week Plan ID Indicator (Top Right) -->
+                <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
+                    <TextBlock Text="WeekPlan ID: " 
+                               Foreground="#AAFFFFFF" 
+                               FontSize="12" 
+                               VerticalAlignment="Center"/>
+                    <TextBox Text="{Binding DisplayWeekPlanId, UpdateSourceTrigger=PropertyChanged}" 
+                             Foreground="White" 
+                             Background="#22FFFFFF"
+                             BorderThickness="0"
+                             Padding="5,2"
+                             FontSize="12"
+                             Width="40"
+                             TextAlignment="Center"
+                             VerticalAlignment="Center"/>
+                    <TextBlock Text="{Binding WeekPlanOwnerLabel}" 
+                               Foreground="#AAFFFFFF" 
+                               FontSize="10" 
+                               Margin="8,0,0,0"
+                               VerticalAlignment="Center"
+                               FontStyle="Italic"/>
+                </StackPanel>
+            </Grid>
         </Border>
 
         <!-- Calendar Grid - Dynamic binding to Days collection -->
@@ -62,80 +87,186 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <!-- Day Card with glassmorphism effect -->
-                    <Border CornerRadius="16" 
-                            Margin="6" 
-                            Padding="12,15"
-                            MinHeight="280">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                <GradientStop Color="#55FFFFFF" Offset="0"/>
-                                <GradientStop Color="#33FFFFFF" Offset="1"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
-                        </Border.Effect>
-                        
-                        <StackPanel>
-                            <!-- Day Name Header -->
-                            <TextBlock Text="{Binding DayName}" 
-                                       FontWeight="Bold" 
-                                       FontSize="13"
-                                       Foreground="#666" 
-                                       HorizontalAlignment="Center"
-                                       Margin="0,0,0,8"/>
+                    <Grid>
+                        <Border CornerRadius="16" 
+                                Margin="6" 
+                                Padding="12,15"
+                                MinHeight="280">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
                             
-                            <!-- Workout Name Badge (for workout days) -->
-                            <Border Background="{Binding AccentColor, Converter={StaticResource StringToColorBrushConverter}}" 
-                                    CornerRadius="8" 
-                                    Padding="8,5"
-                                    Margin="0,0,0,10"
-                                    Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                <TextBlock Text="{Binding WorkoutName}" 
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           Foreground="White" 
+                            <StackPanel>
+                                <!-- Day Name Header -->
+                                <TextBlock Text="{Binding DayName}" 
+                                           FontWeight="Bold" 
+                                           FontSize="13"
+                                           Foreground="#666" 
                                            HorizontalAlignment="Center"
-                                           TextTrimming="CharacterEllipsis"/>
-                            </Border>
+                                           Margin="0,0,0,8"/>
+                                
+                                <!-- Workout Name Badge (for workout days) -->
+                                <Border Background="{Binding AccentColor, Converter={StaticResource StringToColorBrushConverter}}" 
+                                        CornerRadius="8" 
+                                        Padding="8,5"
+                                        Margin="0,0,0,10"
+                                        Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <TextBlock Text="{Binding WorkoutName}" 
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="White" 
+                                               HorizontalAlignment="Center"
+                                               TextTrimming="CharacterEllipsis"/>
+                                </Border>
+                                
+                                <!-- Rest Day Badge -->
+                                <Border Background="#FF6B6B" 
+                                        CornerRadius="8" 
+                                        Padding="8,5"
+                                        Margin="0,0,0,12"
+                                        Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock Text="Rest Day" 
+                                               FontSize="12"
+                                               FontWeight="SemiBold"
+                                               Foreground="White" 
+                                               HorizontalAlignment="Center"/>
+                                </Border>
+                                
+                                <!-- Rest Day Content -->
+                                <TextBlock Text="Recovery &amp; Stretching" 
+                                           FontSize="11"
+                                           Foreground="#888" 
+                                           TextWrapping="Wrap"
+                                           HorizontalAlignment="Center"
+                                           TextAlignment="Center"
+                                           Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                                
+                                <!-- Exercises List with ExerciseView (for workout days) -->
+                                <ScrollViewer MaxHeight="200" 
+                                              VerticalScrollBarVisibility="Auto"
+                                              Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <ItemsControl ItemsSource="{Binding Exercises}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <!-- Embed the compact ExerciseView -->
+                                                    <local:ExerciseView DataContext="{Binding}"/>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+
+                                        <!-- Add Exercise Button (+) -->
+                                        <Button Content="+"
+                                                Command="{Binding AddExerciseCommand}"
+                                                FontSize="18"
+                                                FontWeight="Bold"
+                                                Foreground="#26A69A"
+                                                Background="Transparent"
+                                                BorderThickness="1"
+                                                BorderBrush="#26A69A"
+                                                Margin="0,8,0,0"
+                                                Padding="0,2"
+                                                Cursor="Hand"
+                                                ToolTip="Add an Exercise">
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" 
+                                                            BorderBrush="{TemplateBinding BorderBrush}" 
+                                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                                            CornerRadius="4"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#26A69A"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Exercise Picker Overlay (Appears on top of the card when IsExercisePickerOpen is true) -->
+                        <Border Background="#F9F9F9" 
+                                CornerRadius="12" 
+                                Margin="10,40,10,10"
+                                Padding="15"
+                                Visibility="{Binding IsExercisePickerOpen, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Panel.ZIndex="100">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="15" ShadowDepth="0" Opacity="0.4"/>
+                            </Border.Effect>
                             
-                            <!-- Rest Day Badge -->
-                            <Border Background="#FF6B6B" 
-                                    CornerRadius="8" 
-                                    Padding="8,5"
-                                    Margin="0,0,0,12"
-                                    Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                <TextBlock Text="Rest Day" 
-                                           FontSize="12"
-                                           FontWeight="SemiBold"
-                                           Foreground="White" 
-                                           HorizontalAlignment="Center"/>
-                            </Border>
-                            
-                            <!-- Rest Day Content -->
-                            <TextBlock Text="Recovery &amp; Stretching" 
-                                       FontSize="11"
-                                       Foreground="#888" 
-                                       TextWrapping="Wrap"
-                                       HorizontalAlignment="Center"
-                                       TextAlignment="Center"
-                                       Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                            
-                            <!-- Exercises List with ExerciseView (for workout days) -->
-                            <ScrollViewer MaxHeight="200" 
-                                          VerticalScrollBarVisibility="Auto"
-                                          Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                <ItemsControl ItemsSource="{Binding Exercises}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <!-- Embed the compact ExerciseView -->
-                                            <local:ExerciseView DataContext="{Binding}"/>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                </ItemsControl>
-                            </ScrollViewer>
-                        </StackPanel>
-                    </Border>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Title -->
+                                <TextBlock Text="Choose Exercise" 
+                                           FontWeight="Bold" 
+                                           Foreground="#333" 
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,10"/>
+
+                                <!-- Exercise List -->
+                                <ListBox Grid.Row="1" 
+                                         ItemsSource="{Binding AvailableExercises}"
+                                         SelectedItem="{Binding SelectedExerciseToAdd}"
+                                         DisplayMemberPath="ExerciseName"
+                                         MaxHeight="200"
+                                         Background="Transparent"
+                                         BorderThickness="0">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="5"/>
+                                            <Setter Property="Cursor" Value="Hand"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#E0F2F1"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+
+                                <!-- Close Button -->
+                                <Button Grid.Row="2" 
+                                        Content="Close"
+                                        Command="{Binding CloseExercisePickerCommand}"
+                                        Margin="0,10,0,0"
+                                        Background="#FFEBEE"
+                                        Foreground="#F44336"
+                                        BorderThickness="0"
+                                        Padding="10,5">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}" CornerRadius="4" Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
