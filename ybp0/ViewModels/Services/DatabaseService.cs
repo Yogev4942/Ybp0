@@ -433,7 +433,46 @@ namespace ViewModels.Services
                     MuscleGroup = row["MuscleGroup"]?.ToString()
                 });
             }
+
+            // Auto-seed if empty
+            if (exercises.Count == 0)
+            {
+                SeedExercises();
+                // Recursively call to get the seeded exercises
+                return GetAllExercises();
+            }
+
             return exercises;
+        }
+
+        private void SeedExercises()
+        {
+            var defaultExercises = new List<(string Name, string Muscle)>
+            {
+                ("Bench Press", "Chest"),
+                ("Squat", "Legs"),
+                ("Deadlift", "Back"),
+                ("Overhead Press", "Shoulders"),
+                ("Pull Up", "Back"),
+                ("Dumbbell Row", "Back"),
+                ("Lunges", "Legs"),
+                ("Push Up", "Chest"),
+                ("Bicep Curl", "Arms"),
+                ("Tricep Extension", "Arms"),
+                ("Plank", "Core"),
+                ("Crunches", "Core"),
+                ("Leg Press", "Legs"),
+                ("Lat Pulldown", "Back"),
+                ("Shoulder Fly", "Shoulders")
+            };
+
+            foreach (var ex in defaultExercises)
+            {
+                _database.ExecuteNonQuery(
+                    "INSERT INTO ExercisesTbl (ExerciseName, MuscleGroup) VALUES (?, ?)",
+                    ex.Name, ex.Muscle
+                );
+            }
         }
 
         public void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId)

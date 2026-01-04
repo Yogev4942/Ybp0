@@ -135,6 +135,11 @@ namespace ViewModels.ViewModels
             IsExercisePickerOpen = false;
         }
 
+        public void AddExerciseFromModal(Exercise exercise)
+        {
+            AddExercise(exercise);
+        }
+
         private void AddExercise(Exercise exercise)
         {
             if (_dbService == null || !WorkoutSessionId.HasValue) return;

@@ -19,6 +19,12 @@ namespace ViewModels.ViewModels
         private int _weekPlanId;
         private ObservableCollection<DayViewModel> _days;
 
+        // Modal Properties
+        private bool _isExerciseModalOpen;
+        private DayViewModel _selectedDayForExercise;
+        private ObservableCollection<Exercise> _allExercises;
+        private Exercise _selectedExercise;
+
         public int UserId
         {
             get => _userId;
@@ -34,6 +40,41 @@ namespace ViewModels.ViewModels
             get => _days;
             set => SetProperty(ref _days, value);
         }
+
+        // Modal Public Properties
+        public bool IsExerciseModalOpen
+        {
+            get => _isExerciseModalOpen;
+            set => SetProperty(ref _isExerciseModalOpen, value);
+        }
+
+        public DayViewModel SelectedDayForExercise
+        {
+            get => _selectedDayForExercise;
+            set => SetProperty(ref _selectedDayForExercise, value);
+        }
+
+        public ObservableCollection<Exercise> AllExercises
+        {
+            get => _allExercises;
+            set => SetProperty(ref _allExercises, value);
+        }
+
+        public Exercise SelectedExercise
+        {
+            get => _selectedExercise;
+            set
+            {
+                if (SetProperty(ref _selectedExercise, value) && value != null)
+                {
+                    AddSelectedExerciseToDay();
+                }
+            }
+        }
+
+        // Commands
+        public ICommand OpenExerciseModalCommand { get; }
+        public ICommand CloseExerciseModalCommand { get; }
         // Display WeekPlanId as string for UI binding
         private string _displayWeekPlanId;
         public string DisplayWeekPlanId
@@ -66,6 +107,10 @@ namespace ViewModels.ViewModels
             _navService = navigationService;
             _currUser = user;
             Days = new ObservableCollection<DayViewModel>();
+
+            // Initialize Modal Commands
+            OpenExerciseModalCommand = new RelayCommand(param => OpenExerciseModal(param as DayViewModel));
+            CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
 
             // Auto-create or load weekplan
             int? weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
@@ -219,6 +264,35 @@ namespace ViewModels.ViewModels
             }
 
             return false;
+        }
+
+        private void OpenExerciseModal(DayViewModel day)
+        {
+            if (day == null) return;
+            
+            // Load exercises every time we open to ensure we have fresh data
+            AllExercises = new ObservableCollection<Exercise>(_dbService.GetAllExercises());
+            
+            SelectedDayForExercise = day;
+            SelectedExercise = null; // Reset selection
+            IsExerciseModalOpen = true;
+        }
+
+        private void CloseExerciseModal()
+        {
+            IsExerciseModalOpen = false;
+            SelectedDayForExercise = null;
+        }
+
+        private void AddSelectedExerciseToDay()
+        {
+            if (SelectedExercise == null || SelectedDayForExercise == null) return;
+
+            // Add the exercise to the selected day
+            SelectedDayForExercise.AddExerciseFromModal(SelectedExercise);
+            
+            // Close the modal
+            CloseExerciseModal();
         }
 
         private class WeekPlanDayData
