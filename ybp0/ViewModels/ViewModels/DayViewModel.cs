@@ -142,7 +142,26 @@ namespace ViewModels.ViewModels
 
         private void AddExercise(Exercise exercise)
         {
-            if (_dbService == null || !WorkoutSessionId.HasValue) return;
+            if (_dbService == null) return;
+
+            // Ensure session exists
+            if (!WorkoutSessionId.HasValue)
+            {
+                var session = _dbService.GetOrCreateWorkoutSession(_userId, WeekPlanDayId, Date);
+                if (session != null)
+                {
+                    WorkoutSessionId = session.Id;
+                    IsRestDay = false; // It's no longer a rest day if we add an exercise
+                    if (WorkoutName == "Rest Day" || WorkoutName == "No Workout")
+                    {
+                        WorkoutName = "Custom Workout";
+                    }
+                }
+                else
+                {
+                    return; // Failed to create session
+                }
+            }
 
             // Add to database
             _dbService.AddExerciseToWorkoutSession(WorkoutSessionId.Value, exercise.Id);

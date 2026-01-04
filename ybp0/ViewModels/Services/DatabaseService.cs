@@ -17,6 +17,176 @@ namespace ViewModels.Services
         public DatabaseService()
         {
             _database = new Database();
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            // Ensure tables exist (Access Schema)
+            
+            // 1. UserTbl
+            if (!_database.TableExists("UserTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE UserTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        Username TEXT(255) NOT NULL UNIQUE,
+                        Password TEXT(255) NOT NULL,
+                        Email TEXT(255) NOT NULL UNIQUE,
+                        JoinDate DATETIME DEFAULT Now(),
+                        IsTrainer BIT DEFAULT 0,
+                        ProfilePicture TEXT(255),
+                        Bio MEMO,
+                        Age INTEGER,
+                        Gender TEXT(50)
+                    )");
+            }
+
+            // 2. ExercisesTbl
+            if (!_database.TableExists("ExercisesTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE ExercisesTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        ExerciseName TEXT(255) NOT NULL,
+                        MuscleGroup TEXT(255)
+                    )");
+                // Seed will happen on first get
+            }
+
+            // 3. WorkoutsTbl
+            if (!_database.TableExists("WorkoutsTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WorkoutsTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        UserId INTEGER NOT NULL,
+                        WorkoutName TEXT(255) NOT NULL,
+                        CreatedByTrainerId INTEGER
+                    )");
+            }
+
+            // 4. WorkoutSessionTbl
+            if (!_database.TableExists("WorkoutSessionTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WorkoutSessionTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        UserId INTEGER NOT NULL,
+                        WorkoutId INTEGER NOT NULL,
+                        WeekPlanDayId INTEGER,
+                        SessionDate DATETIME NOT NULL,
+                        Completed BIT DEFAULT 0
+                    )");
+            }
+            else
+            {
+                // Check if 'Completed' column exists (Migration for existing DBs)
+                if (!_database.ColumnExists("WorkoutSessionTbl", "Completed"))
+                {
+                    _database.ExecuteNonQuery("ALTER TABLE WorkoutSessionTbl ADD COLUMN Completed BIT DEFAULT 0");
+                }
+            }
+
+            // 5. WorkoutSessionSetsTbl
+            if (!_database.TableExists("WorkoutSessionSetsTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WorkoutSessionSetsTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        WorkoutSessionId INTEGER NOT NULL,
+                        ExerciseId INTEGER NOT NULL,
+                        SetNumber INTEGER NOT NULL,
+                        Reps INTEGER DEFAULT 0,
+                        Weight DOUBLE DEFAULT 0
+                    )");
+            }
+
+            // 6. WeekPlansTbl
+             if (!_database.TableExists("WeekPlansTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WeekPlansTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        UserId INTEGER NOT NULL,
+                        PlanName TEXT(255) NOT NULL
+                    )");
+            }
+
+            // 7. WeekPlanDaysTbl
+            if (!_database.TableExists("WeekPlanDaysTbl"))
+            {
+                 _database.ExecuteNonQuery(@"
+                    CREATE TABLE WeekPlanDaysTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        WeekPlanId INTEGER NOT NULL,
+                        DayOfWeek INTEGER NOT NULL,
+                        WorkoutId INTEGER,
+                        RestDay BIT DEFAULT 0
+                    )");
+            }
+             
+             // 8. WorkoutExercisesTbl (Template - might be needed)
+             if (!_database.TableExists("WorkoutExercisesTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WorkoutExercisesTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        WorkoutId INTEGER NOT NULL,
+                        ExerciseId INTEGER NOT NULL
+                    )");
+            }
+             
+             // 9. WorkoutSetsTbl (Template)
+             if (!_database.TableExists("WorkoutSetsTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE WorkoutSetsTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        WorkoutExerciseId INTEGER NOT NULL,
+                        SetNumber INTEGER NOT NULL,
+                        Reps INTEGER DEFAULT 10,
+                        Weight DOUBLE DEFAULT 0
+                    )");
+            }
+
+             // 10. TraineesTbl
+             if (!_database.TableExists("TraineesTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE TraineesTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        UserId INTEGER NOT NULL UNIQUE,
+                        TrainerId INTEGER,
+                        FitnessGoal MEMO,
+                        CurrentWeight DOUBLE DEFAULT 0,
+                        Height DOUBLE DEFAULT 0,
+                        ActivityLevel TEXT(255),
+                        CurrentWeekPlanId INTEGER,
+                        IsActive BIT DEFAULT 1,
+                        Notes MEMO
+                    )");
+            }
+             
+             // 11. TrainersTbl
+             if (!_database.TableExists("TrainersTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE TrainersTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        UserId INTEGER NOT NULL UNIQUE,
+                        Specialization TEXT(255),
+                        YearsOfExperience INTEGER DEFAULT 0,
+                        Certifications MEMO,
+                        HourlyRate DOUBLE DEFAULT 0,
+                        MaxTrainees INTEGER DEFAULT 10,
+                        WorkingHours MEMO,
+                        Expertise MEMO,
+                        TotalTrainees INTEGER DEFAULT 0,
+                        Rating DOUBLE DEFAULT 0,
+                        TotalRatings INTEGER DEFAULT 0
+                    )");
+            }
         }
 
         public bool ValidateLogin(string username, string password)
@@ -208,7 +378,7 @@ namespace ViewModels.Services
         {
             // Try to find existing session
             var dt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionsTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
+                "SELECT * FROM WorkoutSessionTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
                 userId, weekPlanDayId, date.Date
             );
 
@@ -229,18 +399,35 @@ namespace ViewModels.Services
             // Get WorkoutId from WeekPlanDay
             var dayDt = _database.ExecuteQuery("SELECT WorkoutId FROM WeekPlanDaysTbl WHERE Id = ?", weekPlanDayId);
             if (dayDt.Rows.Count == 0) return null;
-            
-            int workoutId = Convert.ToInt32(dayDt.Rows[0]["WorkoutId"]);
+
+            int workoutId;
+            if (dayDt.Rows[0]["WorkoutId"] != DBNull.Value)
+            {
+                workoutId = Convert.ToInt32(dayDt.Rows[0]["WorkoutId"]);
+            }
+            else
+            {
+                // No workout assigned to this day (Rest day or empty)
+                // Create a new ad-hoc workout for this session
+                _database.ExecuteNonQuery(
+                    "INSERT INTO WorkoutsTbl (UserId, WorkoutName) VALUES (?, ?)",
+                    userId, "Ad-hoc Workout"
+                );
+
+                // Get the ID of the new workout
+                var wDt = _database.ExecuteQuery("SELECT TOP 1 Id FROM WorkoutsTbl WHERE UserId = ? ORDER BY Id DESC", userId);
+                workoutId = Convert.ToInt32(wDt.Rows[0]["Id"]);
+            }
 
             // Create new session
             _database.ExecuteNonQuery(
-                "INSERT INTO WorkoutSessionsTbl ([UserId], [WorkoutId], [WeekPlanDayId], [SessionDate], [Completed]) VALUES (?, ?, ?, ?, ?)",
+                "INSERT INTO WorkoutSessionTbl ([UserId], [WorkoutId], [WeekPlanDayId], [SessionDate], [Completed]) VALUES (?, ?, ?, ?, ?)",
                 userId, workoutId, weekPlanDayId, date.Date, false
             );
 
             // Get the created session
             var newDt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionsTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
+                "SELECT * FROM WorkoutSessionTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
                 userId, weekPlanDayId, date.Date
             );
 
@@ -264,7 +451,7 @@ namespace ViewModels.Services
         public void CompleteWorkoutSession(int sessionId)
         {
             _database.ExecuteNonQuery(
-                "UPDATE WorkoutSessionsTbl SET Completed = ? WHERE Id = ?",
+                "UPDATE WorkoutSessionTbl SET Completed = ? WHERE Id = ?",
                 true, sessionId
             );
         }
@@ -272,7 +459,7 @@ namespace ViewModels.Services
         public List<Exercise> GetSessionExercises(int workoutSessionId)
         {
             // Get workout from session
-            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionsTbl WHERE Id = ?", workoutSessionId);
+            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionTbl WHERE Id = ?", workoutSessionId);
             if (sessionDt.Rows.Count == 0) return new List<Exercise>();
 
             int workoutId = Convert.ToInt32(sessionDt.Rows[0]["WorkoutId"]);
@@ -326,7 +513,7 @@ namespace ViewModels.Services
             }
 
             // No session sets found - copy from template
-            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionsTbl WHERE Id = ?", workoutSessionId);
+            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionTbl WHERE Id = ?", workoutSessionId);
             if (sessionDt.Rows.Count == 0) return new List<SessionSet>();
             
             int workoutId = Convert.ToInt32(sessionDt.Rows[0]["WorkoutId"]);

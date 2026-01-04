@@ -113,8 +113,22 @@ namespace ViewModels.ViewModels
             CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
 
             // Auto-create or load weekplan
-            int? weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
+            // Auto-create or load weekplan
+            int? weekPlanId = null;
+
+            // 1. Priority: Assigned Plan (for Trainee)
+            if (_currUser is Trainee trainee && trainee.CurrentWeekPlanId > 0)
+            {
+                weekPlanId = trainee.CurrentWeekPlanId;
+            }
+
+            // 2. Fallback: Any existing plan owned by user
+            if (!weekPlanId.HasValue)
+            {
+                weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
+            }
             
+            // 3. Final Fallback: Create new plan
             if (!weekPlanId.HasValue)
             {
                 // Create empty weekplan for user
