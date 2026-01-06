@@ -74,24 +74,21 @@
             </Grid>
         </Border>
 
-        <!-- Calendar Grid - Dynamic binding to Days collection -->
-        <ItemsControl Grid.Row="1" 
-                      ItemsSource="{Binding Days}" 
-                      Margin="20,10,20,20">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Columns="7"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <!-- Day Card with glassmorphism effect -->
-                    <Grid>
+        <!-- Calendar Grid with Outer Scroll (7 columns, NO inner scrollers) -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="20,10,20,20">
+            <ItemsControl ItemsSource="{Binding Days}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="7"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <!-- Day Card with glassmorphism effect -->
                         <Border CornerRadius="16" 
                                 Margin="6" 
-                                Padding="12,15"
-                                MinHeight="280">
+                                Padding="12,15">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                     <GradientStop Color="#55FFFFFF" Offset="0"/>
@@ -147,66 +144,61 @@
                                            TextAlignment="Center"
                                            Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}"/>
                                 
-                                <!-- Exercises List with ExerciseView (for workout days) -->
-                                <ScrollViewer MaxHeight="200" 
-                                              VerticalScrollBarVisibility="Auto"
-                                              Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
-                                    <StackPanel>
-                                        <ItemsControl ItemsSource="{Binding Exercises}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <!-- Embed the compact ExerciseView -->
-                                                    <local:ExerciseView DataContext="{Binding}"/>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
+                                <!-- Exercises List - NO SCROLLER, just StackPanel -->
+                                <StackPanel Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                    <ItemsControl ItemsSource="{Binding Exercises}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <!-- Embed the compact ExerciseView -->
+                                                <local:ExerciseView DataContext="{Binding}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
 
-                                        <!-- Add Exercise Button (+) -->
-                                        <Button Content="+"
-                                                Command="{Binding DataContext.OpenExerciseModalCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                                CommandParameter="{Binding}"
-                                                FontSize="18"
-                                                FontWeight="Bold"
-                                                Foreground="#26A69A"
-                                                Background="Transparent"
-                                                BorderThickness="1"
-                                                BorderBrush="#26A69A"
-                                                Margin="0,8,0,0"
-                                                Padding="0,2"
-                                                Cursor="Hand"
-                                                ToolTip="Add an Exercise">
-                                            <Button.Template>
-                                                <ControlTemplate TargetType="Button">
-                                                    <Border Background="{TemplateBinding Background}" 
-                                                            BorderBrush="{TemplateBinding BorderBrush}" 
-                                                            BorderThickness="{TemplateBinding BorderThickness}"
-                                                            CornerRadius="4"
-                                                            Padding="{TemplateBinding Padding}">
-                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                    </Border>
-                                                </ControlTemplate>
-                                            </Button.Template>
-                                            <Button.Style>
-                                                <Style TargetType="Button">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter Property="Background" Value="#26A69A"/>
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </StackPanel>
-                                </ScrollViewer>
+                                    <!-- Add Exercise Button (+) -->
+                                    <Button Content="+"
+                                            Command="{Binding DataContext.OpenExerciseModalCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            FontSize="18"
+                                            FontWeight="Bold"
+                                            Foreground="#26A69A"
+                                            Background="Transparent"
+                                            BorderThickness="1"
+                                            BorderBrush="#26A69A"
+                                            Margin="0,8,0,0"
+                                            Padding="0,2"
+                                            Cursor="Hand"
+                                            ToolTip="Add an Exercise">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}" 
+                                                        BorderBrush="{TemplateBinding BorderBrush}" 
+                                                        BorderThickness="{TemplateBinding BorderThickness}"
+                                                        CornerRadius="4"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#26A69A"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </StackPanel>
                             </StackPanel>
                         </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
 
-
-                    </Grid>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
 
         <!-- Global Exercise Modal Overlay -->
         <Grid Grid.RowSpan="2" 

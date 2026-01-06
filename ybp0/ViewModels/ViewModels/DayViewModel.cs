@@ -193,12 +193,7 @@ namespace ViewModels.ViewModels
 
         public void LoadWorkoutForDay()
         {
-            if (IsRestDay)
-            {
-                Exercises.Clear();
-                return;
-            }
-
+        
             // Get or create workout session
             var session = _dbService.GetOrCreateWorkoutSession(_userId, WeekPlanDayId, Date);
             if (session == null)
@@ -225,6 +220,7 @@ namespace ViewModels.ViewModels
                 exerciseVm.RequestRemove += OnExerciseRequestRemove;
                 Exercises.Add(exerciseVm);
                 colorIndex++;
+                colorIndex = colorIndex % colors.Length;
             }
         }
     }

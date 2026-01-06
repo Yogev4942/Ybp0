@@ -173,14 +173,11 @@ namespace ViewModels.ViewModels
                 if (planDay != null)
                 {
                     dayVm.WeekPlanDayId = planDay.Id;
-                    dayVm.IsRestDay = planDay.IsRestDay;
+                    dayVm.IsRestDay = planDay.IsRestDay; // Use actual value from database
                     dayVm.WorkoutName = planDay.WorkoutName;
 
-                    if (!planDay.IsRestDay && planDay.WorkoutId.HasValue)
-                    {
-                        // Load workout for this day
-                        dayVm.LoadWorkoutForDay();
-                    }
+                    // Always try to load exercises (works for both templates and ad-hoc)
+                    dayVm.LoadWorkoutForDay();
                 }
                 else
                 {

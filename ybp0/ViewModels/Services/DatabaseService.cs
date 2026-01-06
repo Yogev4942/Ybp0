@@ -458,18 +458,14 @@ namespace ViewModels.Services
 
         public List<Exercise> GetSessionExercises(int workoutSessionId)
         {
-            // Get workout from session
-            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionTbl WHERE Id = ?", workoutSessionId);
-            if (sessionDt.Rows.Count == 0) return new List<Exercise>();
-
-            int workoutId = Convert.ToInt32(sessionDt.Rows[0]["WorkoutId"]);
-
-            // Get exercises for this workout
+            // Query ACTUAL session sets (where ad-hoc exercises are stored)
+            // NOT workout templates
             var dt = _database.ExecuteQuery(
-                @"SELECT e.* FROM ExercisesTbl e 
-                  INNER JOIN WorkoutExercisesTbl we ON e.Id = we.ExerciseId 
-                  WHERE we.WorkoutId = ?",
-                workoutId
+                @"SELECT DISTINCT e.Id, e.ExerciseName, e.MuscleGroup 
+                  FROM ExercisesTbl e 
+                  INNER JOIN WorkoutSessionSetsTbl wss ON e.Id = wss.ExerciseId 
+                  WHERE wss.WorkoutSessionId = ?",
+                workoutSessionId
             );
 
             var exercises = new List<Exercise>();
