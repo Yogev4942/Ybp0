@@ -1,5 +1,6 @@
 ﻿using Models;
 using System;
+using System.CodeDom;
 using System.Net.NetworkInformation;
 using System.Windows.Input;
 using ViewModels.Services;
@@ -9,6 +10,7 @@ namespace ViewModels.ViewModels
     public class MainViewModel : BaseViewModel
     {
         private BaseViewModel _currentViewModel;
+        private User _currUser;
         public BaseViewModel CurrentViewModel
         {
             get => _currentViewModel;
@@ -47,12 +49,22 @@ namespace ViewModels.ViewModels
                 }
             );
 
-            // Generic logic: Command Parameter must be a Type
+            // Generic logic: Command Parameter can be Type or string
             NavigateCommand = new RelayCommand(param => 
             {
                 if (param is Type type)
                 {
                     Navigation.NavigateTo(type);
+                }
+                else if (param is string name)
+                {
+                    // Handle string-based navigation for views that can't use x:Type
+                    switch (name)
+                    {
+                        case "Feed":
+                            Navigation.NavigateTo<FeedViewModel>();
+                            break;
+                    }
                 }
             });
 
@@ -70,13 +82,15 @@ namespace ViewModels.ViewModels
 
             if (type == typeof(HomeViewModel))
             {
-                // if you passed the logged user object in parameter, pass it to HomeViewModel
+                _currUser = (User)parameter;
                 return new HomeViewModel(Database, Navigation, (User)parameter);
             }
 
             if (type == typeof(CalendarViewModel))
-                return new CalendarViewModel();
+                return new CalendarViewModel(Database,Navigation, _currUser);
 
+            if (type == typeof(FeedViewModel))
+                return new FeedViewModel(Database,Navigation,_currUser);
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

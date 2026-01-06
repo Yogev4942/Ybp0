@@ -4,9 +4,12 @@
              xmlns:local="clr-namespace:ybp0"
              xmlns:vm="clr-namespace:ViewModels.ViewModels;assembly=ViewModels"
              xmlns:views="clr-namespace:ybp0.Views"
+             xmlns:converters="clr-namespace:ybp0.Converters"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
+        <converters:StringToColorBrushConverter x:Key="StringToColorBrushConverter"/>
         <DataTemplate DataType="{x:Type vm:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>
@@ -18,6 +21,18 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
             <views:RegisterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:WorkoutViewModel}">
+            <views:WorkoutView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ExerciseViewModel}">
+            <views:ExerciseView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:FeedViewModel}">
+            <views:FeedView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PostViewModel}">
+            <views:PostView />
         </DataTemplate>
     </Application.Resources>
 </Application>

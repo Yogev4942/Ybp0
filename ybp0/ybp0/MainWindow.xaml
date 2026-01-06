@@ -139,13 +139,11 @@
                             CommandParameter="{x:Type vm:CalendarViewModel}"
                             Style="{StaticResource NavButtonStyle}"/>
                     
-                    <!-- Feed Button - Placeholder (FeedViewModel doesn't exist yet) -->
-                    <!-- Uncomment when FeedViewModel is created
+                    <!-- Feed Button -->
                     <Button Content="📰 Feed" 
                             Command="{Binding NavigateCommand}" 
-                            CommandParameter="{x:Type vm:FeedViewModel}"
+                            CommandParameter="Feed"
                             Style="{StaticResource NavButtonStyle}"/>
-                    -->
                 </StackPanel>
             </Border>
 

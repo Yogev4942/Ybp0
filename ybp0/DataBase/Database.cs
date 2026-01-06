@@ -90,5 +90,25 @@ namespace DataBase
             }
         }
 
+        public bool TableExists(string tableName)
+        {
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                var schema = conn.GetSchema("Tables", new[] { null, null, tableName, "TABLE" });
+                return schema.Rows.Count > 0;
+            }
+        }
+
+        public bool ColumnExists(string tableName, string columnName)
+        {
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                var schema = conn.GetSchema("Columns", new[] { null, null, tableName, columnName });
+                return schema.Rows.Count > 0;
+            }
+        }
+
     }
 }

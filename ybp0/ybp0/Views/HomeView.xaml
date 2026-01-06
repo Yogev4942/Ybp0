@@ -6,12 +6,12 @@
              mc:Ignorable="d"
              d:DesignWidth="900" d:DesignHeight="550">
 
-    <!-- Simple, clean home view matching navigation aesthetic -->
+    <!-- Elegant home view with Frutiger Aero style -->
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#E3F2FD" Offset="0.0" />
-                <GradientStop Color="#F1F8E9" Offset="1.0" />
+                <GradientStop Color="#E8F5E9" Offset="0.0" />
+                <GradientStop Color="#E0F2F1" Offset="1.0" />
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -20,23 +20,45 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Welcome Section -->
-        <StackPanel Grid.Row="0" Margin="40,30,40,20">
-            <TextBlock Text="{Binding WelcomeMessage}"
-                       FontSize="32"
-                       FontWeight="Bold"
-                       Foreground="#00695C"/>
-        </StackPanel>
+        <!-- Welcome Header Banner -->
+        <Border Grid.Row="0" 
+                Margin="30,25,30,15"
+                Padding="35,25"
+                CornerRadius="20">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#26A69A" Offset="0"/>
+                    <GradientStop Color="#00897B" Offset="0.5"/>
+                    <GradientStop Color="#00695C" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#00FFCC" BlurRadius="15" ShadowDepth="0" Opacity="0.35"/>
+            </Border.Effect>
 
-        <!-- Main Content Card -->
+            <StackPanel>
+                <TextBlock Text="{Binding WelcomeMessage}"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           Foreground="White"
+                           HorizontalAlignment="Left"/>
+                <TextBlock Text="Ready to crush your goals today?"
+                           FontSize="14"
+                           Foreground="#CCFFFFFF"
+                           HorizontalAlignment="Left"
+                           Margin="0,8,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content Card (for future data) -->
         <Border Grid.Row="1"
                 MaxWidth="700"
-                MaxHeight="350"
-                Margin="40"
+                MaxHeight="320"
+                Margin="30,10,30,30"
                 HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                CornerRadius="24"
-                Padding="45">
+                VerticalAlignment="Top"
+                CornerRadius="20"
+                Padding="40">
             <Border.Background>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Color="#55FFFFFF" Offset="0.0"/>
@@ -45,37 +67,38 @@
             </Border.Background>
             <Border.Effect>
                 <DropShadowEffect Color="#00FFCC"
-                                 BlurRadius="20"
+                                 BlurRadius="18"
                                  ShadowDepth="0"
-                                 Opacity="0.25"/>
+                                 Opacity="0.2"/>
             </Border.Effect>
 
             <Grid>
-                <!-- Content -->
+                <!-- Content placeholder -->
                 <StackPanel HorizontalAlignment="Center"
                            VerticalAlignment="Center">
-                    <TextBlock Text="Your Daily Focus"
-                               FontSize="24"
+                    <TextBlock Text="📊 Your Daily Focus"
+                               FontSize="22"
                                FontWeight="SemiBold"
-                               Foreground="#00897B"
+                               Foreground="#00695C"
                                HorizontalAlignment="Center"
-                               Margin="0,0,0,15"/>
+                               Margin="0,0,0,12"/>
 
-                    <TextBlock Text="Start your journey here"
-                               FontSize="16"
+                    <TextBlock Text="Track your progress and stay motivated"
+                               FontSize="14"
                                Foreground="#26A69A"
                                HorizontalAlignment="Center"
-                               Opacity="0.8"/>
+                               Opacity="0.85"/>
                 </StackPanel>
 
-                <!-- Decorative glow -->
-                <Ellipse Width="400" Height="400"
-                        Fill="#1500FFCC"
+                <!-- Subtle decorative glow -->
+                <Ellipse Width="350" Height="350"
+                        Fill="#1000FFCC"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         IsHitTestVisible="False"
-                        Opacity="0.15"/>
+                        Opacity="0.12"/>
             </Grid>
         </Border>
     </Grid>
 </UserControl>
+

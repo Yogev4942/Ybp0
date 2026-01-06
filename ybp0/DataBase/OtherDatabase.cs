@@ -1,10 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase
 {
@@ -13,129 +9,237 @@ namespace DataBase
         private readonly string dbPath;
         private readonly string connectionString;
 
-
         public OtherDatabase(string databaseFile)
         {
-            // Ensure the directory exists
             var folder = Path.GetDirectoryName(databaseFile);
             if (!string.IsNullOrEmpty(folder) && !Directory.Exists(folder))
                 Directory.CreateDirectory(folder);
 
-            // Create connection string
             connectionString = $"Data Source={databaseFile}";
-
-            // Initialize the database (create tables if missing)
             InitializeDatabase();
         }
+
         public OtherDatabase()
         {
             dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "fitness_app.db");
             connectionString = $"Data Source={dbPath}";
 
-            // Just open connection to create DB if missing
             using (var connection = new SqliteConnection(connectionString))
             {
                 connection.Open();
             }
 
-            // Initialize tables
             InitializeDatabase();
         }
 
         private void InitializeDatabase()
         {
-            var connection = new SqliteConnection(connectionString);
-            connection.Open();
-
-            // Enable foreign keys
-            using (var pragma = connection.CreateCommand())
+            using (var connection = new SqliteConnection(connectionString))
             {
-                pragma.CommandText = "PRAGMA foreign_keys = ON;";
-                pragma.ExecuteNonQuery();
-            }
+                connection.Open();
 
-            string[] tableCommands =
-            {
-                @"
-                CREATE TABLE IF NOT EXISTS Users (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Username TEXT NOT NULL UNIQUE,
-                    Password TEXT NOT NULL,
-                    Email TEXT NOT NULL UNIQUE,
-                    Role TEXT NOT NULL CHECK(Role IN ('Trainer', 'Member'))
-                );",
+                using (var pragma = connection.CreateCommand())
+                {
+                    pragma.CommandText = "PRAGMA foreign_keys = ON;";
+                    pragma.ExecuteNonQuery();
+                }
 
-                @"
-                CREATE TABLE IF NOT EXISTS Exercises (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    Name TEXT NOT NULL,
-                    MuscleGroup TEXT NOT NULL
-                );",
+                string[] tableCommands =
+                {
+                    // Base User Table
+                    @"CREATE TABLE IF NOT EXISTS UserTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        Username TEXT NOT NULL UNIQUE,
+                        Password TEXT NOT NULL,
+                        Email TEXT NOT NULL UNIQUE,
+                        JoinDate DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        IsTrainer INTEGER DEFAULT 0,
+                        ProfilePicture TEXT,
+                        Bio TEXT,
+                        Age INTEGER,
+                        Gender TEXT
+                    );",
 
-                @"
-                CREATE TABLE IF NOT EXISTS Workouts (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    UserId INTEGER NOT NULL,
-                    Name TEXT NOT NULL,
-                    Description TEXT,
-                    IsPublic INTEGER DEFAULT 0,
-                    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
-                );",
+                    // Trainer-Specific Data
+                    @"CREATE TABLE IF NOT EXISTS TrainersTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        UserId INTEGER NOT NULL UNIQUE,
+                        Specialization TEXT,
+                        YearsOfExperience INTEGER DEFAULT 0,
+                        Certifications TEXT,
+                        HourlyRate REAL DEFAULT 0,
+                        MaxTrainees INTEGER DEFAULT 10,
+                        WorkingHours TEXT,
+                        Expertise TEXT,
+                        TotalTrainees INTEGER DEFAULT 0,
+                        Rating REAL DEFAULT 0,
+                        TotalRatings INTEGER DEFAULT 0,
+                        FOREIGN KEY (UserId) REFERENCES UserTbl(Id) ON DELETE CASCADE
+                    );",
 
-                @"
-                CREATE TABLE IF NOT EXISTS WorkoutExercises (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    WorkoutId INTEGER NOT NULL,
-                    ExerciseId INTEGER NOT NULL,
-                    Sets INTEGER DEFAULT 3,
-                    Reps INTEGER DEFAULT 10,
-                    Weight REAL DEFAULT 0,
-                    FOREIGN KEY (WorkoutId) REFERENCES Workouts(Id) ON DELETE CASCADE,
-                    FOREIGN KEY (ExerciseId) REFERENCES Exercises(Id) ON DELETE CASCADE
-                );",
+                    // Trainee-Specific Data
+                    @"CREATE TABLE IF NOT EXISTS TraineesTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        UserId INTEGER NOT NULL UNIQUE,
+                        TrainerId INTEGER,
+                        FitnessGoal TEXT,
+                        CurrentWeight REAL DEFAULT 0,
+                        Height REAL DEFAULT 0,
+                        ActivityLevel TEXT,
+                        CurrentWeekPlanId INTEGER,
+                        IsActive INTEGER DEFAULT 1,
+                        Notes TEXT,
+                        FOREIGN KEY (UserId) REFERENCES UserTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (TrainerId) REFERENCES TrainersTbl(Id) ON DELETE SET NULL,
+                        FOREIGN KEY (CurrentWeekPlanId) REFERENCES WeekPlansTbl(Id) ON DELETE SET NULL
+                    );",
 
-                @"
-                CREATE TABLE IF NOT EXISTS WeeklyPlans (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    UserId INTEGER NOT NULL,
-                    Name TEXT NOT NULL,
-                    CreatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    FOREIGN KEY (UserId) REFERENCES Users(Id) ON DELETE CASCADE
-                );",
+                    // Exercises
+                    @"CREATE TABLE IF NOT EXISTS ExercisesTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        ExerciseName TEXT NOT NULL,
+                        MuscleGroup TEXT
+                    );",
 
-                @"
-                CREATE TABLE IF NOT EXISTS WeeklyPlanDays (
-                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    WeeklyPlanId INTEGER NOT NULL,
-                    DayOfWeek INTEGER NOT NULL CHECK(DayOfWeek BETWEEN 0 AND 6),
-                    WorkoutId INTEGER,
-                    FOREIGN KEY (WeeklyPlanId) REFERENCES WeeklyPlans(Id) ON DELETE CASCADE,
-                    FOREIGN KEY (WorkoutId) REFERENCES Workouts(Id) ON DELETE SET NULL
-                );"
-            };
+                    // Workouts
+                    @"CREATE TABLE IF NOT EXISTS WorkoutsTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        UserId INTEGER NOT NULL,
+                        WorkoutName TEXT NOT NULL,
+                        CreatedByTrainerId INTEGER,
+                        FOREIGN KEY (UserId) REFERENCES UserTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (CreatedByTrainerId) REFERENCES TrainersTbl(Id) ON DELETE SET NULL
+                    );",
 
-            // Execute all table creation commands
-            foreach (var sql in tableCommands)
-            {
-                var cmd = connection.CreateCommand();
-                cmd.CommandText = sql;
-                cmd.ExecuteNonQuery();
+                    // Workout Exercises
+                    @"CREATE TABLE IF NOT EXISTS WorkoutExercisesTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        WorkoutId INTEGER NOT NULL,
+                        ExerciseId INTEGER NOT NULL,
+                        FOREIGN KEY (WorkoutId) REFERENCES WorkoutsTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (ExerciseId) REFERENCES ExercisesTbl(Id) ON DELETE CASCADE
+                    );",
+
+                    // Workout Sets (template)
+                    @"CREATE TABLE IF NOT EXISTS WorkoutSetsTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        WorkoutExerciseId INTEGER NOT NULL,
+                        SetNumber INTEGER NOT NULL,
+                        Reps INTEGER DEFAULT 10,
+                        Weight REAL DEFAULT 0,
+                        FOREIGN KEY (WorkoutExerciseId) REFERENCES WorkoutExercisesTbl(Id) ON DELETE CASCADE
+                    );",
+
+                    // Week Plans
+                    @"CREATE TABLE IF NOT EXISTS WeekPlansTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        UserId INTEGER NOT NULL,
+                        PlanName TEXT NOT NULL,
+                        FOREIGN KEY (UserId) REFERENCES UserTbl(Id) ON DELETE CASCADE
+                    );",
+
+                    // Week Plan Days
+                    @"CREATE TABLE IF NOT EXISTS WeekPlanDaysTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        WeekPlanId INTEGER NOT NULL,
+                        DayOfWeek INTEGER NOT NULL CHECK(DayOfWeek BETWEEN 0 AND 6),
+                        WorkoutId INTEGER,
+                        RestDay INTEGER DEFAULT 0,
+                        FOREIGN KEY (WeekPlanId) REFERENCES WeekPlansTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (WorkoutId) REFERENCES WorkoutsTbl(Id) ON DELETE SET NULL
+                    );",
+
+                    // Workout Sessions
+                    @"CREATE TABLE IF NOT EXISTS WorkoutSessionsTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        UserId INTEGER NOT NULL,
+                        WorkoutId INTEGER NOT NULL,
+                        WeekPlanDayId INTEGER,
+                        SessionDate DATETIME NOT NULL,
+                        Completed INTEGER DEFAULT 0,
+                        FOREIGN KEY (UserId) REFERENCES UserTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (WorkoutId) REFERENCES WorkoutsTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (WeekPlanDayId) REFERENCES WeekPlanDaysTbl(Id) ON DELETE SET NULL
+                    );",
+
+                    // Workout Session Sets
+                    @"CREATE TABLE IF NOT EXISTS WorkoutSessionSetsTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        WorkoutSessionId INTEGER NOT NULL,
+                        ExerciseId INTEGER NOT NULL,
+                        SetNumber INTEGER NOT NULL,
+                        Reps INTEGER DEFAULT 0,
+                        Weight REAL DEFAULT 0,
+                        FOREIGN KEY (WorkoutSessionId) REFERENCES WorkoutSessionsTbl(Id) ON DELETE CASCADE,
+                        FOREIGN KEY (ExerciseId) REFERENCES ExercisesTbl(Id) ON DELETE CASCADE
+                    );",
+
+                    // Feed/Posts
+                    @"CREATE TABLE IF NOT EXISTS FeedTbl (
+                        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        PostOwnerId INTEGER NOT NULL,
+                        Content TEXT NOT NULL,
+                        PostTime DATETIME DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (PostOwnerId) REFERENCES UserTbl(Id) ON DELETE CASCADE
+                    );"
+                };
+
+                foreach (var sql in tableCommands)
+                {
+                    using (var cmd = connection.CreateCommand())
+                    {
+                        cmd.CommandText = sql;
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+
+                CreateIndexes(connection);
             }
         }
 
-        // Simple test function
+        private void CreateIndexes(SqliteConnection connection)
+        {
+            string[] indexCommands =
+            {
+                "CREATE INDEX IF NOT EXISTS idx_trainee_trainerid ON TraineesTbl(TrainerId);",
+                "CREATE INDEX IF NOT EXISTS idx_trainer_userid ON TrainersTbl(UserId);",
+                "CREATE INDEX IF NOT EXISTS idx_trainee_userid ON TraineesTbl(UserId);",
+                "CREATE INDEX IF NOT EXISTS idx_workout_userid ON WorkoutsTbl(UserId);",
+                "CREATE INDEX IF NOT EXISTS idx_workoutsession_userid ON WorkoutSessionsTbl(UserId);",
+                "CREATE INDEX IF NOT EXISTS idx_weekplan_userid ON WeekPlansTbl(UserId);"
+            };
+
+            foreach (var sql in indexCommands)
+            {
+                using (var cmd = connection.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
         public bool TestConnection()
         {
             try
             {
-                var connection = new SqliteConnection(connectionString);
-                connection.Open();
-                return connection.State == System.Data.ConnectionState.Open;
+                using (var connection = new SqliteConnection(connectionString))
+                {
+                    connection.Open();
+                    return connection.State == System.Data.ConnectionState.Open;
+                }
             }
             catch
             {
                 return false;
             }
+        }
+
+        public SqliteConnection GetConnection()
+        {
+            var connection = new SqliteConnection(connectionString);
+            connection.Open();
+            return connection;
         }
     }
 }
