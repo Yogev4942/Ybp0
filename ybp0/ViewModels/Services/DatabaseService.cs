@@ -19,7 +19,6 @@ namespace ViewModels.Services
             _database = new Database();
             InitializeDatabase();
         }
-
         private void InitializeDatabase()
         {
             // Ensure tables exist (Access Schema)
@@ -189,6 +188,7 @@ namespace ViewModels.Services
             }
         }
 
+        #region LOGIN
         public bool ValidateLogin(string username, string password)
         {
             var result = _database.ExecuteQuery(
@@ -302,6 +302,8 @@ namespace ViewModels.Services
             );
             return dt.Rows.Count > 0;
         }
+        #endregion
+        #region REGISTER
         public bool RegisterUser(string username, string email, string password)
         {
             try
@@ -324,7 +326,6 @@ namespace ViewModels.Services
                 return false;
             }
         }
-
         public bool RegisterTrainee(string username, string email, string password,
                                    string fitnessGoal, double currentWeight, double height)
         {
@@ -348,7 +349,6 @@ namespace ViewModels.Services
                 throw; // Re-throw to see the actual error
             }
         }
-
         public bool RegisterTrainer(string username, string email, string password,
                                    string specialization, double hourlyRate, int maxTrainees)
         {
@@ -372,8 +372,8 @@ namespace ViewModels.Services
                 throw; // Re-throw to see the actual error
             }
         }
-
-        // Session Management
+        #endregion
+        #region SessionManagement
         public WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date)
         {
             // Try to find existing session
@@ -447,7 +447,6 @@ namespace ViewModels.Services
 
             return null;
         }
-
         public void CompleteWorkoutSession(int sessionId)
         {
             _database.ExecuteNonQuery(
@@ -455,7 +454,6 @@ namespace ViewModels.Services
                 true, sessionId
             );
         }
-
         public List<Exercise> GetSessionExercises(int workoutSessionId)
         {
             // Query ACTUAL session sets (where ad-hoc exercises are stored)
@@ -480,7 +478,6 @@ namespace ViewModels.Services
             }
             return exercises;
         }
-
         public List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId)
         {
             // Check if session sets exist
@@ -554,7 +551,6 @@ namespace ViewModels.Services
 
             return newSets;
         }
-
         public void SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight)
         {
             // Check if set exists
@@ -581,12 +577,10 @@ namespace ViewModels.Services
                 );
             }
         }
-
         public void DeleteSessionSet(int setId)
         {
             _database.ExecuteNonQuery("DELETE FROM WorkoutSessionSetsTbl WHERE Id = ?", setId);
         }
-
         public System.Data.DataTable GetWeekPlanDays(int weekPlanId)
         {
             return _database.ExecuteQuery(
@@ -597,11 +591,8 @@ namespace ViewModels.Services
                 weekPlanId
             );
         }
-
-        // =========================================
-        // NEW: Exercise Management Methods
-        // =========================================
-
+        #endregion
+        #region ExerciseManagement
         public List<Exercise> GetAllExercises()
         {
             var dt = _database.ExecuteQuery("SELECT * FROM ExercisesTbl ORDER BY ExerciseName");
@@ -627,9 +618,9 @@ namespace ViewModels.Services
 
             return exercises;
         }
-
         private void SeedExercises()
         {
+            //demo
             var defaultExercises = new List<(string Name, string Muscle)>
             {
                 ("Bench Press", "Chest"),
@@ -657,7 +648,8 @@ namespace ViewModels.Services
                 );
             }
         }
-
+        #endregion
+        #region WorkoutManagement
         public void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId)
         {
             // Check if this exercise already exists in session sets
@@ -675,7 +667,6 @@ namespace ViewModels.Services
                 );
             }
         }
-
         public void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId)
         {
             // Delete all sets for this exercise in this session
@@ -684,7 +675,6 @@ namespace ViewModels.Services
                 workoutSessionId, exerciseId
             );
         }
-
         public int? GetWeekPlanOwnerUserId(int weekPlanId)
         {
             // Get the UserId from TraineesTbl where CurrentWeekPlanId matches
@@ -699,7 +689,6 @@ namespace ViewModels.Services
             }
             return null;
         }
-
         public List<Trainee> GetTraineesByTrainerId(int trainerId)
         {
             var dt = _database.ExecuteQuery(
@@ -724,7 +713,6 @@ namespace ViewModels.Services
             }
             return trainees;
         }
-
         public int? GetUserWeekPlanId(int userId)
         {
             var dt = _database.ExecuteQuery(
@@ -737,7 +725,6 @@ namespace ViewModels.Services
 
             return Convert.ToInt32(dt.Rows[0]["Id"]);
         }
-
         public int CreateEmptyWeekPlan(int userId, string planName)
         {
             // Insert new weekplan
@@ -765,6 +752,6 @@ namespace ViewModels.Services
 
             return weekPlanId;
         }
-
+        #endregion
     }
 }
