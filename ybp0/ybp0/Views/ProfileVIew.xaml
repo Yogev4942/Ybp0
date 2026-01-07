@@ -1,0 +1,443 @@
+﻿<UserControl x:Class="ybp0.Views.ProfileView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ybp0.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
+
+    <!-- Background matching main theme -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#E8F5E9" Offset="0.0"/>
+                <GradientStop Color="#E0F2F1" Offset="1.0"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
+            <Grid MaxWidth="1200" HorizontalAlignment="Center" Margin="30,25">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Header Card with Avatar and Basic Info -->
+                <Border Grid.Row="0" 
+                        CornerRadius="20" 
+                        Margin="0,0,0,20">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="#26A69A" Offset="0"/>
+                            <GradientStop Color="#00897B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect Color="#00FFCC" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                    </Border.Effect>
+
+                    <Grid Margin="20,15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="35*"/>
+                            <RowDefinition Height="9*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Large Avatar Circle -->
+                        <Border Grid.Column="0" 
+                                Width="120" 
+                                Height="120" 
+                                CornerRadius="60" 
+                                Background="{Binding AvatarColor}" 
+                                BorderBrush="White" 
+                                BorderThickness="4"
+                                VerticalAlignment="Top" Grid.RowSpan="2">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="2" Opacity="0.4"/>
+                            </Border.Effect>
+                            <TextBlock Text="{Binding Initials}" 
+                                       Foreground="White" 
+                                       FontWeight="Bold" 
+                                       FontSize="48"
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <!-- User Info Section -->
+                        <StackPanel Grid.Column="1" Margin="30,0,0,0" VerticalAlignment="Top" Grid.RowSpan="2">
+                            <!-- Username -->
+                            <TextBlock Text="{Binding Username}" 
+                                       FontSize="32" 
+                                       FontWeight="Bold" 
+                                       Foreground="White"/>
+
+                            <!-- User Type Badge -->
+                            <Border Background="#22FFFFFF" 
+                                    CornerRadius="12" 
+                                    Padding="12,6" 
+                                    HorizontalAlignment="Left"
+                                    Margin="0,8,0,0">
+                                <TextBlock Text="{Binding UserTypeLabel}" 
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="White"/>
+                            </Border>
+
+                            <!-- Join Date -->
+                            <TextBlock Text="{Binding JoinDateText}" 
+                                       FontSize="13" 
+                                       Foreground="#DDFFFFFF" 
+                                       Margin="0,12,0,0"/>
+
+                            <!-- Email -->
+                            <TextBlock Text="{Binding Email}" 
+                                       FontSize="13" 
+                                       Foreground="#DDFFFFFF" 
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+                <!-- Main Content Grid -->
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left Column -->
+                    <StackPanel Grid.Column="0">
+
+                        <!-- Bio Card -->
+                        <Border CornerRadius="16" Margin="0,0,0,20">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="📝 Bio" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,12"/>
+                                <TextBlock Text="{Binding Bio}" 
+                                           FontSize="14" 
+                                           Foreground="#555" 
+                                           TextWrapping="Wrap"
+                                           LineHeight="20"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- TRAINEE: Fitness Stats Card -->
+                        <Border CornerRadius="16" 
+                                Margin="0,0,0,20"
+                                Visibility="{Binding IsTrainee, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="💪 Fitness Stats" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Current Weight -->
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Current Weight" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding CurrentWeightDisplay}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               Foreground="#26A69A"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Height -->
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Height" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding HeightDisplay}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               Foreground="#26A69A"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- BMI Calculation -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="BMI" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding BMI}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               Foreground="#26A69A"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- TRAINER: Specialization Card -->
+                        <Border CornerRadius="16" 
+                                Margin="0,0,0,20"
+                                Visibility="{Binding IsTrainer, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="🎯 Specialization" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,12"/>
+
+                                <Border Background="#26A69A" 
+                                        CornerRadius="10" 
+                                        Padding="15,10">
+                                    <TextBlock Text="{Binding Specialization}" 
+                                               FontSize="16"
+                                               FontWeight="SemiBold"
+                                               Foreground="White" 
+                                               TextAlignment="Center"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+
+                    <!-- Right Column -->
+                    <StackPanel Grid.Column="2">
+
+                        <!-- TRAINEE: Fitness Goal Card -->
+                        <Border CornerRadius="16" 
+                                Margin="0,0,0,20"
+                                Visibility="{Binding IsTrainee, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="🎯 Fitness Goal" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,12"/>
+                                <TextBlock Text="{Binding FitnessGoal}" 
+                                           FontSize="15" 
+                                           Foreground="#555" 
+                                           TextWrapping="Wrap"
+                                           LineHeight="22"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- TRAINER: Stats Card -->
+                        <Border CornerRadius="16" 
+                                Margin="0,0,0,20"
+                                Visibility="{Binding IsTrainer, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="📊 Trainer Stats" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Total Trainees / Max Trainees -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Trainees" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding TraineesDisplay}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               Foreground="#26A69A"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Hourly Rate -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Hourly Rate" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding HourlyRateDisplay}" 
+                                               FontSize="16" 
+                                               FontWeight="Bold" 
+                                               Foreground="#26A69A"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Rating -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Average Rating" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBlock Text="{Binding AverageRating}" 
+                                                   FontSize="16" 
+                                                   FontWeight="Bold" 
+                                                   Foreground="#26A69A"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,5,0"/>
+                                        <TextBlock Text="⭐" 
+                                                   FontSize="16"
+                                                   VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Personal Info Card -->
+                        <Border CornerRadius="16">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#55FFFFFF" Offset="0"/>
+                                    <GradientStop Color="#33FFFFFF" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+                            <Border.Effect>
+                                <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
+                            </Border.Effect>
+
+                            <StackPanel Margin="25,20">
+                                <TextBlock Text="👤 Personal Info" 
+                                           FontSize="18" 
+                                           FontWeight="SemiBold" 
+                                           Foreground="#00695C"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Gender -->
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Gender" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" 
+                                               Text="{Binding Gender}" 
+                                               FontSize="14" 
+                                               Foreground="#333"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Account Type -->
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" 
+                                               Text="Account Type" 
+                                               FontSize="14" 
+                                               Foreground="#666"
+                                               VerticalAlignment="Center"/>
+                                    <Border Grid.Column="1" 
+                                            Background="#E0F2F1" 
+                                            CornerRadius="8" 
+                                            Padding="8,4">
+                                        <TextBlock Text="{Binding UserTypeLabel}" 
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#00695C"/>
+                                    </Border>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                    </StackPanel>
+                </Grid>
+            </Grid>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

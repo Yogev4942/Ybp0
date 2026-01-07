@@ -34,5 +34,8 @@
         <DataTemplate DataType="{x:Type vm:PostViewModel}">
             <views:PostView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
+            <views:ProfileView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

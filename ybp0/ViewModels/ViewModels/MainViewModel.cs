@@ -29,6 +29,27 @@ namespace ViewModels.ViewModels
 
         public ICommand NavigateCommand { get; } // Generic generic command
 
+        private string _username;
+        public string Username
+        {
+            get => _username;
+            set => SetProperty(ref _username, value);
+        }
+
+        private string _initials;
+        public string Initials
+        {
+            get => _initials;
+            set => SetProperty(ref _initials, value);
+        }
+
+        private string _avatarColor;
+        public string AvatarColor
+        {
+            get => _avatarColor;
+            set => SetProperty(ref _avatarColor, value);
+        }
+
         public MainViewModel()
         {
             // create navigation service with factory + setter + onLogin callback
@@ -82,8 +103,12 @@ namespace ViewModels.ViewModels
 
             if (type == typeof(HomeViewModel))
             {
-                _currUser = (User)parameter;
-                return new HomeViewModel(Database, Navigation, (User)parameter);
+                if (parameter is User user)
+                {
+                    _currUser = user;
+                    UpdateUserDisplayData();
+                }
+                return new HomeViewModel(Database, Navigation, _currUser);
             }
 
             if (type == typeof(CalendarViewModel))
@@ -93,6 +118,26 @@ namespace ViewModels.ViewModels
                 return new FeedViewModel(Database,Navigation,_currUser);
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
+        }
+
+        private void UpdateUserDisplayData()
+        {
+            if (_currUser != null)
+            {
+                Username = _currUser.Username;
+                Initials = !string.IsNullOrEmpty(Username) && Username.Length >= 2 
+                    ? Username.Substring(0, 2).ToUpper() 
+                    : Username?[0].ToString().ToUpper();
+                AvatarColor = GetColorForUser(Username);
+            }
+        }
+
+        private string GetColorForUser(string username)
+        {
+            if (string.IsNullOrEmpty(username)) return "#FF00BCD4";
+            int hash = username.GetHashCode();
+            var colors = new[] { "#FF00BCD4", "#FF9C27B0", "#FF4CAF50", "#FFFF9800", "#FF3F51B5", "#FFE91E63" };
+            return colors[Math.Abs(hash) % colors.Length];
         }
     }
 

@@ -132,25 +132,71 @@
                     <DropShadowEffect Color="#00FFCC" BlurRadius="8" ShadowDepth="0" Opacity="0.3"/>
                 </Border.Effect>
 
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <!-- Home Button -->
-                    <Button Content="🏠 Home" 
-                            Command="{Binding NavigateCommand}" 
-                            CommandParameter="{x:Type vm:HomeViewModel}"
-                            Style="{StaticResource NavButtonStyle}"/>
-                    
-                    <!-- Calendar Button -->
-                    <Button Content="📅 Calendar" 
-                            Command="{Binding NavigateCommand}" 
-                            CommandParameter="{x:Type vm:CalendarViewModel}"
-                            Style="{StaticResource NavButtonStyle}"/>
-                    
-                    <!-- Feed Button -->
-                    <Button Content="📰 Feed" 
-                            Command="{Binding NavigateCommand}" 
-                            CommandParameter="Feed"
-                            Style="{StaticResource NavButtonStyle}"/>
-                </StackPanel>
+                <Grid>
+                    <!-- Centered Navigation Buttons -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <!-- Home Button -->
+                        <Button Content="🏠 Home" 
+                                Command="{Binding NavigateCommand}" 
+                                CommandParameter="{x:Type vm:HomeViewModel}"
+                                Style="{StaticResource NavButtonStyle}"/>
+                        
+                        <!-- Calendar Button -->
+                        <Button Content="📅 Calendar" 
+                                Command="{Binding NavigateCommand}" 
+                                CommandParameter="{x:Type vm:CalendarViewModel}"
+                                Style="{StaticResource NavButtonStyle}"/>
+                        
+                        <!-- Feed Button -->
+                        <Button Content="📰 Feed" 
+                                Command="{Binding NavigateCommand}" 
+                                CommandParameter="Feed"
+                                Style="{StaticResource NavButtonStyle}"/>
+                    </StackPanel>
+
+                    <!-- User Profile (Right Aligned) -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,-10">
+                        <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="{Binding NavigateCommand}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="Transparent" CornerRadius="20" Padding="8,4">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#22FFFFFF"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <!-- Avatar Circle -->
+                                            <Border Width="40" Height="40" CornerRadius="18" Background="{Binding AvatarColor}" 
+                                                    BorderBrush="White" BorderThickness="1.5" Margin="0,0,10,0">
+                                                <Border.Effect>
+                                                    <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="1" Opacity="0.3"/>
+                                                </Border.Effect>
+                                                <TextBlock Text="{Binding Initials}" 
+                                                           Foreground="White" 
+                                                           FontWeight="Bold" 
+                                                           FontSize="12"
+                                                           HorizontalAlignment="Center" 
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+                                            <!-- Username -->
+                                            <TextBlock Text="{Binding Username}" 
+                                                       Foreground="White" 
+                                                       FontWeight="SemiBold" 
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </StackPanel>
+                </Grid>
             </Border>
 
             <!-- Main Content Area -->
