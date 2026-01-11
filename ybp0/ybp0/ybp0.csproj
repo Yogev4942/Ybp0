@@ -75,8 +75,8 @@
     <Compile Include="Views\PostView.xaml.cs">
       <DependentUpon>PostView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\ProfileVIew.xaml.cs">
-      <DependentUpon>ProfileVIew.xaml</DependentUpon>
+    <Compile Include="Views\ProfileView.xaml.cs">
+      <DependentUpon>ProfileView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\RegisterView.xaml.cs">
       <DependentUpon>RegisterView.xaml</DependentUpon>
@@ -120,7 +120,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\ProfileVIew.xaml">
+    <Page Include="Views\ProfileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

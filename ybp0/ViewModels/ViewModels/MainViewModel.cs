@@ -116,6 +116,14 @@ namespace ViewModels.ViewModels
 
             if (type == typeof(FeedViewModel))
                 return new FeedViewModel(Database,Navigation,_currUser);
+            if (type == typeof(ProfileViewModel))
+            {
+                if (parameter is User)
+                {
+                    return new ProfileViewModel(Database, Navigation, (User)parameter);
+                }
+            }
+
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

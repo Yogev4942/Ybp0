@@ -18,9 +18,9 @@ namespace ybp0.Views
     /// <summary>
     /// Interaction logic for ProfileVIew.xaml
     /// </summary>
-    public partial class ProfileVIew : UserControl
+    public partial class ProfileView : UserControl
     {
-        public ProfileVIew()
+        public ProfileView()
         {
             InitializeComponent();
         }
