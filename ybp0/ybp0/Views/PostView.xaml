@@ -44,19 +44,29 @@
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Avatar -->
-                    <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor}" 
-                            BorderBrush="White" BorderThickness="2">
-                        <Border.Effect>
-                            <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
-                        </Border.Effect>
-                        <TextBlock Text="{Binding Initials}" 
-                                   VerticalAlignment="Center" 
-                                   HorizontalAlignment="Center" 
-                                   Foreground="White" 
-                                   FontWeight="Bold"
-                                   FontSize="14"/>
-                    </Border>
+                    <!-- Avatar (Clickable) -->
+                    <Button Command="{Binding NavigateToProfileCommand}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Padding="0"
+                            Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor}" 
+                                        BorderBrush="White" BorderThickness="2">
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
+                                    </Border.Effect>
+                                    <TextBlock Text="{Binding Initials}" 
+                                               VerticalAlignment="Center" 
+                                               HorizontalAlignment="Center" 
+                                               Foreground="White" 
+                                               FontWeight="Bold"
+                                               FontSize="14"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
 
                     <!-- User Info -->
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">

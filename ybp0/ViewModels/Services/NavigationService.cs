@@ -42,6 +42,15 @@ namespace ViewModels
             NavigateTo(typeof(TViewModel), parameters);
         }
 
+        public void NavigateToProfile(int userId)
+        {
+            // We need a way to fetch the user. 
+            // Since navigation service doesn't have DB access directly (usually),
+            // and MainViewModel's factory handles ViewModel creation which DOES have DB access,
+            // we can just pass the userId as the parameter.
+            NavigateTo(typeof(ProfileViewModel), userId);
+        }
+
         public void NavigateTo(Type viewModelType, object parameters = null)
         {
             // validate type

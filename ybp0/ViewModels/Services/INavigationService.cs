@@ -10,6 +10,7 @@ namespace ViewModels
     {
         void NavigateTo<TViewModel>(object parameters = null) where TViewModel : BaseViewModel;
         void NavigateTo(Type viewModelType, object parameter = null); // New Type-based method
+        void NavigateToProfile(int userId);
         void GoBack();
         void OnLoginSuccess();   // keep this so LoginViewModel can trigger the behavior you liked
     }

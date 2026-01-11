@@ -9,6 +9,90 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        <Style x:Key="NavButtonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#44FFFFFF" Offset="0"/>
+                        <GradientStop Color="#22FFFFFF" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="20,10"/>
+            <Setter Property="Margin" Value="8,0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="BorderBrush" Value="#77FFFFFF"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                        Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}" 
+                        CornerRadius="15">
+                            <Border.Effect>
+                                <DropShadowEffect x:Name="shadow" Color="#00FFCC" BlurRadius="5" ShadowDepth="0" Opacity="0.2"/>
+                            </Border.Effect>
+                            <Grid>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
+                                    <ContentPresenter.Effect>
+                                        <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Opacity="0.5"/>
+                                    </ContentPresenter.Effect>
+                                </ContentPresenter>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border" 
+                                                  Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].Color"
+                                                  To="#66FFFFFF" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="shadow"
+                                                   Storyboard.TargetProperty="BlurRadius"
+                                                   To="20" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="shadow"
+                                                   Storyboard.TargetProperty="Opacity"
+                                                   To="0.9" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <ColorAnimation Storyboard.TargetName="border"
+                                                  Storyboard.TargetProperty="(Border.Background).(LinearGradientBrush.GradientStops)[0].Color"
+                                                  To="#44FFFFFF" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="shadow"
+                                                   Storyboard.TargetProperty="BlurRadius"
+                                                   To="5" Duration="0:0:0.2"/>
+                                            <DoubleAnimation Storyboard.TargetName="shadow"
+                                                   Storyboard.TargetProperty="Opacity"
+                                                   To="0.2" Duration="0:0:0.2"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.ExitActions>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#88FFFFFF" Offset="0"/>
+                                            <GradientStop Color="#44FFFFFF" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <!-- Background matching main theme -->
@@ -21,7 +105,8 @@
         </Grid.Background>
 
         <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled">
-            <Grid MaxWidth="1200" HorizontalAlignment="Center" Margin="30,25">
+            <!-- CHANGED: Increased MaxWidth from 1200 to 1400 -->
+            <Grid MaxWidth="1400" HorizontalAlignment="Center" Margin="30,25">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -102,6 +187,70 @@
                                        FontSize="13" 
                                        Foreground="#DDFFFFFF" 
                                        Margin="0,4,0,0"/>
+
+                            <!-- Actions / Request Status -->
+                            <StackPanel Margin="0,20,0,0">
+                                <!-- Request Trainer Button -->
+                                <Button Content="➕ Request Trainer" 
+                                        Style="{DynamicResource NavButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Margin="0"
+                                        Padding="15,8"
+                                        FontSize="14"
+                                        Visibility="{Binding CanRequestTrainer, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Command="{Binding RequestTrainerCommand}"/>
+
+                                <!-- Pending Label -->
+                                <Border Background="#FFEB3B" 
+                                        CornerRadius="12" 
+                                        Padding="12,6" 
+                                        HorizontalAlignment="Left"
+                                        Visibility="{Binding IsRequestPending, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="⏳ Request Pending" 
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="#333"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Manage Requests Button (For Trainer Self) -->
+                                <Button Content="🔔 Manage Requests" 
+                                        HorizontalAlignment="Left"
+                                        Margin="0"
+                                        Padding="15,8"
+                                        FontSize="14"
+                                        Command="{Binding ToggleRequestsCommand}">
+                                    <Button.Style>
+                                        <Style TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <MultiDataTrigger>
+                                                    <MultiDataTrigger.Conditions>
+                                                        <Condition Binding="{Binding IsOwnProfile}" Value="True"/>
+                                                        <Condition Binding="{Binding IsTrainer}" Value="True"/>
+                                                    </MultiDataTrigger.Conditions>
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </MultiDataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- Approved Label -->
+                                <Border Background="#4CAF50" 
+                                        CornerRadius="12" 
+                                        Padding="12,6" 
+                                        HorizontalAlignment="Left"
+                                        Visibility="{Binding IsRequestApproved, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="✅ Your Trainer" 
+                                                   FontSize="14"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
                         </StackPanel>
                     </Grid>
                 </Border>
@@ -110,7 +259,8 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="20"/>
+                        <!-- CHANGED: Increased spacing from 20 to 30 -->
+                        <ColumnDefinition Width="30"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
@@ -118,7 +268,8 @@
                     <StackPanel Grid.Column="0">
 
                         <!-- Bio Card -->
-                        <Border CornerRadius="16" Margin="0,0,0,20">
+                        <!-- CHANGED: Increased margin bottom from 20 to 25 for more spacing -->
+                        <Border CornerRadius="16" Margin="0,0,0,25">
                             <Border.Background>
                                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                                     <GradientStop Color="#55FFFFFF" Offset="0"/>
@@ -129,17 +280,21 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="📝 Bio" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,12"/>
+                                           Margin="0,0,0,15"/>
+                                <!-- CHANGED: Increased font size from 14 to 16, line height from 20 to 24 -->
                                 <TextBlock Text="{Binding Bio}" 
-                                           FontSize="14" 
+                                           FontSize="16" 
                                            Foreground="#555" 
                                            TextWrapping="Wrap"
-                                           LineHeight="20"/>
+                                           LineHeight="24"
+                                           MinHeight="80"/>
                             </StackPanel>
                         </Border>
 
@@ -157,46 +312,51 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="💪 Fitness Stats" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,15"/>
+                                           Margin="0,0,0,18"/>
 
                                 <!-- Current Weight -->
-                                <Grid Margin="0,0,0,12">
+                                <!-- CHANGED: Increased margin from 0,0,0,12 to 0,0,0,15 -->
+                                <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+                                    <!-- CHANGED: Increased font size from 14 to 15 -->
                                     <TextBlock Grid.Column="0" 
                                                Text="Current Weight" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
+                                    <!-- CHANGED: Increased font size from 16 to 18 -->
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding CurrentWeightDisplay}" 
-                                               FontSize="16" 
+                                               FontSize="18" 
                                                FontWeight="Bold" 
                                                Foreground="#26A69A"
                                                VerticalAlignment="Center"/>
                                 </Grid>
 
                                 <!-- Height -->
-                                <Grid Margin="0,0,0,12">
+                                <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                Text="Height" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding HeightDisplay}" 
-                                               FontSize="16" 
+                                               FontSize="18" 
                                                FontWeight="Bold" 
                                                Foreground="#26A69A"
                                                VerticalAlignment="Center"/>
@@ -210,12 +370,12 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                Text="BMI" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding BMI}" 
-                                               FontSize="16" 
+                                               FontSize="18" 
                                                FontWeight="Bold" 
                                                Foreground="#26A69A"
                                                VerticalAlignment="Center"/>
@@ -237,18 +397,21 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="🎯 Specialization" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,12"/>
+                                           Margin="0,0,0,15"/>
 
                                 <Border Background="#26A69A" 
                                         CornerRadius="10" 
                                         Padding="15,10">
+                                    <!-- CHANGED: Increased font size from 16 to 17 -->
                                     <TextBlock Text="{Binding Specialization}" 
-                                               FontSize="16"
+                                               FontSize="17"
                                                FontWeight="SemiBold"
                                                Foreground="White" 
                                                TextAlignment="Center"/>
@@ -275,17 +438,20 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="🎯 Fitness Goal" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,12"/>
+                                           Margin="0,0,0,15"/>
+                                <!-- CHANGED: Increased font size from 15 to 16, line height from 22 to 24 -->
                                 <TextBlock Text="{Binding FitnessGoal}" 
-                                           FontSize="15" 
+                                           FontSize="16" 
                                            Foreground="#555" 
                                            TextWrapping="Wrap"
-                                           LineHeight="22"/>
+                                           LineHeight="24"/>
                             </StackPanel>
                         </Border>
 
@@ -303,46 +469,51 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="📊 Trainer Stats" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,15"/>
+                                           Margin="0,0,0,18"/>
 
                                 <!-- Total Trainees / Max Trainees -->
-                                <Grid Margin="0,0,0,15">
+                                <!-- CHANGED: Increased margin from 0,0,0,15 to 0,0,0,18 -->
+                                <Grid Margin="0,0,0,18">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+                                    <!-- CHANGED: Increased font size from 14 to 15 -->
                                     <TextBlock Grid.Column="0" 
                                                Text="Trainees" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
+                                    <!-- CHANGED: Increased font size from 16 to 18 -->
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding TraineesDisplay}" 
-                                               FontSize="16" 
+                                               FontSize="18" 
                                                FontWeight="Bold" 
                                                Foreground="#26A69A"
                                                VerticalAlignment="Center"/>
                                 </Grid>
 
                                 <!-- Hourly Rate -->
-                                <Grid Margin="0,0,0,15">
+                                <Grid Margin="0,0,0,18">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                Text="Hourly Rate" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding HourlyRateDisplay}" 
-                                               FontSize="16" 
+                                               FontSize="18" 
                                                FontWeight="Bold" 
                                                Foreground="#26A69A"
                                                VerticalAlignment="Center"/>
@@ -356,12 +527,12 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                Text="Average Rating" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
                                         <TextBlock Text="{Binding AverageRating}" 
-                                                   FontSize="16" 
+                                                   FontSize="18" 
                                                    FontWeight="Bold" 
                                                    Foreground="#26A69A"
                                                    VerticalAlignment="Center"
@@ -386,27 +557,32 @@
                                 <DropShadowEffect Color="#26A69A" BlurRadius="10" ShadowDepth="0" Opacity="0.25"/>
                             </Border.Effect>
 
-                            <StackPanel Margin="25,20">
+                            <!-- CHANGED: Increased padding from 25,20 to 30,25 -->
+                            <StackPanel Margin="30,25">
+                                <!-- CHANGED: Increased font size from 18 to 20 -->
                                 <TextBlock Text="👤 Personal Info" 
-                                           FontSize="18" 
+                                           FontSize="20" 
                                            FontWeight="SemiBold" 
                                            Foreground="#00695C"
-                                           Margin="0,0,0,15"/>
+                                           Margin="0,0,0,18"/>
 
                                 <!-- Gender -->
-                                <Grid Margin="0,0,0,12">
+                                <!-- CHANGED: Increased margin from 0,0,0,12 to 0,0,0,15 -->
+                                <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
+                                    <!-- CHANGED: Increased font size from 14 to 15 -->
                                     <TextBlock Grid.Column="0" 
                                                Text="Gender" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
+                                    <!-- CHANGED: Increased font size from 14 to 15 -->
                                     <TextBlock Grid.Column="1" 
                                                Text="{Binding Gender}" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#333"
                                                VerticalAlignment="Center"/>
                                 </Grid>
@@ -419,15 +595,16 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" 
                                                Text="Account Type" 
-                                               FontSize="14" 
+                                               FontSize="15" 
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <Border Grid.Column="1" 
                                             Background="#E0F2F1" 
                                             CornerRadius="8" 
                                             Padding="8,4">
+                                        <!-- CHANGED: Increased font size from 12 to 13 -->
                                         <TextBlock Text="{Binding UserTypeLabel}" 
-                                                   FontSize="12"
+                                                   FontSize="13"
                                                    FontWeight="SemiBold"
                                                    Foreground="#00695C"/>
                                     </Border>
@@ -439,5 +616,143 @@
                 </Grid>
             </Grid>
         </ScrollViewer>
+        <!-- Requests Modal Popup -->
+        <Grid Visibility="{Binding IsRequestsPopupOpen, Converter={StaticResource BoolToVisibilityConverter}}"
+              Panel.ZIndex="100">
+            <!-- Background Dimmer -->
+            <Border Background="#99000000"/>
+
+            <!-- Popup Card -->
+            <Border Width="400" 
+                    MaxHeight="500"
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Center"
+                    Background="White" 
+                    CornerRadius="15" 
+                    Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="25" ShadowDepth="0" Opacity="0.5"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Header with X close button -->
+                    <Grid Margin="0,0,0,15">
+                        <TextBlock Text="Incoming Requests" 
+                                   FontSize="22" 
+                                   FontWeight="Bold" 
+                                   Foreground="#00695C"
+                                   VerticalAlignment="Center"/>
+
+                        <Button Content="✕" 
+                                Command="{Binding ToggleRequestsCommand}"
+                                HorizontalAlignment="Right" 
+                                VerticalAlignment="Center"
+                                Background="Transparent" 
+                                BorderThickness="0" 
+                                Foreground="#999" 
+                                FontSize="20"
+                                Cursor="Hand"
+                                Padding="5"/>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" MaxHeight="400">
+                        <ItemsControl ItemsSource="{Binding PendingRequests}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border BorderBrush="#EEE" BorderThickness="0,0,0,1" Padding="5,12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- Simple Avatar Placeholder -->
+                                            <Border Width="36" Height="36" CornerRadius="18" Background="#E0F2F1" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Username[0]}" 
+                                                           Foreground="#26A69A" 
+                                                           FontWeight="Bold"
+                                                           HorizontalAlignment="Center" 
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <TextBlock Grid.Column="1" 
+                                                       Text="{Binding Username}" 
+                                                       VerticalAlignment="Center" 
+                                                       Margin="15,0"
+                                                       FontSize="16"
+                                                       Foreground="#333"
+                                                       FontWeight="SemiBold"/>
+
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal">
+                                                <!-- Accept button (V) -->
+                                                <Button Content="✓" 
+                                                        Command="{Binding DataContext.ApproveRequestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        CommandParameter="{Binding}"
+                                                        Background="#E8F5E9" 
+                                                        BorderThickness="0" 
+                                                        Foreground="#4CAF50"
+                                                        FontWeight="Bold"
+                                                        FontSize="18" 
+                                                        Width="40" 
+                                                        Height="40" 
+                                                        Cursor="Hand">
+                                                    <Button.Resources>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Resources>
+                                                </Button>
+
+                                                <!-- Decline button (X) -->
+                                                <Button Content="✕" 
+                                                        Command="{Binding DataContext.RejectRequestCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                        CommandParameter="{Binding}"
+                                                        Background="#FFEBEE" 
+                                                        BorderThickness="0" 
+                                                        Foreground="#F44336"
+                                                        FontWeight="Bold"
+                                                        FontSize="18" 
+                                                        Width="40" 
+                                                        Height="40" 
+                                                        Margin="10,0,0,0"
+                                                        Cursor="Hand">
+                                                    <Button.Resources>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Template">
+                                                                <Setter.Value>
+                                                                    <ControlTemplate TargetType="Button">
+                                                                        <Border Background="{TemplateBinding Background}" CornerRadius="20">
+                                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                        </Border>
+                                                                    </ControlTemplate>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Style>
+                                                    </Button.Resources>
+                                                </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

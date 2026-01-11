@@ -8,7 +8,6 @@
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-        <!-- Frutiger Aero Navigation Button Style -->
         <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Background">
                 <Setter.Value>
@@ -156,7 +155,9 @@
 
                     <!-- User Profile (Right Aligned) -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,-10">
-                        <Button Background="Transparent" BorderThickness="0" Cursor="Hand" Click="{Binding NavigateCommand}">
+                        <Button Background="Transparent" BorderThickness="0" Cursor="Hand" 
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="{x:Type vm:ProfileViewModel}">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border Background="Transparent" CornerRadius="20" Padding="8,4">

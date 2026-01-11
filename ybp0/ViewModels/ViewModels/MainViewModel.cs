@@ -118,10 +118,16 @@ namespace ViewModels.ViewModels
                 return new FeedViewModel(Database,Navigation,_currUser);
             if (type == typeof(ProfileViewModel))
             {
-                if (parameter is User)
-                {
-                    return new ProfileViewModel(Database, Navigation, (User)parameter);
-                }
+                User targetUser = null;
+                if (parameter is User user)
+                    targetUser = user;
+                else if (parameter is int userId)
+                    targetUser = Database.GetUserById(userId);
+
+                // Fallback to current user if nothing else works
+                targetUser = targetUser ?? _currUser;
+                
+                return new ProfileViewModel(Database, Navigation, _currUser, targetUser);
             }
 
             // fallback

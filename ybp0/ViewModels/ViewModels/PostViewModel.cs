@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ViewModels.ViewModels
 {
@@ -44,8 +45,13 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _avatarColor, value);
         }
 
-        public PostViewModel(string username, string content, string timestamp, string avatarColor)
+        public int OwnerId { get; }
+        public ICommand NavigateToProfileCommand { get; }
+
+        public PostViewModel(INavigationService navigation, int ownerId, string username, string content, string timestamp, string avatarColor)
         {
+            _navigation = navigation;
+            OwnerId = ownerId;
             Username = username;
             Content = content;
             Timestamp = timestamp;
@@ -53,6 +59,10 @@ namespace ViewModels.ViewModels
             Initials = !string.IsNullOrEmpty(username) && username.Length >= 2 
                 ? username.Substring(0, 2).ToUpper() 
                 : username?.FirstOrDefault().ToString().ToUpper();
+
+            NavigateToProfileCommand = new RelayCommand(_ => _navigation.NavigateToProfile(OwnerId));
         }
+
+        private readonly INavigationService _navigation;
     }
 }

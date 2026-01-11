@@ -186,6 +186,19 @@ namespace ViewModels.Services
                         TotalRatings INTEGER DEFAULT 0
                     )");
             }
+            
+            // 12. TrainerRequestsTbl
+            if (!_database.TableExists("TrainerRequestsTbl"))
+            {
+                _database.ExecuteNonQuery(@"
+                    CREATE TABLE TrainerRequestsTbl (
+                        Id AUTOINCREMENT PRIMARY KEY,
+                        TraineeUserId INTEGER NOT NULL,
+                        TrainerUserId INTEGER NOT NULL,
+                        Status TEXT(50) DEFAULT 'Pending',
+                        RequestDate DATETIME DEFAULT Now()
+                    )");
+            }
         }
 
         #region LOGIN
@@ -198,26 +211,30 @@ namespace ViewModels.Services
 
             return result.Rows.Count > 0;
         }
+        public User GetUserById(int userId)
+        {
+            var userDt = _database.ExecuteQuery("SELECT * FROM UserTbl WHERE Id = ?", userId);
+            if (userDt.Rows.Count == 0) return null;
+            return MapUser(userDt.Rows[0]);
+        }
         public User GetUserByUsernameAndPassword(string username, string password)
         {
-            // Get user from UserTbl
             var userDt = _database.ExecuteQuery(
                 "SELECT * FROM UserTbl WHERE Username = ? AND Password = ?",
                 username, password
             );
 
-            if (userDt.Rows.Count == 0)
-                return null;
+            if (userDt.Rows.Count == 0) return null;
+            return MapUser(userDt.Rows[0]);
+        }
 
-            var userRow = userDt.Rows[0];
+        private User MapUser(System.Data.DataRow userRow)
+        {
             int userId = Convert.ToInt32(userRow["Id"]);
             bool isTrainer = userRow["IsTrainer"] != DBNull.Value && Convert.ToBoolean(userRow["IsTrainer"]);
 
-            User user;
-
             if (isTrainer)
             {
-                // Create Trainer object
                 var trainer = new Trainer
                 {
                     Id = userId,
@@ -230,33 +247,21 @@ namespace ViewModels.Services
                     IsTrainer = true
                 };
 
-                // Get trainer-specific data from TrainersTbl
-                var trainerDt = _database.ExecuteQuery(
-                    "SELECT * FROM TrainersTbl WHERE UserId = ?",
-                    userId
-                );
-
+                var trainerDt = _database.ExecuteQuery("SELECT * FROM TrainersTbl WHERE UserId = ?", userId);
                 if (trainerDt.Rows.Count > 0)
                 {
                     var trainerRow = trainerDt.Rows[0];
                     trainer.Specialization = trainerRow["Specialization"]?.ToString();
-                    trainer.HourlyRate = trainerRow["HourlyRate"] != DBNull.Value ?
-                        Convert.ToDouble(trainerRow["HourlyRate"]) : 0;
-                    trainer.MaxTrainees = trainerRow["MaxTrainees"] != DBNull.Value ?
-                        Convert.ToInt32(trainerRow["MaxTrainees"]) : 10;
-                    trainer.TotalTrainees = trainerRow["TotalTrainees"] != DBNull.Value ?
-                        Convert.ToInt32(trainerRow["TotalTrainees"]) : 0;
-                    trainer.Rating = trainerRow["Rating"] != DBNull.Value ?
-                        Convert.ToDouble(trainerRow["Rating"]) : 0;
-                    trainer.TotalRatings = trainerRow["TotalRatings"] != DBNull.Value ?
-                        Convert.ToInt32(trainerRow["TotalRatings"]) : 0;
+                    trainer.HourlyRate = trainerRow["HourlyRate"] != DBNull.Value ? Convert.ToDouble(trainerRow["HourlyRate"]) : 0;
+                    trainer.MaxTrainees = trainerRow["MaxTrainees"] != DBNull.Value ? Convert.ToInt32(trainerRow["MaxTrainees"]) : 10;
+                    trainer.TotalTrainees = trainerRow["TotalTrainees"] != DBNull.Value ? Convert.ToInt32(trainerRow["TotalTrainees"]) : 0;
+                    trainer.Rating = trainerRow["Rating"] != DBNull.Value ? Convert.ToDouble(trainerRow["Rating"]) : 0;
+                    trainer.TotalRatings = trainerRow["TotalRatings"] != DBNull.Value ? Convert.ToInt32(trainerRow["TotalRatings"]) : 0;
                 }
-
-                user = trainer;
+                return trainer;
             }
             else
             {
-                // Create Trainee object
                 var trainee = new Trainee
                 {
                     Id = userId,
@@ -269,30 +274,18 @@ namespace ViewModels.Services
                     IsTrainer = false
                 };
 
-                // Get trainee-specific data from TraineesTbl
-                var traineeDt = _database.ExecuteQuery(
-                    "SELECT * FROM TraineesTbl WHERE UserId = ?",
-                    userId
-                );
-
+                var traineeDt = _database.ExecuteQuery("SELECT * FROM TraineesTbl WHERE UserId = ?", userId);
                 if (traineeDt.Rows.Count > 0)
                 {
                     var traineeRow = traineeDt.Rows[0];
-                    trainee.TrainerId = traineeRow["TrainerId"] != DBNull.Value ?
-                        Convert.ToInt32(traineeRow["TrainerId"]) : (int?)null;
+                    trainee.TrainerId = traineeRow["TrainerId"] != DBNull.Value ? Convert.ToInt32(traineeRow["TrainerId"]) : (int?)null;
                     trainee.FitnessGoal = traineeRow["FitnessGoal"]?.ToString();
-                    trainee.CurrentWeight = traineeRow["CurrentWeight"] != DBNull.Value ?
-                        Convert.ToDouble(traineeRow["CurrentWeight"]) : 0;
-                    trainee.Height = traineeRow["Height"] != DBNull.Value ?
-                        Convert.ToDouble(traineeRow["Height"]) : 0;
-                    trainee.CurrentWeekPlanId = traineeRow["CurrentWeekPlanId"] != DBNull.Value ?
-                        Convert.ToInt32(traineeRow["CurrentWeekPlanId"]) : 0;
+                    trainee.CurrentWeight = traineeRow["CurrentWeight"] != DBNull.Value ? Convert.ToDouble(traineeRow["CurrentWeight"]) : 0;
+                    trainee.Height = traineeRow["Height"] != DBNull.Value ? Convert.ToDouble(traineeRow["Height"]) : 0;
+                    trainee.CurrentWeekPlanId = traineeRow["CurrentWeekPlanId"] != DBNull.Value ? Convert.ToInt32(traineeRow["CurrentWeekPlanId"]) : 0;
                 }
-
-                user = trainee;
+                return trainee;
             }
-
-            return user;
         }
         public bool UserExist(string username, string email)
         {
@@ -751,6 +744,68 @@ namespace ViewModels.Services
             }
 
             return weekPlanId;
+        }
+        #endregion
+        #region TrainerRequestManagement
+        public string GetTrainerRequestStatus(int traineeId, int trainerId)
+        {
+            var dt = _database.ExecuteQuery(
+                "SELECT Status FROM TrainerRequestsTbl WHERE TraineeUserId = ? AND TrainerUserId = ?",
+                traineeId, trainerId
+            );
+            if (dt.Rows.Count > 0)
+                return dt.Rows[0]["Status"].ToString();
+            return null;
+        }
+
+        public bool SendTrainerRequest(int traineeId, int trainerId)
+        {
+            // Check if already exists
+            var status = GetTrainerRequestStatus(traineeId, trainerId);
+            if (status != null) return false;
+
+            int affected = _database.ExecuteNonQuery(
+                "INSERT INTO TrainerRequestsTbl (TraineeUserId, TrainerUserId, Status, RequestDate) VALUES (?, ?, ?, ?)",
+                traineeId, trainerId, "Pending", DateTime.Now
+            );
+            return affected > 0;
+        }
+
+        public bool HandleTrainerRequest(int traineeId, int trainerId, string status)
+        {
+            int affected = _database.ExecuteNonQuery(
+                "UPDATE TrainerRequestsTbl SET Status = ? WHERE TraineeUserId = ? AND TrainerUserId = ?",
+                status, traineeId, trainerId
+            );
+
+            if (affected > 0 && status == "Approved")
+            {
+                // Link trainee to trainer in TraineesTbl
+                _database.ExecuteNonQuery(
+                    "UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?",
+                    trainerId, traineeId
+                );
+            }
+            return affected > 0;
+        }
+        public List<Trainee> GetPendingRequests(int trainerId)
+        {
+            var dt = _database.ExecuteQuery(
+                @"SELECT u.*, t.* 
+                  FROM (UserTbl u 
+                  INNER JOIN TraineesTbl t ON u.Id = t.UserId)
+                  INNER JOIN TrainerRequestsTbl tr ON u.Id = tr.TraineeUserId
+                  WHERE tr.TrainerUserId = ? AND tr.Status = 'Pending'",
+                trainerId
+            );
+
+            var trainees = new List<Trainee>();
+            foreach (System.Data.DataRow row in dt.Rows)
+            {
+                var trainee = (Trainee)MapUser(row);
+                trainees.Add(trainee);
+            }
+            return trainees;
         }
         #endregion
     }

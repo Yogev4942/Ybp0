@@ -58,6 +58,11 @@ namespace ViewModels
         // WeekPlan Management
         int? GetUserWeekPlanId(int userId);
         int CreateEmptyWeekPlan(int userId, string planName);
+        // Trainer Request Management
+        string GetTrainerRequestStatus(int traineeId, int trainerId);
+        bool SendTrainerRequest(int traineeId, int trainerId);
+        bool HandleTrainerRequest(int traineeId, int trainerId, string status);
+        User GetUserById(int userId);
+        List<Trainee> GetPendingRequests(int trainerId);
     }
-
 }
