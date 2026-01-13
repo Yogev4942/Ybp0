@@ -95,6 +95,7 @@ namespace ViewModels.ViewModels
         public ICommand ApproveRequestCommand { get; }
         public ICommand RejectRequestCommand { get; }
         public ICommand ToggleRequestsCommand { get; }
+        public ICommand EditProfileCommand { get; }
 
         public ProfileViewModel(IDatabaseService database, INavigationService navigation, User activeUser, User viewedUser)
         {
@@ -107,6 +108,7 @@ namespace ViewModels.ViewModels
             ApproveRequestCommand = new RelayCommand(p => HandleRequest(p as Trainee, "Approved"));
             RejectRequestCommand = new RelayCommand(p => HandleRequest(p as Trainee, "Rejected"));
             ToggleRequestsCommand = new RelayCommand(_ => IsRequestsPopupOpen = !IsRequestsPopupOpen);
+            EditProfileCommand = new RelayCommand(_ => _navigation.NavigateTo<EditProfileViewModel>(ActiveUser));
 
             LoadRequestStatus();
             LoadPendingRequests();

@@ -235,6 +235,46 @@ namespace ViewModels.Services
             }
         }
         #endregion
+
+        public bool UpdateUser(User user)
+        {
+            try
+            {
+                // 1. Update Common Fields in UserTbl
+                string updateCommonQuery = "UPDATE UserTbl SET Bio = ?, Email = ? WHERE Id = ?";
+                int commonRows = _database.ExecuteNonQuery(updateCommonQuery, user.Bio, user.Email, user.Id);
+
+                if (commonRows == 0) return false;
+
+                // 2. Update Type-Specific Fields
+                if (user is Trainee trainee)
+                {
+                    string updateTraineeQuery = "UPDATE TraineesTbl SET FitnessGoal = ?, CurrentWeight = ?, Height = ? WHERE UserId = ?";
+                    _database.ExecuteNonQuery(updateTraineeQuery, 
+                        trainee.FitnessGoal, 
+                        trainee.CurrentWeight, 
+                        trainee.Height, 
+                        user.Id);
+                }
+                else if (user is Trainer trainer)
+                {
+                    string updateTrainerQuery = "UPDATE TrainersTbl SET Specialization = ?, HourlyRate = ?, MaxTrainees = ? WHERE UserId = ?";
+                    _database.ExecuteNonQuery(updateTrainerQuery, 
+                        trainer.Specialization, 
+                        trainer.HourlyRate, 
+                        trainer.MaxTrainees, 
+                        user.Id);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Update user error: {ex.Message}");
+                return false;
+            }
+        }
+
         #region SessionManagement
         public WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date)
         {
@@ -334,29 +374,37 @@ namespace ViewModels.Services
         }
         public List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId)
         {
-            // Check if session sets exist
-            var dt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
-                workoutSessionId, exerciseId
-            );
-
-            if (dt.Rows.Count > 0)
+            try 
             {
-                // Return existing session sets
-                var sets = new List<SessionSet>();
-                foreach (System.Data.DataRow row in dt.Rows)
+                // Check if session sets exist
+                var dt = _database.ExecuteQuery(
+                    "SELECT * FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                    workoutSessionId, exerciseId
+                );
+
+                if (dt.Rows.Count > 0)
                 {
-                    sets.Add(new SessionSet
+                    // Return existing session sets
+                    var sets = new List<SessionSet>();
+                    foreach (System.Data.DataRow row in dt.Rows)
                     {
-                        Id = Convert.ToInt32(row["Id"]),
-                        WorkoutSessionId = Convert.ToInt32(row["WorkoutSessionId"]),
-                        ExerciseId = Convert.ToInt32(row["ExerciseId"]),
-                        SetNumber = Convert.ToInt32(row["SetNumber"]),
-                        Reps = Convert.ToInt32(row["Reps"]),
-                        Weight = Convert.ToDouble(row["Weight"])
-                    });
+                        sets.Add(new SessionSet
+                        {
+                            Id = Convert.ToInt32(row["Id"]),
+                            WorkoutSessionId = Convert.ToInt32(row["WorkoutSessionId"]),
+                            ExerciseId = Convert.ToInt32(row["ExerciseId"]),
+                            SetNumber = Convert.ToInt32(row["SetNumber"]),
+                            Reps = Convert.ToInt32(row["Reps"]),
+                            Weight = Convert.ToDouble(row["Weight"])
+                        });
+                    }
+                    return sets;
                 }
-                return sets;
+            }
+            catch (Exception)
+            {
+                // In a real app log this
+                return new List<SessionSet>();
             }
 
             // No session sets found - copy from template

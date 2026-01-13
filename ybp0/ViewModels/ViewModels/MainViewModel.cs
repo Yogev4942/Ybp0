@@ -130,6 +130,12 @@ namespace ViewModels.ViewModels
                 return new ProfileViewModel(Database, Navigation, _currUser, targetUser);
             }
 
+            if (type == typeof(EditProfileViewModel))
+            {
+                User targetUser = (parameter as User) ?? _currUser;
+                return new EditProfileViewModel(Database, Navigation, targetUser);
+            }
+
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

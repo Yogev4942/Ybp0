@@ -188,6 +188,7 @@
                                        FontWeight="Bold" 
                                        Foreground="White"/>
 
+
                             <!-- User Type Badge -->
                             <Border Background="#22FFFFFF" 
                                     CornerRadius="12" 
@@ -296,6 +297,29 @@
                                 </Border>
                             </StackPanel>
                         </StackPanel>
+
+                        <!-- Edit Profile Button (Top Right) -->
+                        <Button Grid.Column="1"
+                                Content="✏️ Edit" 
+                                Command="{Binding EditProfileCommand}"
+                                Visibility="{Binding IsOwnProfile, Converter={StaticResource BoolToVisibilityConverter}}"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Margin="0,20,20,0"
+                                Background="#33FFFFFF"
+                                BorderThickness="0"
+                                Foreground="White"
+                                Padding="15,8"
+                                FontSize="14"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
                     </Grid>
                 </Border>
 

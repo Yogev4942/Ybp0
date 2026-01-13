@@ -33,6 +33,8 @@ namespace ViewModels
         bool RegisterTrainer(string username, string email, string password,
                              string specialization, double hourlyRate, int maxTrainees);
 
+        bool UpdateUser(User user);
+
         // Session Management
         WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date);
 
