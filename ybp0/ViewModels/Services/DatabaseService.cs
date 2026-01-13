@@ -246,8 +246,7 @@ namespace ViewModels.Services
                     UserId = Convert.ToInt32(row["UserId"]),
                     WorkoutId = Convert.ToInt32(row["WorkoutId"]),
                     WeekPlanDayId = row["WeekPlanDayId"] != DBNull.Value ? Convert.ToInt32(row["WeekPlanDayId"]) : (int?)null,
-                    SessionDate = Convert.ToDateTime(row["SessionDate"]),
-                    Completed = Convert.ToBoolean(row["Completed"])
+                    SessionDate = Convert.ToDateTime(row["SessionDate"])
                 };
             }
 
@@ -276,8 +275,8 @@ namespace ViewModels.Services
 
             // Create new session
             _database.ExecuteNonQuery(
-                "INSERT INTO WorkoutSessionTbl ([UserId], [WorkoutId], [WeekPlanDayId], [SessionDate], [Completed]) VALUES (?, ?, ?, ?, ?)",
-                userId, workoutId, weekPlanDayId, date.Date, false
+                "INSERT INTO WorkoutSessionTbl ([UserId], [WorkoutId], [WeekPlanDayId], [SessionDate]) VALUES (?, ?, ?, ?)",
+                userId, workoutId, weekPlanDayId, date.Date
             );
 
             // Get the created session
@@ -295,20 +294,13 @@ namespace ViewModels.Services
                     UserId = Convert.ToInt32(row["UserId"]),
                     WorkoutId = Convert.ToInt32(row["WorkoutId"]),
                     WeekPlanDayId = row["WeekPlanDayId"] != DBNull.Value ? Convert.ToInt32(row["WeekPlanDayId"]) : (int?)null,
-                    SessionDate = Convert.ToDateTime(row["SessionDate"]),
-                    Completed = Convert.ToBoolean(row["Completed"])
+                    SessionDate = Convert.ToDateTime(row["SessionDate"])
                 };
             }
 
             return null;
         }
-        public void CompleteWorkoutSession(int sessionId)
-        {
-            _database.ExecuteNonQuery(
-                "UPDATE WorkoutSessionTbl SET Completed = ? WHERE Id = ?",
-                true, sessionId
-            );
-        }
+
         public List<Exercise> GetSessionExercises(int workoutSessionId)
         {
             // Query ACTUAL session sets (where ad-hoc exercises are stored)

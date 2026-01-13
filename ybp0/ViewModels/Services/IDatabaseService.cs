@@ -35,7 +35,6 @@ namespace ViewModels
 
         // Session Management
         WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date);
-        void CompleteWorkoutSession(int sessionId);
 
         // Exercise & Sets
         List<Exercise> GetSessionExercises(int workoutSessionId);
