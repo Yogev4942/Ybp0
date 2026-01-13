@@ -89,6 +89,21 @@ namespace DataBase
             }
         }
 
+        public object ExecuteScalar(string sql, params object[] parameters)
+        {
+            using (var conn = new OleDbConnection(_connectionString))
+            using (var cmd = new OleDbCommand(sql, conn))
+            {
+                conn.Open();
+
+                foreach (var p in parameters)
+                    cmd.Parameters.AddWithValue("?", p);
+
+                return cmd.ExecuteScalar();
+            }
+        }
+
+
         public bool TableExists(string tableName)
         {
             using (var conn = GetConnection())
