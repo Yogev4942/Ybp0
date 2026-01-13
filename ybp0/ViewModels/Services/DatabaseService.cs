@@ -154,22 +154,26 @@ namespace ViewModels.Services
 
                 if (affectedRows == 0) return false;
 
-                // 2. Get the newly created UserId
-                var userIdResult = _database.ExecuteScalar(
-                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? AND Email = ? ORDER BY Id DESC",
+                // 2. Small delay to ensure Access DB commits the record
+                System.Threading.Thread.Sleep(100);
+
+                // 3. Query back the full user record to get the actual ID
+                var userDt = _database.ExecuteQuery(
+                    "SELECT Id FROM UserTbl WHERE Username = ? AND Email = ?",
                     username, email
                 );
 
-                if (userIdResult == null) return false;
-                int userId = Convert.ToInt32(userIdResult);
+                if (userDt.Rows.Count == 0) return false;
+                int userId = Convert.ToInt32(userDt.Rows[0]["Id"]);
 
-                // 3. Create empty week plan
+                // 4. Create empty week plan
                 int weekPlanId = CreateEmptyWeekPlan(userId, "My Week Plan");
 
-                // 4. Insert into TraineesTbl
+                // 5. Insert into TraineesTbl
                 _database.ExecuteNonQuery(
-                    "INSERT INTO TraineesTbl ([UserId], [FitnessGoal], [CurrentWeight], [Height], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO TraineesTbl ([UserId], [TrainerId], [FitnessGoal], [CurrentWeight], [Height], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
                     userId,
+                    DBNull.Value,  // TrainerId - NULL when registering, will be set when trainer accepts request
                     fitnessGoal,
                     currentWeight,
                     height,
@@ -201,16 +205,19 @@ namespace ViewModels.Services
 
                 if (affectedRows == 0) return false;
 
-                // 2. Get the newly created UserId
-                var userIdResult = _database.ExecuteScalar(
-                    "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? AND Email = ? ORDER BY Id DESC",
+                // 2. Small delay to ensure Access DB commits the record
+                System.Threading.Thread.Sleep(100);
+
+                // 3. Query back the full user record to get the actual ID
+                var userDt = _database.ExecuteQuery(
+                    "SELECT Id FROM UserTbl WHERE Username = ? AND Email = ?",
                     username, email
                 );
 
-                if (userIdResult == null) return false;
-                int userId = Convert.ToInt32(userIdResult);
+                if (userDt.Rows.Count == 0) return false;
+                int userId = Convert.ToInt32(userDt.Rows[0]["Id"]);
 
-                // 3. Insert into TrainersTbl
+                // 4. Insert into TrainersTbl
                 _database.ExecuteNonQuery(
                     "INSERT INTO TrainersTbl ([UserId], [Specialization], [HourlyRate], [MaxTrainees]) VALUES (?, ?, ?, ?)",
                     userId,
@@ -583,14 +590,18 @@ namespace ViewModels.Services
                     planName
                 );
 
-                // Get the newly created weekplan ID
-                var weekPlanIdResult = _database.ExecuteScalar(
-                    "SELECT TOP 1 Id FROM WeekPlansTbl WHERE UserId = ? ORDER BY Id DESC",
-                    userId
+                // Small delay to ensure Access DB commits the record
+                System.Threading.Thread.Sleep(100);
+
+                // Query back to get the newly created weekplan ID
+                var weekPlanDt = _database.ExecuteQuery(
+                    "SELECT Id FROM WeekPlansTbl WHERE UserId = ? AND PlanName = ?",
+                    userId,
+                    planName
                 );
 
-                if (weekPlanIdResult == null) return 0;
-                int weekPlanId = Convert.ToInt32(weekPlanIdResult);
+                if (weekPlanDt.Rows.Count == 0) return 0;
+                int weekPlanId = Convert.ToInt32(weekPlanDt.Rows[0]["Id"]);
 
                 // Create 7 empty days (Sunday = 0 to Saturday = 6)
                 for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)

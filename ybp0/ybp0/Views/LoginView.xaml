@@ -165,10 +165,7 @@
                         Margin="0,0,0,20"
                         BorderThickness="0">
                     <Button.Background>
-                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                            <GradientStop Color="#26A69A" Offset="0"/>
-                            <GradientStop Color="#00897B" Offset="1"/>
-                        </LinearGradientBrush>
+                        <SolidColorBrush Color="#26A69A"/>
                     </Button.Background>
                     <Button.Foreground>White</Button.Foreground>
                     <Button.Template>

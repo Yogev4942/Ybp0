@@ -9,6 +9,27 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+        
+        <!-- Transparent Scrollbar Style -->
+        <Style x:Key="TransparentScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <ScrollContentPresenter/>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                      Orientation="Vertical"
+                                      HorizontalAlignment="Right"
+                                      Maximum="{TemplateBinding ScrollableHeight}"
+                                      ViewportSize="{TemplateBinding ViewportHeight}"
+                                      Value="{TemplateBinding VerticalOffset}"
+                                      Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                      Opacity="0"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <!-- Background matching main window -->
@@ -48,7 +69,8 @@
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" 
                               HorizontalScrollBarVisibility="Disabled"
-                              MaxHeight="600">
+                              MaxHeight="600"
+                              Style="{StaticResource TransparentScrollViewer}">
                     <StackPanel>
                         <!-- Back Button - Secondary Style -->
                         <Button Content="← Back"

@@ -6,6 +6,29 @@
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <!-- Transparent Scrollbar Style -->
+        <Style x:Key="TransparentScrollViewer" TargetType="ScrollViewer">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ScrollViewer">
+                        <Grid>
+                            <ScrollContentPresenter/>
+                            <ScrollBar x:Name="PART_VerticalScrollBar"
+                                      Orientation="Vertical"
+                                      HorizontalAlignment="Right"
+                                      Maximum="{TemplateBinding ScrollableHeight}"
+                                      ViewportSize="{TemplateBinding ViewportHeight}"
+                                      Value="{TemplateBinding VerticalOffset}"
+                                      Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
+                                      Opacity="0"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
     
     <!-- Background matching main theme -->
     <Grid>
@@ -75,7 +98,11 @@
         </Border>
 
         <!-- Calendar Grid with Outer Scroll (7 columns, NO inner scrollers) -->
-        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="20,10,20,20">
+        <ScrollViewer Grid.Row="1" 
+                      VerticalScrollBarVisibility="Auto" 
+                      PanningMode="VerticalOnly" 
+                      Margin="20,10,20,20"
+                      Style="{StaticResource TransparentScrollViewer}">
             <ItemsControl ItemsSource="{Binding Days}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>

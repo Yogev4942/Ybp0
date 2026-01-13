@@ -56,6 +56,15 @@ namespace ViewModels.ViewModels
         public string HourlyRateDisplay => $"${(ViewedUser as Trainer)?.HourlyRate}/hr";
         public double AverageRating => (ViewedUser as Trainer)?.Rating ?? 0;
 
+        public bool IsAcceptingTrainees 
+        {
+            get 
+            {
+                var trainer = ViewedUser as Trainer;
+                return trainer != null && trainer.TotalTrainees < trainer.MaxTrainees;
+            }
+        }
+
         private ObservableCollection<Trainee> _pendingRequests;
         public ObservableCollection<Trainee> PendingRequests
         {
