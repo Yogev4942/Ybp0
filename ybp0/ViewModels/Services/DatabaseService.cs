@@ -17,188 +17,6 @@ namespace ViewModels.Services
         public DatabaseService()
         {
             _database = new Database();
-            InitializeDatabase();
-        }
-        private void InitializeDatabase()
-        {
-            // Ensure tables exist (Access Schema)
-            
-            // 1. UserTbl
-            if (!_database.TableExists("UserTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE UserTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        Username TEXT(255) NOT NULL UNIQUE,
-                        Password TEXT(255) NOT NULL,
-                        Email TEXT(255) NOT NULL UNIQUE,
-                        JoinDate DATETIME DEFAULT Now(),
-                        IsTrainer BIT DEFAULT 0,
-                        ProfilePicture TEXT(255),
-                        Bio MEMO,
-                        Age INTEGER,
-                        Gender TEXT(50)
-                    )");
-            }
-
-            // 2. ExercisesTbl
-            if (!_database.TableExists("ExercisesTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE ExercisesTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        ExerciseName TEXT(255) NOT NULL,
-                        MuscleGroup TEXT(255)
-                    )");
-                // Seed will happen on first get
-            }
-
-            // 3. WorkoutsTbl
-            if (!_database.TableExists("WorkoutsTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WorkoutsTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        UserId INTEGER NOT NULL,
-                        WorkoutName TEXT(255) NOT NULL,
-                        CreatedByTrainerId INTEGER
-                    )");
-            }
-
-            // 4. WorkoutSessionTbl
-            if (!_database.TableExists("WorkoutSessionTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WorkoutSessionTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        UserId INTEGER NOT NULL,
-                        WorkoutId INTEGER NOT NULL,
-                        WeekPlanDayId INTEGER,
-                        SessionDate DATETIME NOT NULL,
-                        Completed BIT DEFAULT 0
-                    )");
-            }
-            else
-            {
-                // Check if 'Completed' column exists (Migration for existing DBs)
-                if (!_database.ColumnExists("WorkoutSessionTbl", "Completed"))
-                {
-                    _database.ExecuteNonQuery("ALTER TABLE WorkoutSessionTbl ADD COLUMN Completed BIT DEFAULT 0");
-                }
-            }
-
-            // 5. WorkoutSessionSetsTbl
-            if (!_database.TableExists("WorkoutSessionSetsTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WorkoutSessionSetsTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        WorkoutSessionId INTEGER NOT NULL,
-                        ExerciseId INTEGER NOT NULL,
-                        SetNumber INTEGER NOT NULL,
-                        Reps INTEGER DEFAULT 0,
-                        Weight DOUBLE DEFAULT 0
-                    )");
-            }
-
-            // 6. WeekPlansTbl
-             if (!_database.TableExists("WeekPlansTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WeekPlansTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        UserId INTEGER NOT NULL,
-                        PlanName TEXT(255) NOT NULL
-                    )");
-            }
-
-            // 7. WeekPlanDaysTbl
-            if (!_database.TableExists("WeekPlanDaysTbl"))
-            {
-                 _database.ExecuteNonQuery(@"
-                    CREATE TABLE WeekPlanDaysTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        WeekPlanId INTEGER NOT NULL,
-                        DayOfWeek INTEGER NOT NULL,
-                        WorkoutId INTEGER,
-                        RestDay BIT DEFAULT 0
-                    )");
-            }
-             
-             // 8. WorkoutExercisesTbl (Template - might be needed)
-             if (!_database.TableExists("WorkoutExercisesTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WorkoutExercisesTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        WorkoutId INTEGER NOT NULL,
-                        ExerciseId INTEGER NOT NULL
-                    )");
-            }
-             
-             // 9. WorkoutSetsTbl (Template)
-             if (!_database.TableExists("WorkoutSetsTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE WorkoutSetsTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        WorkoutExerciseId INTEGER NOT NULL,
-                        SetNumber INTEGER NOT NULL,
-                        Reps INTEGER DEFAULT 10,
-                        Weight DOUBLE DEFAULT 0
-                    )");
-            }
-
-             // 10. TraineesTbl
-             if (!_database.TableExists("TraineesTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE TraineesTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        UserId INTEGER NOT NULL UNIQUE,
-                        TrainerId INTEGER,
-                        FitnessGoal MEMO,
-                        CurrentWeight DOUBLE DEFAULT 0,
-                        Height DOUBLE DEFAULT 0,
-                        ActivityLevel TEXT(255),
-                        CurrentWeekPlanId INTEGER,
-                        IsActive BIT DEFAULT 1,
-                        Notes MEMO
-                    )");
-            }
-             
-             // 11. TrainersTbl
-             if (!_database.TableExists("TrainersTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE TrainersTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        UserId INTEGER NOT NULL UNIQUE,
-                        Specialization TEXT(255),
-                        YearsOfExperience INTEGER DEFAULT 0,
-                        Certifications MEMO,
-                        HourlyRate DOUBLE DEFAULT 0,
-                        MaxTrainees INTEGER DEFAULT 10,
-                        WorkingHours MEMO,
-                        Expertise MEMO,
-                        TotalTrainees INTEGER DEFAULT 0,
-                        Rating DOUBLE DEFAULT 0,
-                        TotalRatings INTEGER DEFAULT 0
-                    )");
-            }
-            
-            // 12. TrainerRequestsTbl
-            if (!_database.TableExists("TrainerRequestsTbl"))
-            {
-                _database.ExecuteNonQuery(@"
-                    CREATE TABLE TrainerRequestsTbl (
-                        Id AUTOINCREMENT PRIMARY KEY,
-                        TraineeUserId INTEGER NOT NULL,
-                        TrainerUserId INTEGER NOT NULL,
-                        Status TEXT(50) DEFAULT 'Pending',
-                        RequestDate DATETIME DEFAULT Now()
-                    )");
-            }
         }
 
         #region LOGIN
@@ -322,47 +140,113 @@ namespace ViewModels.Services
         public bool RegisterTrainee(string username, string email, string password,
                                    string fitnessGoal, double currentWeight, double height)
         {
-            try
+            using (var conn = _database.GetConnection())
             {
-                // Insert into UserTbl only - simplified for now
-                // JoinDate is formatted as string for Access compatibility
-                string joinDateStr = DateTime.Now.ToString("yyyy-MM-dd");
-                
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
-                      VALUES (?, ?, ?, ?, ?)",
-                    username, email, password, joinDateStr, 0
-                );
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Insert into UserTbl
+                        using (var cmd = new OleDbCommand(
+                            "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
+                            conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("?", username);
+                            cmd.Parameters.AddWithValue("?", email);
+                            cmd.Parameters.AddWithValue("?", password);
+                            cmd.Parameters.AddWithValue("?", DateTime.Now.ToString("yyyy-MM-dd"));
+                            cmd.Parameters.AddWithValue("?", 0);
+                            cmd.ExecuteNonQuery();
+                        }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Register trainee error: {ex.Message}");
-                throw; // Re-throw to see the actual error
+                        // 2. Get the new UserId
+                        int userId;
+                        using (var cmd = new OleDbCommand("SELECT @@IDENTITY", conn, transaction))
+                        {
+                            userId = (int)cmd.ExecuteScalar();
+                        }
+
+                        // 3. Create the empty week plan while still in transaction
+                        int weekPlanId = CreateEmptyWeekPlanInternal(conn, transaction, userId, "My Week Plan");
+
+                        // 4. Insert into TraineesTbl with the WeekPlanId
+                        using (var cmd = new OleDbCommand(
+                            "INSERT INTO TraineesTbl ([UserId], [FitnessGoal], [CurrentWeight], [Height], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
+                            conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("?", userId);
+                            cmd.Parameters.AddWithValue("?", fitnessGoal);
+                            cmd.Parameters.AddWithValue("?", currentWeight);
+                            cmd.Parameters.AddWithValue("?", height);
+                            cmd.Parameters.AddWithValue("?", weekPlanId);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        System.Diagnostics.Debug.WriteLine($"Register trainee error: {ex.Message}");
+                        throw;
+                    }
+                }
             }
         }
         public bool RegisterTrainer(string username, string email, string password,
                                    string specialization, double hourlyRate, int maxTrainees)
         {
-            try
+            using (var conn = _database.GetConnection())
             {
-                // Insert into UserTbl only - simplified for now
-                // JoinDate is formatted as string for Access compatibility
-                string joinDateStr = DateTime.Now.ToString("yyyy-MM-dd");
-                
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) 
-                      VALUES (?, ?, ?, ?, ?)",
-                    username, email, password, joinDateStr, -1
-                );
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Insert into UserTbl
+                        using (var cmd = new OleDbCommand(
+                            "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
+                            conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("?", username);
+                            cmd.Parameters.AddWithValue("?", email);
+                            cmd.Parameters.AddWithValue("?", password);
+                            cmd.Parameters.AddWithValue("?", DateTime.Now.ToString("yyyy-MM-dd"));
+                            cmd.Parameters.AddWithValue("?", -1);
+                            cmd.ExecuteNonQuery();
+                        }
 
-                return true;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"Register trainer error: {ex.Message}");
-                throw; // Re-throw to see the actual error
+                        // 2. Get the new UserId
+                        int userId;
+                        using (var cmd = new OleDbCommand("SELECT @@IDENTITY", conn, transaction))
+                        {
+                            userId = (int)cmd.ExecuteScalar();
+                        }
+
+                        // 3. Insert into TrainersTbl
+                        using (var cmd = new OleDbCommand(
+                            "INSERT INTO TrainersTbl ([UserId], [Specialization], [HourlyRate], [MaxTrainees]) VALUES (?, ?, ?, ?)",
+                            conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("?", userId);
+                            cmd.Parameters.AddWithValue("?", specialization);
+                            cmd.Parameters.AddWithValue("?", hourlyRate);
+                            cmd.Parameters.AddWithValue("?", maxTrainees);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        System.Diagnostics.Debug.WriteLine($"Register trainer error: {ex.Message}");
+                        throw;
+                    }
+                }
             }
         }
         #endregion
@@ -720,27 +604,55 @@ namespace ViewModels.Services
         }
         public int CreateEmptyWeekPlan(int userId, string planName)
         {
+            using (var conn = _database.GetConnection())
+            {
+                conn.Open();
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        int id = CreateEmptyWeekPlanInternal(conn, transaction, userId, planName);
+                        transaction.Commit();
+                        return id;
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+        }
+
+        private int CreateEmptyWeekPlanInternal(OleDbConnection conn, OleDbTransaction transaction, int userId, string planName)
+        {
             // Insert new weekplan
-            _database.ExecuteNonQuery(
-                "INSERT INTO WeekPlansTbl (UserId, PlanName) VALUES (?, ?)",
-                userId, planName
-            );
+            using (var cmd = new OleDbCommand("INSERT INTO WeekPlansTbl (UserId, PlanName) VALUES (?, ?)", conn, transaction))
+            {
+                cmd.Parameters.AddWithValue("?", userId);
+                cmd.Parameters.AddWithValue("?", planName);
+                cmd.ExecuteNonQuery();
+            }
 
             // Get the newly created weekplan ID
-            var dt = _database.ExecuteQuery(
-                "SELECT TOP 1 Id FROM WeekPlansTbl WHERE UserId = ? ORDER BY Id DESC",
-                userId
-            );
+            int weekPlanId;
+            using (var cmd = new OleDbCommand("SELECT @@IDENTITY", conn, transaction))
+            {
+                weekPlanId = (int)cmd.ExecuteScalar();
+            }
 
-            int weekPlanId = Convert.ToInt32(dt.Rows[0]["Id"]);
-
-            // Create 7 empty days (Sunday = 0, Saturday = 6)
+            // Create 7 empty days (Sunday = 0 to Saturday = 6)
             for (int dayOfWeek = 0; dayOfWeek < 7; dayOfWeek++)
             {
-                _database.ExecuteNonQuery(
+                using (var cmd = new OleDbCommand(
                     "INSERT INTO WeekPlanDaysTbl (WeekplanId, DayOfWeek, WorkoutId, RestDay) VALUES (?, ?, NULL, ?)",
-                    weekPlanId, dayOfWeek, false
-                );
+                    conn, transaction))
+                {
+                    cmd.Parameters.AddWithValue("?", weekPlanId);
+                    cmd.Parameters.AddWithValue("?", dayOfWeek);
+                    cmd.Parameters.AddWithValue("?", false);
+                    cmd.ExecuteNonQuery();
+                }
             }
 
             return weekPlanId;
