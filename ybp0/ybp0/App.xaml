@@ -37,5 +37,8 @@
         <DataTemplate DataType="{x:Type vm:ProfileViewModel}">
             <views:ProfileView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:EditProfileViewModel}">
+            <views:EditProfileView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

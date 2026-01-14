@@ -22,22 +22,15 @@ namespace ViewModels
         /// <param name="password"></param>
         /// <returns></returns>
         bool ValidateLogin(string username, string password);
-
         bool UserExist(string username, string email);
-
         bool RegisterUser(string username, string email, string password);
-
         bool RegisterTrainee(string username, string email, string password,
                              string fitnessGoal, double currentWeight, double height);
-
         bool RegisterTrainer(string username, string email, string password,
                              string specialization, double hourlyRate, int maxTrainees);
-
         bool UpdateUser(User user);
-
         // Session Management
         WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date);
-
         // Exercise & Sets
         List<Exercise> GetSessionExercises(int workoutSessionId);
         List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId);
