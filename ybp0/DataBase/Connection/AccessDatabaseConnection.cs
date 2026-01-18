@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace DataBase
 {
-    public class Database
+    public class AccessDatabaseConnection
     {
         private readonly string _dbPath;
         private readonly string _connectionString;
 
         private const string AccessProvider = "Microsoft.ACE.OLEDB.12.0";
 
-        public Database()
+        public AccessDatabaseConnection()
         {
             string dbFileName = "DB.accdb";
             _dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFileName);

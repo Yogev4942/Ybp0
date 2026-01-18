@@ -12,11 +12,11 @@ namespace ViewModels.Services
 {
     public class DatabaseService : IDatabaseService
     {
-        private Database _database;
+        private AccessDatabaseConnection _database;
 
         public DatabaseService()
         {
-            _database = new Database();
+            _database = new AccessDatabaseConnection();
         }
 
         #region LOGIN
