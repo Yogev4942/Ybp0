@@ -16,6 +16,7 @@ namespace DataBase.DataTransferObjects
         bool isTrainer;
         string bio;
         string gender;
+        int currentWeekPlanId;
 
         public int ID { get => id; set => id = value; }
         public string Email { get => email; set => email = value; }
@@ -25,5 +26,6 @@ namespace DataBase.DataTransferObjects
         public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
         public string Bio { get => bio; set => bio = value; }
         public string Gender { get => gender; set => gender = value; }
+        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
     }
 }

@@ -111,22 +111,12 @@ namespace ViewModels.ViewModels
             // Initialize Modal Commands
             OpenExerciseModalCommand = new RelayCommand(param => OpenExerciseModal(param as DayViewModel));
             CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
-
             int? weekPlanId = null;
-
-            // 1. Priority: Assigned Plan (for Trainee)
-            if (_currUser is Trainee trainee && trainee.CurrentWeekPlanId > 0)
-            {
-                weekPlanId = trainee.CurrentWeekPlanId;
-            }
-
-            // 2. Fallback: Any existing plan owned by user
+            weekPlanId = _currUser.CurrentWeekPlanId;
             if (!weekPlanId.HasValue)
             {
                 weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
             }
-
-            // Load the weekplan
             LoadWeekPlan(_currUser.Id, weekPlanId.Value);
             DisplayWeekPlanId = weekPlanId.Value.ToString();
             WeekPlanOwnerLabel = "Your Plan";

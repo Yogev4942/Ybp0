@@ -10,13 +10,10 @@ namespace Models
         private string fitnessGoal;           // "Weight Loss", "Muscle Gain", "Endurance", "General Fitness"
         private double currentWeight;
         private double height;
-        private int currentWeekPlanId;
-
         public int? TrainerId { get => trainerId; set => trainerId = value; }
         public string FitnessGoal { get => fitnessGoal; set => fitnessGoal = value; }
         public double CurrentWeight { get => currentWeight; set => currentWeight = value; }
         public double Height { get => height; set => height = value; }
-        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
         public Trainer AssignedTrainer { get; set; }
 
         // Calculated properties

@@ -16,6 +16,7 @@ namespace Models
         protected bool isTrainer;
         protected string bio;
         protected string gender;
+        private int currentWeekPlanId;
 
         // Public properties
         public string Email { get => email; set => email = value; }
@@ -25,6 +26,7 @@ namespace Models
         public string Bio { get => bio; set => bio = value; }
         public string Gender { get => gender; set => gender = value; }
         public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
+        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
 
         // Abstract method that each user type must implement
         public abstract string GetUserType();

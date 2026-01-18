@@ -48,8 +48,10 @@ namespace ViewModels.Services
 
         private User MapUser(System.Data.DataRow userRow)
         {
+            // Common User Properties
             int userId = Convert.ToInt32(userRow["Id"]);
             bool isTrainer = userRow["IsTrainer"] != DBNull.Value && Convert.ToBoolean(userRow["IsTrainer"]);
+            int currentWeekPlanId = userRow["CurrentWeekPlanId"] != DBNull.Value ? Convert.ToInt32(userRow["CurrentWeekPlanId"]) : 0;
 
             if (isTrainer)
             {
@@ -62,7 +64,8 @@ namespace ViewModels.Services
                     Joindate = userRow["JoinDate"]?.ToString(),
                     Bio = userRow["Bio"]?.ToString(),
                     Gender = userRow["Gender"]?.ToString(),
-                    IsTrainer = true
+                    IsTrainer = true,
+                    CurrentWeekPlanId = currentWeekPlanId
                 };
 
                 var trainerDt = _database.ExecuteQuery("SELECT * FROM TrainersTbl WHERE UserId = ?", userId);
@@ -89,7 +92,8 @@ namespace ViewModels.Services
                     Joindate = userRow["JoinDate"]?.ToString(),
                     Bio = userRow["Bio"]?.ToString(),
                     Gender = userRow["Gender"]?.ToString(),
-                    IsTrainer = false
+                    IsTrainer = false,
+                    CurrentWeekPlanId = currentWeekPlanId
                 };
 
                 var traineeDt = _database.ExecuteQuery("SELECT * FROM TraineesTbl WHERE UserId = ?", userId);
@@ -100,7 +104,6 @@ namespace ViewModels.Services
                     trainee.FitnessGoal = traineeRow["FitnessGoal"]?.ToString();
                     trainee.CurrentWeight = traineeRow["CurrentWeight"] != DBNull.Value ? Convert.ToDouble(traineeRow["CurrentWeight"]) : 0;
                     trainee.Height = traineeRow["Height"] != DBNull.Value ? Convert.ToDouble(traineeRow["Height"]) : 0;
-                    trainee.CurrentWeekPlanId = traineeRow["CurrentWeekPlanId"] != DBNull.Value ? Convert.ToInt32(traineeRow["CurrentWeekPlanId"]) : 0;
                 }
                 return trainee;
             }
@@ -120,12 +123,13 @@ namespace ViewModels.Services
             try
             {
                 int affectedRows = _database.ExecuteNonQuery(
-                    "INSERT INTO [UserTbl] ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO [UserTbl] ([Username], [Email], [Password], [JoinDate], [IsTrainer], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
                     username,
                     email,
                     password,
                     DateTime.Today,
-                    0
+                    0,
+                    DBNull.Value
                 );
 
                 return affectedRows > 0;
@@ -144,12 +148,13 @@ namespace ViewModels.Services
             {
                 // 1. Insert into UserTbl
                 int affectedRows = _database.ExecuteNonQuery(
-                    "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
                     username,
                     email,
                     password,
                     DateTime.Now.ToString("yyyy-MM-dd"),
-                    0
+                    0,
+                    DBNull.Value
                 );
 
                 if (affectedRows == 0) return false;
@@ -169,15 +174,20 @@ namespace ViewModels.Services
                 // 4. Create empty week plan
                 int weekPlanId = CreateEmptyWeekPlan(userId, "My Week Plan");
 
+                // 4.5 Update UserTbl with the new WeekPlanId
+                 _database.ExecuteNonQuery(
+                    "UPDATE UserTbl SET CurrentWeekPlanId = ? WHERE Id = ?",
+                    weekPlanId, userId
+                );
+
                 // 5. Insert into TraineesTbl
                 _database.ExecuteNonQuery(
-                    "INSERT INTO TraineesTbl ([UserId], [TrainerId], [FitnessGoal], [CurrentWeight], [Height], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
+                    "INSERT INTO TraineesTbl ([UserId], [TrainerId], [FitnessGoal], [CurrentWeight], [Height]) VALUES (?, ?, ?, ?, ?)",
                     userId,
                     DBNull.Value,  // TrainerId - NULL when registering, will be set when trainer accepts request
                     fitnessGoal,
                     currentWeight,
-                    height,
-                    weekPlanId
+                    height
                 );
 
                 return true;
@@ -195,12 +205,13 @@ namespace ViewModels.Services
             {
                 // 1. Insert into UserTbl
                 int affectedRows = _database.ExecuteNonQuery(
-                    "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer]) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
                     username,
                     email,
                     password,
                     DateTime.Now.ToString("yyyy-MM-dd"),
-                    -1  // IsTrainer = true
+                    -1,  // IsTrainer = true
+                    DBNull.Value
                 );
 
                 if (affectedRows == 0) return false;
@@ -581,13 +592,13 @@ namespace ViewModels.Services
         {
             // Get the UserId from TraineesTbl where CurrentWeekPlanId matches
             var dt = _database.ExecuteQuery(
-                "SELECT UserId FROM TraineesTbl WHERE CurrentWeekPlanId = ?",
+                "SELECT Id FROM UserTbl WHERE CurrentWeekPlanId = ?",
                 weekPlanId
             );
 
             if (dt.Rows.Count > 0)
             {
-                return Convert.ToInt32(dt.Rows[0]["UserId"]);
+                return Convert.ToInt32(dt.Rows[0]["Id"]);
             }
             return null;
         }
@@ -608,9 +619,9 @@ namespace ViewModels.Services
                 {
                     Id = Convert.ToInt32(row["UserId"]),
                     Username = row["Username"]?.ToString(),
+                    Password = row["Password"]?.ToString(),
                     Email = row["Email"]?.ToString(),
-                    CurrentWeekPlanId = row["CurrentWeekPlanId"] != DBNull.Value ?
-                        Convert.ToInt32(row["CurrentWeekPlanId"]) : 0
+                    CurrentWeekPlanId = row["CurrentWeekPlanId"] != DBNull.Value ? Convert.ToInt32(row["CurrentWeekPlanId"]) : 0
                 });
             }
             return trainees;

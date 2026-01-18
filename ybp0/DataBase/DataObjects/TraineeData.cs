@@ -14,7 +14,6 @@ namespace DataBase.DataTransferObjects
         string fitnessGoal;
         int currentWeight;
         int height;
-        int currentWeekPlanId;
 
         public int Id { get => id; set => id = value; }
         public int UserId { get => userId; set => userId = value; }
@@ -22,6 +21,5 @@ namespace DataBase.DataTransferObjects
         public string FitnessGoal { get => fitnessGoal; set => fitnessGoal = value; }
         public int CurrentWeight { get => currentWeight; set => currentWeight = value; }
         public int Height { get => height; set => height = value; }
-        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
     }
 }
