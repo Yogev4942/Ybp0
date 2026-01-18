@@ -19,17 +19,17 @@ namespace DataBase
         public AccessDatabaseConnection()
         {
             string dbFileName = "DB.accdb";
-            _dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, dbFileName);
-
-            _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            _dbPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\DataBase\DataBase", dbFileName));
 
             if (!File.Exists(_dbPath))
             {
-                _dbPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DB", dbFileName);
-                _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
+                throw new FileNotFoundException($"Database not found at: {_dbPath}");
             }
-        }
 
+            _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
+
+        }
         private OleDbConnection GetConnection()
         {
             return new OleDbConnection(_connectionString);
