@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DataBase.Repository.Interfaces
 {
-    public class IUserRepository
+    public class ITrainerRepository
     {
     }
 }

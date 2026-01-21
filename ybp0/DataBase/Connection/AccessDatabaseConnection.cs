@@ -6,14 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DataBase.Connection;
 
 namespace DataBase
 {
-    public class AccessDatabaseConnection
+    public class AccessDatabaseConnection : IDataBaseConnection
     {
         private readonly string _dbPath;
         private readonly string _connectionString;
-
         private const string AccessProvider = "Microsoft.ACE.OLEDB.12.0";
 
         public AccessDatabaseConnection()
@@ -37,72 +37,50 @@ namespace DataBase
             return new OleDbConnection(_connectionString);
         }
 
-        public DataTable ExecuteQuery(string sql)
+        public DataTable ExecuteQuery(string query, params object[] parameters)
         {
-            using (var conn = GetConnection())
-            using (var cmd = new OleDbCommand(sql, conn))
-            using (var adapter = new OleDbDataAdapter(cmd))
+            using (var connection = new OleDbConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
+            using (var adapter = new OleDbDataAdapter(command))
             {
-                DataTable dt = new DataTable();
-                conn.Open();
-                adapter.Fill(dt);
-                return dt;
+                connection.Open();
+                var dataTable = new DataTable();
+                adapter.Fill(dataTable);
+                return dataTable;
             }
         }
-        public DataTable ExecuteQuery(string sql, params object[] parameters)
+        public int ExecuteNonQuery(string query, params object[] parameters)
         {
-            using (var conn = new OleDbConnection(_connectionString))
-            using (var cmd = new OleDbCommand(sql, conn))
-            using (var adapter = new OleDbDataAdapter(cmd))
+            using (var connection = new OleDbConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                conn.Open();
-
-                foreach (var p in parameters)
-                    cmd.Parameters.AddWithValue("?", p);
-
-                DataTable dt = new DataTable();
-                adapter.Fill(dt);
-                return dt;
+                connection.Open();
+                return command.ExecuteNonQuery();
             }
         }
-
-        public int ExecuteNonQuery(string sql, params object[] parameters)
+        public T ExecuteScalar<T>(string query, params object[] parameters)
         {
-            using (var conn = new OleDbConnection(_connectionString))
-            using (var cmd = new OleDbCommand(sql, conn))
+            using (var connection = new OleDbConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                conn.Open();
-
-                foreach (var p in parameters)
-                    cmd.Parameters.AddWithValue("?", p);
-
-                return cmd.ExecuteNonQuery();
+                connection.Open();
+                var result = command.ExecuteScalar();
+                if (result == null || result == DBNull.Value)
+                    return default(T);
+                return (T)Convert.ChangeType(result, typeof(T));
             }
         }
-
-
-        public object ExecuteScalar(string sql)
+        private OleDbCommand CreateCommand(OleDbConnection connection, string query, object[] parameters)
         {
-            using (var conn = GetConnection())
-            using (var cmd = new OleDbCommand(sql, conn))
+            var command = connection.CreateCommand();
+            command.CommandText = query;
+
+            foreach (var param in parameters)
             {
-                conn.Open();
-                return cmd.ExecuteScalar();
+                command.Parameters.AddWithValue("?", param ?? DBNull.Value);
             }
-        }
 
-        public object ExecuteScalar(string sql, params object[] parameters)
-        {
-            using (var conn = new OleDbConnection(_connectionString))
-            using (var cmd = new OleDbCommand(sql, conn))
-            {
-                conn.Open();
-
-                foreach (var p in parameters)
-                    cmd.Parameters.AddWithValue("?", p);
-
-                return cmd.ExecuteScalar();
-            }
+            return command;
         }
 
 
@@ -115,7 +93,6 @@ namespace DataBase
                 return schema.Rows.Count > 0;
             }
         }
-
         public bool ColumnExists(string tableName, string columnName)
         {
             using (var conn = GetConnection())
@@ -125,6 +102,5 @@ namespace DataBase
                 return schema.Rows.Count > 0;
             }
         }
-
     }
 }
