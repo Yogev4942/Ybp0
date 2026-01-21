@@ -16,11 +16,23 @@
         <DataTemplate DataType="{x:Type vm:CalendarViewModel}">
             <views:CalendarView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TraineeCalendarViewModel}">
+            <views:TraineeCalendarView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TrainerCalendarViewModel}">
+            <views:TrainerCalendarView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:LoginViewModel}">
             <views:LoginView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:RegisterViewModel}">
             <views:RegisterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TraineeRegisterViewModel}">
+            <views:TraineeRegisterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TrainerRegisterViewModel}">
+            <views:TrainerRegisterView />
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:WorkoutViewModel}">
             <views:WorkoutView />
@@ -31,6 +43,12 @@
         <DataTemplate DataType="{x:Type vm:FeedViewModel}">
             <views:FeedView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TraineeFeedViewModel}">
+            <views:TraineeFeedView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TrainerFeedViewModel}">
+            <views:TrainerFeedView />
+        </DataTemplate>
         <DataTemplate DataType="{x:Type vm:PostViewModel}">
             <views:PostView />
         </DataTemplate>
@@ -39,6 +57,12 @@
         </DataTemplate>
         <DataTemplate DataType="{x:Type vm:EditProfileViewModel}">
             <views:EditProfileView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TraineeProfileViewModel}">
+            <views:TraineeProfileView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:TrainerProfileViewModel}">
+            <views:TrainerProfileView />
         </DataTemplate>
     </Application.Resources>
 </Application>

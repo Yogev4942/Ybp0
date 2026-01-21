@@ -101,6 +101,13 @@ namespace ViewModels.ViewModels
             if (type == typeof(RegisterViewModel))
                 return new RegisterViewModel(Database, Navigation);
 
+            // Direct navigation to specific register view models
+            if (type == typeof(TraineeRegisterViewModel))
+                return new TraineeRegisterViewModel(Database, Navigation);
+
+            if (type == typeof(TrainerRegisterViewModel))
+                return new TrainerRegisterViewModel(Database, Navigation);
+
             if (type == typeof(HomeViewModel))
             {
                 if (parameter is User user)
@@ -112,10 +119,23 @@ namespace ViewModels.ViewModels
             }
 
             if (type == typeof(CalendarViewModel))
-                return new CalendarViewModel(Database,Navigation, _currUser);
+            {
+                // Route to specific calendar view model based on user type
+                if (_currUser.IsTrainer)
+                    return new TrainerCalendarViewModel(Database, Navigation, _currUser);
+                else
+                    return new TraineeCalendarViewModel(Database, Navigation, _currUser);
+            }
 
             if (type == typeof(FeedViewModel))
-                return new FeedViewModel(Database,Navigation,_currUser);
+            {
+                // Route to specific feed view model based on user type
+                if (_currUser.IsTrainer)
+                    return new TrainerFeedViewModel(Database, Navigation, _currUser);
+                else
+                    return new TraineeFeedViewModel(Database, Navigation, _currUser);
+            }
+
             if (type == typeof(ProfileViewModel))
             {
                 User targetUser = null;
@@ -127,7 +147,11 @@ namespace ViewModels.ViewModels
                 // Fallback to current user if nothing else works
                 targetUser = targetUser ?? _currUser;
                 
-                return new ProfileViewModel(Database, Navigation, _currUser, targetUser);
+                // Route to specific profile view model based on TARGET user type
+                if (targetUser.IsTrainer)
+                    return new TrainerProfileViewModel(Database, Navigation, _currUser, targetUser);
+                else
+                    return new TraineeProfileViewModel(Database, Navigation, _currUser, targetUser);
             }
 
             if (type == typeof(EditProfileViewModel))

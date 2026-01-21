@@ -100,6 +100,20 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="Views\TraineeViews\TraineeCalendarView.xaml.cs">
+      <DependentUpon>TraineeCalendarView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TraineeViews\TraineeCalendarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TrainerViews\TrainerCalendarView.xaml.cs">
+      <DependentUpon>TrainerCalendarView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TrainerViews\TrainerCalendarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Compile Include="Views\EditProfileView.xaml.cs">
       <DependentUpon>EditProfileView.xaml</DependentUpon>
     </Compile>
@@ -112,6 +126,20 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\FeedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TraineeViews\TraineeFeedView.xaml.cs">
+      <DependentUpon>TraineeFeedView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TraineeViews\TraineeFeedView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TrainerViews\TrainerFeedView.xaml.cs">
+      <DependentUpon>TrainerFeedView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TrainerViews\TrainerFeedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -131,7 +159,35 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Compile Include="Views\TraineeViews\TraineeProfileView.xaml.cs">
+      <DependentUpon>TraineeProfileView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TraineeViews\TraineeProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TrainerViews\TrainerProfileView.xaml.cs">
+      <DependentUpon>TrainerProfileView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TrainerViews\TrainerProfileView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\RegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TraineeViews\TraineeRegisterView.xaml.cs">
+      <DependentUpon>TraineeRegisterView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TraineeViews\TraineeRegisterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Compile Include="Views\TrainerViews\TrainerRegisterView.xaml.cs">
+      <DependentUpon>TrainerRegisterView.xaml</DependentUpon>
+    </Compile>
+    <Page Include="Views\TrainerViews\TrainerRegisterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

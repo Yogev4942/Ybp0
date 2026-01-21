@@ -7,32 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
 
-    <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        
-        <!-- Transparent Scrollbar Style -->
-        <Style x:Key="TransparentScrollViewer" TargetType="ScrollViewer">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ScrollViewer">
-                        <Grid>
-                            <ScrollContentPresenter/>
-                            <ScrollBar x:Name="PART_VerticalScrollBar"
-                                      Orientation="Vertical"
-                                      HorizontalAlignment="Right"
-                                      Maximum="{TemplateBinding ScrollableHeight}"
-                                      ViewportSize="{TemplateBinding ViewportHeight}"
-                                      Value="{TemplateBinding VerticalOffset}"
-                                      Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"
-                                      Opacity="0"/>
-                        </Grid>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-    </UserControl.Resources>
-
-    <!-- Background matching main window -->
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -41,501 +15,111 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+        <Border Padding="40" CornerRadius="22" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Color="#44FFFFFF" Offset="0"/>
+                    <GradientStop Color="#22FFFFFF" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Border.Effect>
+                <DropShadowEffect Color="#69F0AE" BlurRadius="18" ShadowDepth="0" Opacity="0.5"/>
+            </Border.Effect>
 
-        <!-- Glassy Register Card -->
-        <Grid HorizontalAlignment="Center"
-              VerticalAlignment="Center">
-            <Border
-                Padding="40"
-                CornerRadius="22"
-                Width="420"
-                MaxHeight="700">
-                <Border.Background>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                        <GradientStop Color="#44FFFFFF" Offset="0"/>
-                        <GradientStop Color="#22FFFFFF" Offset="1"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Border.Effect>
-                    <DropShadowEffect 
-                        Color="#69F0AE"
-                        BlurRadius="18"
-                        ShadowDepth="0"
-                        Opacity="0.5" />
-                </Border.Effect>
+            <StackPanel>
+                <!-- Back Button -->
+                <Button Content="← Back"
+                        Command="{Binding GoBackCommand}"
+                        HorizontalAlignment="Left"
+                        Padding="10,5"
+                        FontSize="14"
+                        Cursor="Hand"
+                        Margin="0,0,0,20"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        Foreground="#DDFFFFFF"/>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" 
-                              HorizontalScrollBarVisibility="Disabled"
-                              MaxHeight="600"
-                              Style="{StaticResource TransparentScrollViewer}">
-                    <StackPanel>
-                        <!-- Back Button - Secondary Style -->
-                        <Button Content="← Back"
-                                Command="{Binding GoBackCommand}"
-                                HorizontalAlignment="Left"
-                                Height="32"
-                                Padding="12,0"
-                                FontSize="13"
-                                Cursor="Hand"
-                                Margin="0,0,0,15">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border"
-                                            Background="Transparent"
-                                            BorderBrush="#55FFFFFF"
-                                            BorderThickness="1"
-                                            CornerRadius="10"
-                                            Padding="{TemplateBinding Padding}">
-                                        <Border.Effect>
-                                            <DropShadowEffect x:Name="glow" 
-                                                            Color="#80E8FF" 
-                                                            BlurRadius="0" 
-                                                            ShadowDepth="0" 
-                                                            Opacity="0"/>
-                                        </Border.Effect>
-                                        <ContentPresenter 
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center"
-                                            TextBlock.Foreground="#AAFFFFFF"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetName="border"
-                                                                       Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                                       To="#22FFFFFF" Duration="0:0:0.2"/>
-                                                        <ColorAnimation Storyboard.TargetName="border"
-                                                                       Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
-                                                                       To="#80E8FF" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="BlurRadius"
-                                                                       To="12" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="Opacity"
-                                                                       To="0.5" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <ColorAnimation Storyboard.TargetName="border"
-                                                                       Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-                                                                       To="Transparent" Duration="0:0:0.2"/>
-                                                        <ColorAnimation Storyboard.TargetName="border"
-                                                                       Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
-                                                                       To="#55FFFFFF" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="BlurRadius"
-                                                                       To="0" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="Opacity"
-                                                                       To="0" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Opacity" Value="0.7"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                <TextBlock Text="Create Account"
+                           Foreground="White"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,10"/>
 
-                        <!-- Title -->
-                        <TextBlock Text="Create Account"
-                                  Foreground="White"
-                                  FontSize="26"
-                                  FontWeight="Bold"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,0,0,8"/>
+                <TextBlock Text="I want to register as..."
+                           Foreground="#DDFFFFFF"
+                           FontSize="16"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,30"/>
 
-                        <TextBlock Text="Join us today"
-                                  Foreground="#DDFFFFFF"
-                                  FontSize="14"
-                                  HorizontalAlignment="Center"
-                                  Margin="0,0,0,20"/>
-
-                        <TextBlock Text="{Binding ErrorMsg}"
-                                    Foreground="Red"
-                                     FontSize="14"
-                                     HorizontalAlignment="Center"
-                                     Margin="0,0,0,15"
-                            />
-
-                        <!-- User Type Selection -->
-                        <StackPanel Margin="0,0,0,20">
-                            <TextBlock Text="I want to register as:" 
-                                      Foreground="#DDFFFFFF" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,8"/>
-                            <Border CornerRadius="12"
-                                    Background="#33FFFFFF"
-                                    BorderBrush="#55FFFFFF"
-                                    BorderThickness="1"
-                                    Padding="8,4">
-                                <ComboBox 
-                                    SelectedValue="{Binding SelectedUserType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    SelectedValuePath="Content"
-                                    FontSize="14"
-                                    Foreground="#004D40"
-                                    FontWeight="SemiBold"
-                                    BorderThickness="0">
-                                    <ComboBoxItem Content="Trainee" IsSelected="True"/>
-                                    <ComboBoxItem Content="Trainer"/>
-                                    
-                                    <ComboBox.ItemContainerStyle>
-                                        <Style TargetType="ComboBoxItem">
-                                            <Setter Property="Foreground" Value="Black"/>
-                                            <Setter Property="Background" Value="White"/>
-                                            <Setter Property="Padding" Value="5"/>
-                                        </Style>
-                                    </ComboBox.ItemContainerStyle>
-
-                                    <!-- Custom Template to remove default Chrome and force transparency -->
-                                    <ComboBox.Template>
-                                        <ControlTemplate TargetType="ComboBox">
-                                            <Grid>
-                                                <ToggleButton 
-                                                    Name="ToggleButton" 
-                                                    BorderBrush="{TemplateBinding BorderBrush}" 
-                                                    Background="Transparent"
-                                                    Foreground="{TemplateBinding Foreground}"
-                                                    Grid.Column="2"
-                                                    Focusable="false"
-                                                    IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"
-                                                    ClickMode="Press">
-                                                    <ToggleButton.Template>
-                                                        <ControlTemplate TargetType="ToggleButton">
-                                                            <Border 
-                                                                x:Name="Border" 
-                                                                Grid.ColumnSpan="2"
-                                                                CornerRadius="0"
-                                                                Background="Transparent"
-                                                                BorderBrush="Transparent"
-                                                                BorderThickness="0">
-                                                                <Grid>
-                                                                    <Path 
-                                                                        x:Name="Arrow"
-                                                                        Grid.Column="1"     
-                                                                        Fill="{TemplateBinding Foreground}"
-                                                                        HorizontalAlignment="Right"
-                                                                        VerticalAlignment="Center"
-                                                                        Margin="0,0,10,0"
-                                                                        Data="M 0 0 L 4 4 L 8 0 Z"/>
-                                                                </Grid>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </ToggleButton.Template>
-                                                </ToggleButton>
-                                                <ContentPresenter 
-                                                    Name="ContentSite"
-                                                    IsHitTestVisible="False" 
-                                                    Content="{TemplateBinding SelectionBoxItem}"
-                                                    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-                                                    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                    Margin="10,0,30,0"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Left" />
-                                                <Popup 
-                                                    Name="Popup"
-                                                    Placement="Bottom"
-                                                    IsOpen="{TemplateBinding IsDropDownOpen}"
-                                                    AllowsTransparency="True" 
-                                                    Focusable="False"
-                                                    PopupAnimation="Slide">
-                                                    <Grid 
-                                                        Name="DropDown"
-                                                        SnapsToDevicePixels="True"                
-                                                        MinWidth="{TemplateBinding ActualWidth}"
-                                                        MaxHeight="{TemplateBinding MaxDropDownHeight}">
-                                                        <Border 
-                                                            x:Name="DropDownBorder"
-                                                            Background="White"
-                                                            BorderThickness="1"
-                                                            BorderBrush="#888888"
-                                                            CornerRadius="8"
-                                                            Effect="{DynamicResource {x:Static CheckBox.EffectProperty}}"/>
-                                                        <!-- Using a simple border for dropdown background -->
-                                                        <Border Background="White" CornerRadius="8" BorderThickness="1" BorderBrush="#DDDDDD">
-                                                            <ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
-                                                                <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
-                                                            </ScrollViewer>
-                                                        </Border>
-                                                    </Grid>
-                                                </Popup>
-                                            </Grid>
-                                        </ControlTemplate>
-                                    </ComboBox.Template>
-                                </ComboBox>
+                <!-- Trainee Button -->
+                <Button Command="{Binding SelectTraineeCommand}"
+                        Height="60"
+                        Margin="0,0,0,20"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="#EEFFFFFF" CornerRadius="12" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="🏃" FontSize="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Trainee" FontSize="18" FontWeight="Bold" Foreground="#00695C"/>
+                                        <TextBlock Text="I want to find a trainer" FontSize="12" Foreground="#555"/>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
-                        </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="White"/>
+                                    <Setter TargetName="border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="White" BlurRadius="10" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
-                        <!-- Email -->
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Email" 
-                                      Foreground="#DDFFFFFF" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,6"/>
-                            <Border CornerRadius="12"
-                                    Background="#33FFFFFF"
-                                    BorderBrush="#55FFFFFF"
-                                    BorderThickness="1"
-                                    Padding="12">
-                                <TextBox 
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    FontSize="14"
-                                    Foreground="White"
-                                    Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                <!-- Trainer Button -->
+                <Button Command="{Binding SelectTrainerCommand}"
+                        Height="60"
+                        Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="#EEFFFFFF" CornerRadius="12" Padding="15">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="💪" FontSize="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock Text="Trainer" FontSize="18" FontWeight="Bold" Foreground="#00695C"/>
+                                        <TextBlock Text="I want to train clients" FontSize="12" Foreground="#555"/>
+                                    </StackPanel>
+                                </Grid>
                             </Border>
-                        </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="White"/>
+                                    <Setter TargetName="border" Property="Effect">
+                                        <Setter.Value>
+                                            <DropShadowEffect Color="White" BlurRadius="10" Opacity="0.5"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
-                        <!-- Username -->
-                        <StackPanel Margin="0,0,0,15">
-                            <TextBlock Text="Username" 
-                                      Foreground="#DDFFFFFF" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,6"/>
-                            <Border CornerRadius="12"
-                                    Background="#33FFFFFF"
-                                    BorderBrush="#55FFFFFF"
-                                    BorderThickness="1"
-                                    Padding="12">
-                                <TextBox 
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    FontSize="14"
-                                    Foreground="White"
-                                    Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
-                            </Border>
-                        </StackPanel>
-
-                        <!-- Password -->
-                        <StackPanel Margin="0,0,0,20">
-                            <TextBlock Text="Password" 
-                                      Foreground="#DDFFFFFF" 
-                                      FontSize="13" 
-                                      Margin="0,0,0,6"/>
-                            <Border CornerRadius="12"
-                                    Background="#33FFFFFF"
-                                    BorderBrush="#55FFFFFF"
-                                    BorderThickness="1"
-                                    Padding="12">
-                                <TextBox 
-                                    x:Name="PasswordBox"
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    FontSize="14"
-                                    Foreground="White"
-                                    Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"/>
-                            </Border>
-                        </StackPanel>
-
-                        <!-- TRAINEE-SPECIFIC FIELDS -->
-                        <StackPanel Visibility="{Binding IsTraineeSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-                            
-                            <!-- Fitness Goal -->
-                            <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Fitness Goal" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding FitnessGoal, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                            <!-- Current Weight -->
-                            <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Current Weight (kg)" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding CurrentWeight, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                            <!-- Height -->
-                            <StackPanel Margin="0,0,0,20">
-                                <TextBlock Text="Height (meters)" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <!-- TRAINER-SPECIFIC FIELDS -->
-                        <StackPanel Visibility="{Binding IsTrainerSelected, Converter={StaticResource BoolToVisibilityConverter}}">
-                            
-                            <!-- Specialization -->
-                            <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Specialization" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding Specialization, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                            <!-- Hourly Rate (Optional) -->
-                            <StackPanel Margin="0,0,0,15">
-                                <TextBlock Text="Hourly Rate (optional)" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding HourlyRate, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                            <!-- Max Trainees (Optional) -->
-                            <StackPanel Margin="0,0,0,20">
-                                <TextBlock Text="Maximum Trainees (optional)" 
-                                          Foreground="#DDFFFFFF" 
-                                          FontSize="13" 
-                                          Margin="0,0,0,6"/>
-                                <Border CornerRadius="12"
-                                        Background="#33FFFFFF"
-                                        BorderBrush="#55FFFFFF"
-                                        BorderThickness="1"
-                                        Padding="12">
-                                    <TextBox 
-                                        BorderThickness="0"
-                                        Background="Transparent"
-                                        FontSize="14"
-                                        Foreground="White"
-                                        Text="{Binding MaxTrainees, UpdateSourceTrigger=PropertyChanged}"/>
-                                </Border>
-                            </StackPanel>
-
-                        </StackPanel>
-
-                        <!-- Register Button -->
-                        <Button Content="Create Account"
-                                Height="48"
-                                Command="{Binding RegisterCommand}"
-                                FontSize="16"
-                                FontWeight="Bold"
-                                Cursor="Hand"
-                                BorderThickness="0">
-                            <Button.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                                    <GradientStop Color="#69F0AE" Offset="0"/>
-                                    <GradientStop Color="#26A69A" Offset="1"/>
-                                </LinearGradientBrush>
-                            </Button.Background>
-                            <Button.Foreground>White</Button.Foreground>
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border"
-                                           Background="{TemplateBinding Background}"
-                                           CornerRadius="14">
-                                        <Border.Effect>
-                                            <DropShadowEffect x:Name="glow" 
-                                                            Color="#69F0AE" 
-                                                            BlurRadius="0" 
-                                                            ShadowDepth="0" 
-                                                            Opacity="0"/>
-                                        </Border.Effect>
-                                        <ContentPresenter 
-                                            HorizontalAlignment="Center"
-                                            VerticalAlignment="Center" />
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="BlurRadius"
-                                                                       To="25" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="Opacity"
-                                                                       To="0.7" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="BlurRadius"
-                                                                       To="0" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                       Storyboard.TargetProperty="Opacity"
-                                                                       To="0" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Opacity" Value="0.85"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
-        </Grid>
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>
