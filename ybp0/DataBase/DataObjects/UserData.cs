@@ -6,26 +6,19 @@ using System.Threading.Tasks;
 
 namespace DataBase.DataTransferObjects
 {
-    internal class UserData
+    /// <summary>
+    /// Data Transfer Object for UserTbl - mirrors database structure
+    /// </summary>
+    public class UserData
     {
-        int id;
-        string email;
-        string username;
-        string password;
-        DateTime? joinDate;
-        bool isTrainer;
-        string bio;
-        string gender;
-        int currentWeekPlanId;
-
-        public int ID { get => id; set => id = value; }
-        public string Email { get => email; set => email = value; }
-        public string Username { get => username; set => username = value; }
-        public string Password { get => password; set => password = value; }
-        public DateTime? JoinDate { get => joinDate; set => joinDate = value; }
-        public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
-        public string Bio { get => bio; set => bio = value; }
-        public string Gender { get => gender; set => gender = value; }
-        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
+        public int Id {  get; set; }
+        public string Email { get; set; }
+        public string Username {  get; set; } 
+        public string Password {  get; set; }
+        public string JoinDate {  get; set; }
+        public bool IsTrainer {  get; set; }
+        public string Bio {  get; set; }
+        public string Gender { get; set; }
+        public int CurrentWeekPlanId {  get; set; }
     }
 }

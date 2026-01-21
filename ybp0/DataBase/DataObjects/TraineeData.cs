@@ -8,18 +8,13 @@ namespace DataBase.DataTransferObjects
 {
     internal class TraineeData
     {
-        int id;
-        int userId;
-        int trainerId;
-        string fitnessGoal;
-        int currentWeight;
-        int height;
+        public int Id { get; set; }
+        public int UserId { get; set; } 
+        public int? TrainerId { get; set; }
+        public string FitnessGoal { get; set; }
+        public double CurrentWeight { get; set; }
+        public double Height { get; set; }
+        public int CurrentWeekPlanId { get; set; }
 
-        public int Id { get => id; set => id = value; }
-        public int UserId { get => userId; set => userId = value; }
-        public int TrainerId { get => trainerId; set => trainerId = value; }
-        public string FitnessGoal { get => fitnessGoal; set => fitnessGoal = value; }
-        public int CurrentWeight { get => currentWeight; set => currentWeight = value; }
-        public int Height { get => height; set => height = value; }
     }
 }

@@ -7,7 +7,7 @@ using System.Data;
 
 namespace DataBase.Connection
 {
-    internal interface IDataBaseConnection
+    public interface IDataBaseConnection
     {
         DataTable ExecuteQuery(string query, params object[] parameters);
         int ExecuteNonQuery(string query, params object[] parameters);

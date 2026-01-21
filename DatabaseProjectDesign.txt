@@ -1,0 +1,58 @@
+Solution 'ybp0'
+├── DataBase/
+│   ├── DB/
+│   │   └── DB.accdb (or fitness_app.db for SQLite)
+│   ├── Connection/
+│   │   ├── IDbConnection.cs (interface)
+│   │   ├── AccessDbConnection.cs
+│   │   └── SqliteDbConnection.cs
+│   ├── DTOs/ (Data Transfer Objects)
+│   │   ├── UserData.cs
+│   │   ├── TrainerData.cs
+│   │   ├── TraineeData.cs
+│   │   ├── WorkoutData.cs
+│   │   ├── ExerciseData.cs
+│   │   └── WorkoutSessionData.cs
+│   ├── Repositories/
+│   │   ├── Interfaces/
+│   │   │   ├── IUserRepository.cs
+│   │   │   ├── ITrainerRepository.cs
+│   │   │   ├── ITraineeRepository.cs
+│   │   │   ├── IWorkoutRepository.cs
+│   │   │   ├── IExerciseRepository.cs
+│   │   │   ├── IWeekPlanRepository.cs
+│   │   │   ├── IWorkoutSessionRepository.cs
+│   │   │   └── IFeedRepository.cs
+│   │   ├── Access/ (Access implementations)
+│   │   │   ├── AccessUserRepository.cs
+│   │   │   ├── AccessTrainerRepository.cs
+│   │   │   ├── AccessTraineeRepository.cs
+│   │   │   ├── AccessWorkoutRepository.cs
+│   │   │   ├── AccessExerciseRepository.cs
+│   │   │   ├── AccessWeekPlanRepository.cs
+│   │   │   ├── AccessWorkoutSessionRepository.cs
+│   │   │   └── AccessFeedRepository.cs
+│   │   └── Sqlite/ (SQLite implementations)
+│   │       ├── SqliteUserRepository.cs
+│   │       ├── SqliteTrainerRepository.cs
+│   │       ├── SqliteTraineeRepository.cs
+│   │       ├── SqliteWorkoutRepository.cs
+│   │       ├── SqliteExerciseRepository.cs
+│   │       ├── SqliteWeekPlanRepository.cs
+│   │       ├── SqliteWorkoutSessionRepository.cs
+│   │       └── SqliteFeedRepository.cs
+(MAPPERS WILL BE ADDED IN THE VIEWMODEL LAYER)
+│   ├── Mappers/
+│   │   ├── UserMapper.cs (converts UserData ↔ User/Trainer/Trainee)
+│   │   ├── WorkoutMapper.cs
+│   │   └── ExerciseMapper.cs
+│   └── DatabaseFactory.cs (creates appropriate repositories)
+
+SUMMARY TABLE Repository   Tables Methods    Returns
+UserRepositoryUserTblGet, Create, Update, Exists UserData
+TrainerRepositoryTrainersTblGet, Create, Update TrainerData
+TraineeRepositoryTraineesTblGet, Create, Update, Assign, GetByTrainer TraineeData
+TrainerRequestRepositoryTrainerRequestsTblGet, Create, Update, GetPendingstring, bool, List<int>
+WeekPlanRepositoryWeekPlansTbl, WeekPlanDaysTblGet, Create, GetDaysint, DataTable
+WorkoutSessionRepositoryWorkoutSessionTbl, WorkoutSessionSetsTblGetOrCreate, GetExercises, GetSets, Save, Delete, Add, RemoveVarious
+ExerciseRepositoryExercisesTblGetAll, SeedList<Exercise>
