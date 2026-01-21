@@ -52,7 +52,7 @@
                             Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor}" 
+                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                         BorderBrush="White" BorderThickness="2">
                                     <Border.Effect>
                                         <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>

@@ -165,7 +165,7 @@
                                 Width="120" 
                                 Height="120" 
                                 CornerRadius="60" 
-                                Background="{Binding AvatarColor}" 
+                                Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                 BorderBrush="White" 
                                 BorderThickness="4"
                                 VerticalAlignment="Top" Grid.RowSpan="2">
