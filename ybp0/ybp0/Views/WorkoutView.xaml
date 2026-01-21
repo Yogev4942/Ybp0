@@ -10,7 +10,7 @@
     <!-- Matching CalendarView glassmorphism style - embeddable in day cards -->
     <StackPanel>
         <!-- Workout Name Badge -->
-        <Border Background="{Binding AccentColor, FallbackValue=#26A69A}" 
+        <Border Background="{Binding AccentColor, Converter={StaticResource StringToColorBrushConverter}}" 
                 CornerRadius="8" 
                 Padding="8,5"
                 Margin="0,0,0,12"

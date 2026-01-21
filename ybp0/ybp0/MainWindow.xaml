@@ -176,7 +176,7 @@
                                         </Border.Style>
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <!-- Avatar Circle -->
-                                            <Border Width="40" Height="40" CornerRadius="18" Background="{Binding AvatarColor}" 
+                                            <Border Width="40" Height="40" CornerRadius="18" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                                     BorderBrush="White" BorderThickness="1.5" Margin="0,0,10,0">
                                                 <Border.Effect>
                                                     <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="1" Opacity="0.3"/>
