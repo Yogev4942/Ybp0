@@ -7,7 +7,7 @@ namespace ViewModels.ViewModels
     /// ViewModel for Trainee feed views.
     /// Trainees can view and like posts, but cannot delete or pin them.
     /// </summary>
-    public class TraineeFeedViewModel : BaseFeedViewModel
+    public class TraineeFeedViewModel : FeedViewModel
     {
         // Trainee-specific: Like command only (no delete/pin)
         public ICommand LikePostCommand { get; }

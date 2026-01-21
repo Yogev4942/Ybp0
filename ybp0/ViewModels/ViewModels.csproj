@@ -51,14 +51,14 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\CalendarViewModel.cs" />
-    <Compile Include="ViewModels\BaseCalendarViewModel.cs" />
+
     <Compile Include="ViewModels\TraineeViewModels\TraineeCalendarViewModel.cs" />
     <Compile Include="ViewModels\TrainerViewModels\TrainerCalendarViewModel.cs" />
     <Compile Include="ViewModels\DayViewModel.cs" />
     <Compile Include="ViewModels\EditProfileViewModel.cs" />
     <Compile Include="ViewModels\ExerciseViewModel.cs" />
     <Compile Include="ViewModels\FeedViewModel.cs" />
-    <Compile Include="ViewModels\BaseFeedViewModel.cs" />
+
     <Compile Include="ViewModels\TraineeViewModels\TraineeFeedViewModel.cs" />
     <Compile Include="ViewModels\TrainerViewModels\TrainerFeedViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
@@ -66,11 +66,11 @@
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\PostViewModel.cs" />
     <Compile Include="ViewModels\ProfileViewModel.cs" />
-    <Compile Include="ViewModels\BaseProfileViewModel.cs" />
+
     <Compile Include="ViewModels\TraineeViewModels\TraineeProfileViewModel.cs" />
     <Compile Include="ViewModels\TrainerViewModels\TrainerProfileViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
-    <Compile Include="ViewModels\BaseRegisterViewModel.cs" />
+    <Compile Include="ViewModels\RegisterSelectionViewModel.cs" />
     <Compile Include="ViewModels\TraineeViewModels\TraineeRegisterViewModel.cs" />
     <Compile Include="ViewModels\TrainerViewModels\TrainerRegisterViewModel.cs" />
     <Compile Include="ViewModels\SetViewModel.cs" />

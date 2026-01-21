@@ -18,9 +18,9 @@ namespace ybp0.Views
     /// <summary>
     /// Interaction logic for RegisterView.xaml
     /// </summary>
-    public partial class RegisterView : UserControl
+    public partial class RegisterSelectionView : UserControl
     {
-        public RegisterView()
+        public RegisterSelectionView()
         {
             InitializeComponent();
         }

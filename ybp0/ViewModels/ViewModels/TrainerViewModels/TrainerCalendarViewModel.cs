@@ -7,7 +7,7 @@ namespace ViewModels.ViewModels
     /// Currently inherits all functionality from base class.
     /// Future trainer-specific features can be added here.
     /// </summary>
-    public class TrainerCalendarViewModel : BaseCalendarViewModel
+    public class TrainerCalendarViewModel : CalendarViewModel
     {
         public TrainerCalendarViewModel(IDatabaseService dbService, INavigationService navigationService, User user)
             : base(dbService, navigationService, user)

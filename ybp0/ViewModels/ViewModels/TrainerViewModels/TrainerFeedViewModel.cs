@@ -7,7 +7,7 @@ namespace ViewModels.ViewModels
     /// ViewModel for Trainer feed views.
     /// Trainers have additional moderation capabilities: delete and pin posts.
     /// </summary>
-    public class TrainerFeedViewModel : BaseFeedViewModel
+    public class TrainerFeedViewModel : FeedViewModel
     {
         // Trainer-specific commands
         public ICommand LikePostCommand { get; }

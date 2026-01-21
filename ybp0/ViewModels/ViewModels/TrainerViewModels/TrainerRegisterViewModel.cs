@@ -7,7 +7,7 @@ namespace ViewModels.ViewModels
     /// ViewModel for Trainer registration.
     /// Contains trainer-specific fields: Specialization, HourlyRate, MaxTrainees
     /// </summary>
-    public class TrainerRegisterViewModel : BaseRegisterViewModel
+    public class TrainerRegisterViewModel : RegisterViewModel
     {
         // Trainer-specific fields
         private string _specialization;

@@ -112,7 +112,7 @@ namespace ViewModels.ViewModels
 
         private void OnNavigateToSignUp(object parameter)
         {
-            _navigationService.NavigateTo<RegisterViewModel>();
+            _navigationService.NavigateTo<RegisterSelectionViewModel>();
         }
     }
 }

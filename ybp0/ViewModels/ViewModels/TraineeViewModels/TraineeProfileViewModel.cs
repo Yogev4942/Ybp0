@@ -9,7 +9,7 @@ namespace ViewModels.ViewModels
     /// Contains trainee-specific properties like FitnessGoal, Weight, Height, BMI,
     /// and trainer request functionality.
     /// </summary>
-    public class TraineeProfileViewModel : BaseProfileViewModel
+    public class TraineeProfileViewModel : ProfileViewModel
     {
         private string _requestStatus;
         public string RequestStatus

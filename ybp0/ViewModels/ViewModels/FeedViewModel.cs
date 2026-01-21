@@ -1,23 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using Models;
 using System.Collections.ObjectModel;
+using Models;
 
 namespace ViewModels.ViewModels
 {
     /// <summary>
-    /// ViewModel for the Feed view.
+    /// Base ViewModel for Feed views, containing shared properties and logic.
     /// </summary>
-    public class FeedViewModel : BaseViewModel
+    public abstract class FeedViewModel : BaseViewModel
     {
-        private readonly User _activeUser;
-        private readonly IDatabaseService _databaseService;
-        private readonly INavigationService _navigationService;
+        protected readonly User _activeUser;
+        protected readonly IDatabaseService _databaseService;
+        protected readonly INavigationService _navigationService;
 
         private ObservableCollection<PostViewModel> _posts;
         public ObservableCollection<PostViewModel> Posts
@@ -26,13 +20,21 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _posts, value);
         }
 
-        public FeedViewModel(IDatabaseService database, INavigationService navigation, User user)
+        protected FeedViewModel(IDatabaseService database, INavigationService navigation, User user)
         {
             _databaseService = database;
             _navigationService = navigation;
             _activeUser = user;
+            
+            LoadPosts();
+        }
 
-            // Initialize with Mock Data
+        /// <summary>
+        /// Loads posts from the database. Override in subclasses if needed.
+        /// </summary>
+        protected virtual void LoadPosts()
+        {
+            // Initialize with Mock Data for now
             Posts = new ObservableCollection<PostViewModel>
             {
                 new PostViewModel(_navigationService, 1, "GymRat99", "Just hit a new PR on bench press! 100kg let's go! 💪", "2 mins ago", "#FF00BCD4"),

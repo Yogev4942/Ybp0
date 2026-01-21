@@ -2,19 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
-using ViewModels.Services;
 
 namespace ViewModels.ViewModels
 {
-    public class CalendarViewModel : BaseViewModel
+    /// <summary>
+    /// Base ViewModel for Calendar views, containing shared logic for week plan management.
+    /// </summary>
+    public abstract class CalendarViewModel : BaseViewModel
     {
-        private readonly IDatabaseService _dbService;
-        private readonly INavigationService _navService;
-        private readonly User _currUser;
+        protected readonly IDatabaseService _dbService;
+        protected readonly INavigationService _navService;
+        protected readonly User _currUser;
         private int _userId;
         private int _weekPlanId;
         private ObservableCollection<DayViewModel> _days;
@@ -75,6 +76,7 @@ namespace ViewModels.ViewModels
         // Commands
         public ICommand OpenExerciseModalCommand { get; }
         public ICommand CloseExerciseModalCommand { get; }
+        
         // Display WeekPlanId as string for UI binding
         private string _displayWeekPlanId;
         public string DisplayWeekPlanId
@@ -101,7 +103,7 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _weekPlanOwnerLabel, value);
         }
 
-        public CalendarViewModel(IDatabaseService dbService,INavigationService navigationService,User user)
+        protected CalendarViewModel(IDatabaseService dbService, INavigationService navigationService, User user)
         {
             _dbService = dbService;
             _navService = navigationService;
@@ -111,8 +113,8 @@ namespace ViewModels.ViewModels
             // Initialize Modal Commands
             OpenExerciseModalCommand = new RelayCommand(param => OpenExerciseModal(param as DayViewModel));
             CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
-            int? weekPlanId = null;
-            weekPlanId = _currUser.CurrentWeekPlanId;
+            
+            int? weekPlanId = _currUser.CurrentWeekPlanId;
             if (!weekPlanId.HasValue)
             {
                 weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
@@ -121,8 +123,6 @@ namespace ViewModels.ViewModels
             DisplayWeekPlanId = weekPlanId.Value.ToString();
             WeekPlanOwnerLabel = "Your Plan";
         }
-
-
 
         public void LoadWeekPlan(int userId, int weekPlanId)
         {
@@ -154,10 +154,10 @@ namespace ViewModels.ViewModels
                 if (planDay != null)
                 {
                     dayVm.WeekPlanDayId = planDay.Id;
-                    dayVm.IsRestDay = planDay.IsRestDay; // Use actual value from database
+                    dayVm.IsRestDay = planDay.IsRestDay;
                     dayVm.WorkoutName = planDay.WorkoutName;
 
-                    // Always try to load exercises (works for both templates and ad-hoc)
+                    // Always try to load exercises
                     dayVm.LoadWorkoutForDay();
                 }
                 else
@@ -177,7 +177,7 @@ namespace ViewModels.ViewModels
             var days = new List<WeekPlanDayData>();
             if (dt == null) return days;
 
-            foreach (System.Data.DataRow row in dt.Rows)
+            foreach (DataRow row in dt.Rows)
             {
                 days.Add(new WeekPlanDayData
                 {
@@ -195,7 +195,7 @@ namespace ViewModels.ViewModels
         /// <summary>
         /// Validates and changes the weekplan if user has permission
         /// </summary>
-        private void TryChangeWeekPlan(int newWeekPlanId)
+        protected virtual void TryChangeWeekPlan(int newWeekPlanId)
         {
             if (!CanUserModifyWeekPlan(newWeekPlanId))
             {
@@ -233,7 +233,7 @@ namespace ViewModels.ViewModels
         /// <summary>
         /// Checks if the current user can modify the specified weekplan
         /// </summary>
-        private bool CanUserModifyWeekPlan(int weekPlanId)
+        protected virtual bool CanUserModifyWeekPlan(int weekPlanId)
         {
             // Get owner of this weekplan
             var ownerUserId = _dbService.GetWeekPlanOwnerUserId(weekPlanId);
@@ -258,7 +258,7 @@ namespace ViewModels.ViewModels
             return false;
         }
 
-        private void OpenExerciseModal(DayViewModel day)
+        protected void OpenExerciseModal(DayViewModel day)
         {
             if (day == null) return;
             
@@ -270,13 +270,13 @@ namespace ViewModels.ViewModels
             IsExerciseModalOpen = true;
         }
 
-        private void CloseExerciseModal()
+        protected void CloseExerciseModal()
         {
             IsExerciseModalOpen = false;
             SelectedDayForExercise = null;
         }
 
-        private void AddSelectedExerciseToDay()
+        protected void AddSelectedExerciseToDay()
         {
             if (SelectedExercise == null || SelectedDayForExercise == null) return;
 
@@ -287,7 +287,7 @@ namespace ViewModels.ViewModels
             CloseExerciseModal();
         }
 
-        private class WeekPlanDayData
+        protected class WeekPlanDayData
         {
             public int Id { get; set; }
             public int DayOfWeek { get; set; }
@@ -297,4 +297,3 @@ namespace ViewModels.ViewModels
         }
     }
 }
-

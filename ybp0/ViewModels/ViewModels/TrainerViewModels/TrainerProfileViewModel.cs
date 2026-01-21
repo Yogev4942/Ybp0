@@ -9,7 +9,7 @@ namespace ViewModels.ViewModels
     /// Contains trainer-specific properties like Specialization, Rating, TraineeCount,
     /// and pending request management.
     /// </summary>
-    public class TrainerProfileViewModel : BaseProfileViewModel
+    public class TrainerProfileViewModel : ProfileViewModel
     {
         private ObservableCollection<Trainee> _pendingRequests;
         public ObservableCollection<Trainee> PendingRequests

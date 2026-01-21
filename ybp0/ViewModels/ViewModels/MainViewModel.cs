@@ -60,7 +60,11 @@ namespace ViewModels.ViewModels
                     CurrentViewModel = vm;
 
                     // Hide top nav on Login/Register, show otherwise
-                    IsLoggedIn = !(vm is LoginViewModel) && !(vm is RegisterViewModel);
+                    IsLoggedIn = !(vm is LoginViewModel) && 
+                                 !(vm is RegisterSelectionViewModel) && 
+                                 !(vm is RegisterViewModel) && 
+                                 !(vm is TraineeRegisterViewModel) && 
+                                 !(vm is TrainerRegisterViewModel);
                 },
                 onLogin: () =>
                 {
@@ -98,8 +102,8 @@ namespace ViewModels.ViewModels
             if (type == typeof(LoginViewModel))
                 return new LoginViewModel(Database, Navigation);
 
-            if (type == typeof(RegisterViewModel))
-                return new RegisterViewModel(Database, Navigation);
+            if (type == typeof(RegisterSelectionViewModel))
+                return new RegisterSelectionViewModel(Database, Navigation);
 
             // Direct navigation to specific register view models
             if (type == typeof(TraineeRegisterViewModel))

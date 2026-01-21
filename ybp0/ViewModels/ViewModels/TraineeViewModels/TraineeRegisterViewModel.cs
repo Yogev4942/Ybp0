@@ -7,7 +7,7 @@ namespace ViewModels.ViewModels
     /// ViewModel for Trainee registration.
     /// Contains trainee-specific fields: FitnessGoal, CurrentWeight, Height
     /// </summary>
-    public class TraineeRegisterViewModel : BaseRegisterViewModel
+    public class TraineeRegisterViewModel : RegisterViewModel
     {
         // Trainee-specific fields
         private string _fitnessGoal;
