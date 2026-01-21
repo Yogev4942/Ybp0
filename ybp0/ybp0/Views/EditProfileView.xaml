@@ -55,7 +55,7 @@
             </LinearGradientBrush>
         </Grid.Background>
 
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Disabled">
             <Border MaxWidth="600" Margin="30" Background="#88FFFFFF" CornerRadius="20" Padding="30">
                 <Border.Effect>
                     <DropShadowEffect Color="#26A69A" BlurRadius="15" ShadowDepth="0" Opacity="0.2"/>
