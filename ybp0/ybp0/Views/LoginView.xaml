@@ -72,12 +72,13 @@
                             CornerRadius="12" 
                             BorderBrush="#44FFFFFF" 
                             BorderThickness="1">
-                        <TextBox Height="38"
+                        <TextBox Height="45"
+                                 VerticalContentAlignment="Center"
                                  Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}"
                                  Background="Transparent"
                                  Foreground="White"
                                  BorderThickness="0"
-                                 Padding="12"
+                                 Padding="12,0"
                                  FontSize="14"/>
                     </Border>
                 </StackPanel>
@@ -92,13 +93,14 @@
                             CornerRadius="12" 
                             BorderBrush="#44FFFFFF" 
                             BorderThickness="1">
-                        <TextBox Height="38"
-                              Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                              Background="Transparent"
-                              Foreground="White"
-                              BorderThickness="0"
-                              Padding="12"
-                              FontSize="14"/>
+                        <TextBox Height="45"
+                                 VerticalContentAlignment="Center"
+                                 Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
+                                 Background="Transparent"
+                                 Foreground="White"
+                                 BorderThickness="0"
+                                 Padding="12,0"
+                                 FontSize="14"/>
                     </Border>
                 </StackPanel>
 

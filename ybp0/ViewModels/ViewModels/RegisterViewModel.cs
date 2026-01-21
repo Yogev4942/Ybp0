@@ -49,7 +49,7 @@ namespace ViewModels.ViewModels
         {
             _databaseService = databaseService;
             _navigationService = navigationService;
-            GoBackCommand = new RelayCommand(_ => _navigationService.GoBack());
+            GoBackCommand = new RelayCommand(_ => _navigationService.NavigateTo<LoginViewModel>());
         }
 
         /// <summary>

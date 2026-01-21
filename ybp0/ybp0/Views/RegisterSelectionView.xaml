@@ -54,7 +54,7 @@
 
                 <!-- Trainee Button -->
                 <Button Command="{Binding SelectTraineeCommand}"
-                        Height="60"
+                        Height="80"
                         Margin="0,0,0,20"
                         Cursor="Hand">
                     <Button.Template>
@@ -88,7 +88,7 @@
 
                 <!-- Trainer Button -->
                 <Button Command="{Binding SelectTrainerCommand}"
-                        Height="60"
+                        Height="80"
                         Cursor="Hand">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
