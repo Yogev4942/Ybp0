@@ -6,14 +6,10 @@ using System.Threading.Tasks;
 
 namespace DataBase.DataTransferObjects
 {
-    internal class ExerciseData
+    public class ExerciseData
     {
-        int id;
-        string exerciseName;
-        string muscleGroup;
-
-        public int Id { get => id; set => id = value; }
-        public string ExerciseName { get => exerciseName; set => exerciseName = value; }
-        public string MuscleGroup { get => muscleGroup; set => muscleGroup = value; }
+        public int Id {  get; set; }
+        public string ExerciseName {  get; set; }
+        public string MuscleGroup {  get; set; }
     }
 }

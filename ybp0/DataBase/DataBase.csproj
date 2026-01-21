@@ -67,6 +67,7 @@
     <Compile Include="DataObjects\WorkoutData.cs" />
     <Compile Include="DataObjects\WorkoutSessionData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Access\AccessExerciseRepository.cs" />
     <Compile Include="Repository\Access\AccessUserRepository.cs" />
     <Compile Include="Repository\Interfaces\IExerciseRepository.cs" />
     <Compile Include="Repository\Interfaces\ITraineeRepository.cs" />
