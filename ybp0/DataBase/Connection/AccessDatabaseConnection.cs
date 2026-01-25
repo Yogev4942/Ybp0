@@ -21,9 +21,12 @@ namespace DataBase
             #region HardcodedDB
             string dbFileName = "DB.accdb";
             string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            _dbPath = Path.GetFullPath(Path.Combine(baseDir, @"..\..\..\DataBase\DataBase", dbFileName));
+            // Use the database file recreated in the bin directory (Output Path)
+            _dbPath = Path.Combine(baseDir, "DataBase", dbFileName);
+            
             if (!File.Exists(_dbPath))
             {
+                // Fallback or detailed error for debugging
                 throw new FileNotFoundException($"Database not found at: {_dbPath}");
             }
             _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
