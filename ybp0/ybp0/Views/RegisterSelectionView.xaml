@@ -10,20 +10,17 @@
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#004D40" Offset="0"/>
-                <GradientStop Color="#00897B" Offset="1"/>
+                <GradientStop Color="#E8F5E9" Offset="0"/>
+                <GradientStop Color="#E0F2F1" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
 
         <Border Padding="40" CornerRadius="22" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center">
             <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#44FFFFFF" Offset="0"/>
-                    <GradientStop Color="#22FFFFFF" Offset="1"/>
-                </LinearGradientBrush>
+                <SolidColorBrush Color="#88FFFFFF"/>
             </Border.Background>
             <Border.Effect>
-                <DropShadowEffect Color="#69F0AE" BlurRadius="18" ShadowDepth="0" Opacity="0.5"/>
+                <DropShadowEffect Color="#26A69A" BlurRadius="18" ShadowDepth="0" Opacity="0.2"/>
             </Border.Effect>
 
             <StackPanel>
@@ -37,17 +34,30 @@
                         Margin="0,0,0,20"
                         Background="Transparent"
                         BorderThickness="0"
-                        Foreground="#DDFFFFFF"/>
+                        Foreground="#00695C">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="Transparent">
+                                <ContentPresenter TextBlock.Foreground="{TemplateBinding Foreground}"/>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Foreground" Value="#004D40"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
                 <TextBlock Text="Create Account"
-                           Foreground="White"
+                           Foreground="#004D40"
                            FontSize="28"
                            FontWeight="Bold"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,10"/>
 
                 <TextBlock Text="I want to register as..."
-                           Foreground="#DDFFFFFF"
+                           Foreground="#00695C"
                            FontSize="16"
                            HorizontalAlignment="Center"
                            Margin="0,0,0,30"/>
@@ -56,10 +66,11 @@
                 <Button Command="{Binding SelectTraineeCommand}"
                         Height="80"
                         Margin="0,0,0,20"
-                        Cursor="Hand">
+                        Cursor="Hand"
+                        Background="#AAFFFFFF">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="border" Background="#EEFFFFFF" CornerRadius="12" Padding="15">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12" Padding="15" BorderBrush="#44009688" BorderThickness="1">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -67,17 +78,18 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="🏃" FontSize="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Trainee" FontSize="18" FontWeight="Bold" Foreground="#00695C"/>
-                                        <TextBlock Text="I want to find a trainer" FontSize="12" Foreground="#555"/>
+                                        <TextBlock Text="Trainee" FontSize="18" FontWeight="Bold" Foreground="#004D40"/>
+                                        <TextBlock Text="I want to find a trainer" FontSize="12" Foreground="#00695C"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="border" Property="Background" Value="White"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#009688"/>
                                     <Setter TargetName="border" Property="Effect">
                                         <Setter.Value>
-                                            <DropShadowEffect Color="White" BlurRadius="10" Opacity="0.5"/>
+                                            <DropShadowEffect Color="#26A69A" BlurRadius="10" Opacity="0.3"/>
                                         </Setter.Value>
                                     </Setter>
                                 </Trigger>
@@ -89,10 +101,11 @@
                 <!-- Trainer Button -->
                 <Button Command="{Binding SelectTrainerCommand}"
                         Height="80"
-                        Cursor="Hand">
+                        Cursor="Hand"
+                        Background="#AAFFFFFF">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
-                            <Border x:Name="border" Background="#EEFFFFFF" CornerRadius="12" Padding="15">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" CornerRadius="12" Padding="15" BorderBrush="#44009688" BorderThickness="1">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
@@ -100,17 +113,18 @@
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="💪" FontSize="24" VerticalAlignment="Center" Margin="0,0,15,0"/>
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="Trainer" FontSize="18" FontWeight="Bold" Foreground="#00695C"/>
-                                        <TextBlock Text="I want to train clients" FontSize="12" Foreground="#555"/>
+                                        <TextBlock Text="Trainer" FontSize="18" FontWeight="Bold" Foreground="#004D40"/>
+                                        <TextBlock Text="I want to train clients" FontSize="12" Foreground="#00695C"/>
                                     </StackPanel>
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
                                     <Setter TargetName="border" Property="Background" Value="White"/>
+                                    <Setter TargetName="border" Property="BorderBrush" Value="#009688"/>
                                     <Setter TargetName="border" Property="Effect">
                                         <Setter.Value>
-                                            <DropShadowEffect Color="White" BlurRadius="10" Opacity="0.5"/>
+                                            <DropShadowEffect Color="#26A69A" BlurRadius="10" Opacity="0.3"/>
                                         </Setter.Value>
                                     </Setter>
                                 </Trigger>
