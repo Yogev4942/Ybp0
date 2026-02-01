@@ -52,7 +52,7 @@
                             Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
+                                <Border Width="60" Height="60" CornerRadius="30" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                         BorderBrush="White" BorderThickness="2">
                                     <Border.Effect>
                                         <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
@@ -72,10 +72,10 @@
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Username}" 
                                    FontWeight="Bold" 
-                                   FontSize="14" 
+                                   FontSize="20" 
                                    Foreground="#37474F"/>
                         <TextBlock Text="{Binding Timestamp}" 
-                                   FontSize="11" 
+                                   FontSize="14" 
                                    Foreground="#78909C"/>
                     </StackPanel>
                     

@@ -60,6 +60,9 @@
     <Compile Include="Views\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\CreatePostView.xaml.cs">
+      <DependentUpon>CreatePostView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\ExerciseView.xaml.cs">
       <DependentUpon>ExerciseView.xaml</DependentUpon>
     </Compile>
@@ -103,6 +106,10 @@
     <Compile Include="Views\TraineeViews\TraineeCalendarView.xaml.cs">
       <DependentUpon>TraineeCalendarView.xaml</DependentUpon>
     </Compile>
+    <Page Include="Views\CreatePostView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\TraineeViews\TraineeCalendarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    
+
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
@@ -18,9 +18,9 @@
 
         <!-- Background Bubbles/Glows (Decorative) -->
         <Canvas>
-            <Ellipse Width="300" Height="300" Fill="#40FFFFFF" Canvas.Left="-50" Canvas.Top="-50">
+            <Ellipse Width="300" Height="300" Fill="#40FFFFFF" Canvas.Left="-66" Canvas.Top="75">
                 <Ellipse.Effect>
-                    <BlurEffect Radius="60"/>
+                    <BlurEffect Radius="70"/>
                 </Ellipse.Effect>
             </Ellipse>
             <Ellipse Width="200" Height="200" Fill="#3000E5FF" Canvas.Right="20" Canvas.Bottom="50">
@@ -37,15 +37,20 @@
             </Grid.RowDefinitions>
 
             <!-- Title -->
-            <TextBlock Text="Social Feed" 
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Social Feed" 
                        FontSize="32" 
                        FontWeight="Bold" 
                        Foreground="#006064"
                        Margin="10,0,0,20">
-                <TextBlock.Effect>
-                    <DropShadowEffect Color="White" BlurRadius="5" ShadowDepth="1" Opacity="0.8"/>
-                </TextBlock.Effect>
-            </TextBlock>
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="White" BlurRadius="5" ShadowDepth="1" Opacity="0.8"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                <Button HorizontalAlignment="Right" Margin="200,10,0,10" Content="+" FontSize="28" 
+                        Click="{Binding NavigateToCreatePostCommand}" >
+                </Button>
+            </StackPanel>
 
             <!-- Posts List -->
             <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Hidden" PanningMode="VerticalOnly">

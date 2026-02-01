@@ -63,9 +63,7 @@ namespace ViewModels.ViewModels
         {
             try
             {
-                // Clear previous error message
                 ErrorMessage = string.Empty;
-
                 // Validate credentials using your database service
                 bool isValid = _databaseService.ValidateLogin(Username, Password);
 
@@ -89,24 +87,17 @@ namespace ViewModels.ViewModels
                 {
                     ErrorMessage = "Invalid username or password.";
                 }
-
-                // Clear password field for security
                 Password = string.Empty;
             }
             catch (Exception ex)
             {
                 ErrorMessage = "An error occurred during login. Please try again.";
-                // For debugging - remove in production
                 System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
             }
         }
 
         private void OnForgotPassword(object parameter)
         {
-            // Navigate to forgot password view or show dialog
-            // _navigationService.NavigateTo<ForgotPasswordViewModel>();
-
-            // For now, show a message
             ErrorMessage = "Forgot password feature coming soon!";
         }
 
