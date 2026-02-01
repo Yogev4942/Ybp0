@@ -85,7 +85,7 @@
                            HorizontalAlignment="Center"
                            Margin="0,0,0,8" />
 
-                    <TextBlock Text="Share your thoughts with the community"
+                    <TextBlock Text="Share your thoughts and achievements with our community"
                            Foreground="#00695C"
                            FontSize="14"
                            HorizontalAlignment="Center"
