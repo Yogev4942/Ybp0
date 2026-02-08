@@ -64,5 +64,8 @@
         <DataTemplate DataType="{x:Type vm:TrainerProfileViewModel}">
             <views:TrainerProfileView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CreatePostViewModel}">
+            <views:CreatePostView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

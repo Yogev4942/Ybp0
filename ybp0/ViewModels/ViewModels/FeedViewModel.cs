@@ -34,7 +34,7 @@ namespace ViewModels.ViewModels
 
         private void NavigateToCreatePost(object parameter)
         {
-            _navigationService.NavigateTo<PostViewModel>(parameter);
+            _navigationService.NavigateTo<CreatePostViewModel>(parameter);
         }
 
     }
