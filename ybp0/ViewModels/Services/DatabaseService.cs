@@ -2,6 +2,7 @@
 using Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.OleDb;
 using System.IO;
 using System.Linq;
@@ -175,10 +176,10 @@ namespace ViewModels.Services
                 int weekPlanId = CreateEmptyWeekPlan(userId, "My Week Plan");
 
                 // 4.5 Update UserTbl with the new WeekPlanId
-                 _database.ExecuteNonQuery(
-                    "UPDATE UserTbl SET CurrentWeekPlanId = ? WHERE Id = ?",
-                    weekPlanId, userId
-                );
+                _database.ExecuteNonQuery(
+                   "UPDATE UserTbl SET CurrentWeekPlanId = ? WHERE Id = ?",
+                   weekPlanId, userId
+               );
 
                 // 5. Insert into TraineesTbl
                 _database.ExecuteNonQuery(
@@ -261,19 +262,19 @@ namespace ViewModels.Services
                 if (user is Trainee trainee)
                 {
                     string updateTraineeQuery = "UPDATE TraineesTbl SET FitnessGoal = ?, CurrentWeight = ?, Height = ? WHERE UserId = ?";
-                    _database.ExecuteNonQuery(updateTraineeQuery, 
-                        trainee.FitnessGoal, 
-                        trainee.CurrentWeight, 
-                        trainee.Height, 
+                    _database.ExecuteNonQuery(updateTraineeQuery,
+                        trainee.FitnessGoal,
+                        trainee.CurrentWeight,
+                        trainee.Height,
                         user.Id);
                 }
                 else if (user is Trainer trainer)
                 {
                     string updateTrainerQuery = "UPDATE TrainersTbl SET Specialization = ?, HourlyRate = ?, MaxTrainees = ? WHERE UserId = ?";
-                    _database.ExecuteNonQuery(updateTrainerQuery, 
-                        trainer.Specialization, 
-                        trainer.HourlyRate, 
-                        trainer.MaxTrainees, 
+                    _database.ExecuteNonQuery(updateTrainerQuery,
+                        trainer.Specialization,
+                        trainer.HourlyRate,
+                        trainer.MaxTrainees,
                         user.Id);
                 }
 
@@ -385,7 +386,7 @@ namespace ViewModels.Services
         }
         public List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId)
         {
-            try 
+            try
             {
                 // Check if session sets exist
                 var dt = _database.ExecuteQuery(
@@ -421,7 +422,7 @@ namespace ViewModels.Services
             // No session sets found - copy from template
             var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionTbl WHERE Id = ?", workoutSessionId);
             if (sessionDt.Rows.Count == 0) return new List<SessionSet>();
-            
+
             int workoutId = Convert.ToInt32(sessionDt.Rows[0]["WorkoutId"]);
 
             // Get WorkoutExerciseId
@@ -430,7 +431,7 @@ namespace ViewModels.Services
                 workoutId, exerciseId
             );
             if (weDt.Rows.Count == 0) return new List<SessionSet>();
-            
+
             int workoutExerciseId = Convert.ToInt32(weDt.Rows[0]["Id"]);
 
             // Get template sets
@@ -743,6 +744,51 @@ namespace ViewModels.Services
             }
             return trainees;
         }
+        #endregion
+        #region FeedManagement
+        public bool CreatePost(string header, string content, User user)
+        {
+            try
+            {
+                int affectedRows = _database.ExecuteNonQuery(
+                    "INSERT INTO [PostTbl] ([OwnerId], [Header], [Content], [PostTime]) VALUES (?, ?, ?, ?)",
+                    user.Id,
+                    header,
+                    content,
+                    DateTime.Now
+                    );
+
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                // Optional: log error
+                System.Diagnostics.Debug.WriteLine($"Creating Post error: {ex.Message}");
+                return false;
+            }
+
+        }
+
+        public ObservableCollection<Post> GetAllPosts()
+        {
+            var dt = _database.ExecuteQuery("SELECT * FROM PostTbl ORDER BY Id");
+            var posts = new ObservableCollection<Post>();
+
+            foreach (System.Data.DataRow row in dt.Rows)
+            {
+                posts.Add(new Post
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    OwnerId = Convert.ToInt32(row["OwnerId"]),
+                    Header = Convert.ToString(row["Header"]),
+                    Content = Convert.ToString(row["Content"]),
+                    Likes = Convert.ToInt32(row["Likes"]),
+                    PostTime = Convert.ToDateTime(row["PostTime"])
+                });
+            }
+            return posts;
+        }
+
         #endregion
     }
 }

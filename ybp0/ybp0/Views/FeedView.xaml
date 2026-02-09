@@ -48,7 +48,7 @@
                     </TextBlock.Effect>
                 </TextBlock>
                 <Button HorizontalAlignment="Right" Margin="200,10,0,10" Content="+" FontSize="28" 
-                        Click="{Binding NavigateToCreatePostCommand}" >
+                        Command="{Binding NavigateToCreatePostCommand}" >
                 </Button>
             </StackPanel>
 
@@ -62,7 +62,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <local:PostView Margin="0,0,0,15"/>
+                            <local:PostView />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>

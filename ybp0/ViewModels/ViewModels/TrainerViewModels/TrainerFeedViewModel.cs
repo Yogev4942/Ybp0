@@ -20,10 +20,6 @@ namespace ViewModels.ViewModels
             LikePostCommand = new RelayCommand(param =>
             {
                 // TODO: Implement like functionality
-                if (param is PostViewModel post)
-                {
-                    // Like the post
-                }
             });
 
             DeletePostCommand = new RelayCommand(param =>
@@ -34,15 +30,15 @@ namespace ViewModels.ViewModels
                     // TODO: Also delete from database
                 }
             });
+        }
 
-            PinPostCommand = new RelayCommand(param =>
+        private void DeletePost(PostViewModel post)
+        {
+            if (Posts.Contains(post))
             {
-                if (param is PostViewModel post)
-                {
-                    // TODO: Implement pin functionality
-                    // Move post to top of feed or mark as pinned
-                }
-            });
+                Posts.Remove(post);
+                // TODO: Database delete
+            }
         }
     }
 }

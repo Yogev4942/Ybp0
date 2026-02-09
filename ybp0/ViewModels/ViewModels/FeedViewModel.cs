@@ -26,16 +26,56 @@ namespace ViewModels.ViewModels
             _databaseService = database;
             _navigationService = navigation;
             _activeUser = user;
+            Posts = new ObservableCollection<PostViewModel>();
             NavigateToCreatePostCommand = new RelayCommand(NavigateToCreatePost);
 
-
+            LoadPosts();
         }
-        ICommand NavigateToCreatePostCommand;
+
+        protected void LoadPosts()
+        {
+            try
+            {
+                var posts = _databaseService.GetAllPosts();
+                Posts.Clear();
+
+                foreach (var post in posts)
+                {
+                    // Get the owner for this post
+                    var owner = _databaseService.GetUserById(post.OwnerId);
+
+                    // Convert Post to PostViewModel
+                    var postViewModel = new PostViewModel(
+                        post,
+                        owner,
+                        _activeUser,
+                        _navigationService,
+                        DeletePost // Pass delete action
+                    );
+
+                    Posts.Add(postViewModel);
+                }
+            }
+            catch (Exception ex)
+            {
+                // TODO: Actually handle this error
+            }
+        }
+
+        private void DeletePost(PostViewModel postVM)
+        {
+            // Delete from database
+            //_databaseService.DeletePost(postVM.OwnerId); fill it
+
+            // Remove from UI
+            Posts.Remove(postVM);
+        }
+
+        public ICommand NavigateToCreatePostCommand { get; private set; }
 
         private void NavigateToCreatePost(object parameter)
         {
             _navigationService.NavigateTo<CreatePostViewModel>(parameter);
         }
-
     }
 }

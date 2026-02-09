@@ -1,6 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data;
 using System.Linq;
 using System.Text;
@@ -58,5 +59,7 @@ namespace ViewModels
         bool HandleTrainerRequest(int traineeId, int trainerId, string status);
         User GetUserById(int userId);
         List<Trainee> GetPendingRequests(int trainerId);
+        bool CreatePost(string header, string content, User user);
+        ObservableCollection<Post> GetAllPosts();
     }
 }

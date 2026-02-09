@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              d:DesignWidth="900" d:DesignHeight="550">
 
-    <!-- Elegant home view with Frutiger Aero style -->
+    <!-- Elegant home view-->
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">

@@ -6,6 +6,10 @@
              xmlns:local="clr-namespace:ybp0.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    </UserControl.Resources>
     <Grid Margin="10, 8">
         <!-- Main Card Container -->
         <Border CornerRadius="12"
@@ -31,12 +35,7 @@
                     <RowDefinition Height="Auto"/> <!-- Footer -->
                 </Grid.RowDefinitions>
 
-                <!-- Glossy Overlay -->
-                <!-- <Border Grid.RowSpan="3" CornerRadius="12" Background="{x:Null}" IsHitTestVisible="False">
-                       You can add a linear gradient here for extra gloss if needed, but keeping it simple for now
-                </Border> -->
-
-                <!-- Header: Avatar + Name + Time -->
+                <!-- Header: Avatar + Name + Time + Delete Menu -->
                 <Grid Grid.Row="0" Margin="0,0,0,10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -52,7 +51,7 @@
                             Cursor="Hand">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border Width="60" Height="60" CornerRadius="30" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
+                                <Border Width="40" Height="40" CornerRadius="20" Background="{Binding AvatarColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                         BorderBrush="White" BorderThickness="2">
                                     <Border.Effect>
                                         <DropShadowEffect Color="Black" BlurRadius="5" ShadowDepth="1" Opacity="0.2"/>
@@ -72,15 +71,22 @@
                     <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
                         <TextBlock Text="{Binding Username}" 
                                    FontWeight="Bold" 
-                                   FontSize="20" 
+                                   FontSize="14" 
                                    Foreground="#37474F"/>
                         <TextBlock Text="{Binding Timestamp}" 
-                                   FontSize="14" 
+                                   FontSize="11" 
                                    Foreground="#78909C"/>
                     </StackPanel>
                     
-                    <!-- Menu/More Icon (Visual Placeholder) -->
-                    <TextBlock Grid.Column="2" Text="..." FontSize="20" Foreground="#90A4AE" VerticalAlignment="Top" Margin="0,-8,0,0" Cursor="Hand"/>
+                    <!-- Three Dots Menu -->
+                    <Menu Grid.Column="2" Background="Transparent" VerticalAlignment="Center">
+                         <MenuItem Header="..." FontSize="20" FontWeight="Bold" Foreground="#90A4AE" Background="Transparent" BorderThickness="0">
+                             <MenuItem Header="Delete" 
+                                       Command="{Binding DeleteCommand}"
+                                       Visibility="{Binding CanDelete, Converter={StaticResource BoolToVisibilityConverter}}"
+                                       Foreground="Red"/>
+                         </MenuItem>
+                    </Menu>
                 </Grid>
 
                 <!-- Content -->
@@ -93,17 +99,19 @@
                            Margin="0,5,0,15"/>
 
                 <!-- Footer: Actions -->
-                <!-- Ideally these would be buttons with Commands, but purely visual for now -->
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
                     <!-- Like -->
-                    <Border CornerRadius="12" Background="#2000B0FF" Padding="12,5" Margin="0,0,10,0" Cursor="Hand">
-                         <TextBlock Text="❤️ Like" Foreground="#0277BD" FontSize="12" FontWeight="SemiBold"/>
-                    </Border>
-                    
-                    <!-- Comment -->
-                    <Border CornerRadius="12" Background="#10000000" Padding="12,5" Margin="0,0,10,0" Cursor="Hand">
-                         <TextBlock Text="💬 Comment" Foreground="#546E7A" FontSize="12" FontWeight="SemiBold"/>
-                    </Border>
+                    <Button Cursor="Hand"
+                            Command="{Binding LikePostCommand}"
+                            CommandParameter="{Binding}">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="12" Background="#2000B0FF" Padding="12,5" Margin="0,0,10,0">
+                                    <TextBlock Text="❤️ Like" Foreground="#0277BD" FontSize="12" FontWeight="SemiBold"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </StackPanel>
             </Grid>
         </Border>

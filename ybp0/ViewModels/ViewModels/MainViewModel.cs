@@ -163,6 +163,11 @@ namespace ViewModels.ViewModels
                 User targetUser = (parameter as User) ?? _currUser;
                 return new EditProfileViewModel(Database, Navigation, targetUser);
             }
+            if (type == typeof(CreatePostViewModel))
+            {
+                User targetUser = (parameter as User) ?? _currUser;
+                return new CreatePostViewModel(Database, Navigation, targetUser);
+            }
 
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);

@@ -46,9 +46,11 @@ namespace ViewModels.ViewModels
         }
 
         public int OwnerId { get; }
+        public bool CanDelete { get; }
         public ICommand NavigateToProfileCommand { get; }
+        public ICommand DeleteCommand { get; }
 
-        public PostViewModel(INavigationService navigation, int ownerId, string username, string content, string timestamp, string avatarColor)
+        public PostViewModel(INavigationService navigation, int ownerId, string username, string content, string timestamp, string avatarColor, bool canDelete, Action<PostViewModel> deleteAction = null)
         {
             _navigation = navigation;
             OwnerId = ownerId;
@@ -56,12 +58,19 @@ namespace ViewModels.ViewModels
             Content = content;
             Timestamp = timestamp;
             AvatarColor = avatarColor;
+            CanDelete = canDelete;
             Initials = !string.IsNullOrEmpty(username) && username.Length >= 2 
                 ? username.Substring(0, 2).ToUpper() 
                 : username?.FirstOrDefault().ToString().ToUpper();
 
             NavigateToProfileCommand = new RelayCommand(_ => _navigation.NavigateToProfile(OwnerId));
+            
+            if (deleteAction != null)
+            {
+                DeleteCommand = new RelayCommand(_ => deleteAction(this));
+            }
         }
+        public PostViewModel(Post post,User owner,User currUser,INavigationService navigationService,)
 
         private readonly INavigationService _navigation;
     }
