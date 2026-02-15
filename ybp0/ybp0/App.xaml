@@ -67,5 +67,8 @@
         <DataTemplate DataType="{x:Type vm:CreatePostViewModel}">
             <views:CreatePostView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SearchViewModel}">
+            <views:SearchView />
+        </DataTemplate>
     </Application.Resources>
 </Application>

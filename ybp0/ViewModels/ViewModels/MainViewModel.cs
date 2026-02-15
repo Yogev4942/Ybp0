@@ -140,6 +140,11 @@ namespace ViewModels.ViewModels
                     return new TraineeFeedViewModel(Database, Navigation, _currUser);
             }
 
+            if (type == typeof(SearchViewModel))
+            {
+                return new SearchViewModel(Database, Navigation, _currUser);
+            }
+
             if (type == typeof(ProfileViewModel))
             {
                 User targetUser = null;

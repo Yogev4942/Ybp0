@@ -72,6 +72,7 @@
     <Compile Include="ViewModels\TraineeViewModels\TraineeRegisterViewModel.cs" />
     <Compile Include="ViewModels\TrainerViewModels\TrainerRegisterViewModel.cs" />
     <Compile Include="ViewModels\SetViewModel.cs" />
+    <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\WorkoutViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

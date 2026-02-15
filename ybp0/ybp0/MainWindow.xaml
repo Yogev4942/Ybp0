@@ -154,6 +154,12 @@
                                 Command="{Binding NavigateCommand}" 
                                 CommandParameter="Feed"
                                 Style="{StaticResource NavButtonStyle}"/>
+
+                        <!-- Search Button -->
+                        <Button Content="🔍 Search" 
+                                Command="{Binding NavigateCommand}" 
+                                CommandParameter="{x:Type vm:SearchViewModel}"
+                                Style="{StaticResource NavButtonStyle}"/>
                     </StackPanel>
 
                     <!-- User Profile (Right Aligned) -->

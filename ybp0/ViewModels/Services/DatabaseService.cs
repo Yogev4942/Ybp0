@@ -867,6 +867,38 @@ namespace ViewModels.Services
             }
         }
 
+        public List<Trainer> SearchTrainers(string query)
+        {
+            var results = new List<Trainer>();
+            try
+            {
+                System.Data.DataTable dt;
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    dt = _database.ExecuteQuery(
+                        "SELECT * FROM UserTbl WHERE IsTrainer = True");
+                }
+                else
+                {
+                    dt = _database.ExecuteQuery(
+                        "SELECT * FROM UserTbl WHERE IsTrainer = True AND Username LIKE ?",
+                        "%" + query.Trim() + "%");
+                }
+
+                foreach (System.Data.DataRow row in dt.Rows)
+                {
+                    var user = MapUser(row);
+                    if (user is Trainer trainer)
+                        results.Add(trainer);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"SearchTrainers error: {ex.Message}");
+            }
+            return results;
+        }
+
         #endregion
     }
 }

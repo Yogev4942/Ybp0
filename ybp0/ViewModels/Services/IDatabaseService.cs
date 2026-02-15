@@ -65,5 +65,6 @@ namespace ViewModels
         bool ToggleLike(int postId, int userId);
         int GetLikeCount(int postId);
         bool IsPostLikedByUser(int postId, int userId);
+        List<Trainer> SearchTrainers(string query);
     }
 }
