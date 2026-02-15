@@ -228,6 +228,41 @@
                                         FontSize="14"
                                         Visibility="{Binding IsOwnProfile, Converter={StaticResource BoolToVisibilityConverter}}"
                                         Command="{Binding ToggleRequestsCommand}"/>
+
+                                <!-- Request Training Button (Trainee viewing trainer) -->
+                                <Button Content="➕ Request Training" 
+                                        Style="{DynamicResource NavButtonStyle}"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,0,0,8"
+                                        Padding="15,8"
+                                        FontSize="14"
+                                        Visibility="{Binding CanRequestTrainer, Converter={StaticResource BoolToVisibilityConverter}}"
+                                        Command="{Binding RequestTrainerCommand}"/>
+
+                                <!-- Pending Label -->
+                                <Border Background="#FFEB3B" 
+                                        CornerRadius="12" 
+                                        Padding="12,6" 
+                                        HorizontalAlignment="Left"
+                                        Margin="0,0,0,8"
+                                        Visibility="{Binding IsRequestPending, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock Text="⏳ Request Pending" 
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="#333"/>
+                                </Border>
+
+                                <!-- Approved Label -->
+                                <Border Background="#4CAF50" 
+                                        CornerRadius="12" 
+                                        Padding="12,6" 
+                                        HorizontalAlignment="Left"
+                                        Visibility="{Binding IsRequestApproved, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <TextBlock Text="✅ Your Trainer" 
+                                               FontSize="14"
+                                               FontWeight="SemiBold"
+                                               Foreground="White"/>
+                                </Border>
                             </StackPanel>
                         </StackPanel>
 
