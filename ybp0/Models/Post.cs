@@ -11,7 +11,11 @@ namespace Models
         public int OwnerId { get; set; }
         public string Header { get; set; }
         public string Content { get; set; }
-        public int Likes { get; set; }
         public DateTime PostTime { get; set; }
+
+        /// <summary>
+        /// Transient — populated from LikesTbl COUNT, not stored in PostTbl.
+        /// </summary>
+        public int LikeCount { get; set; }
     }
 }

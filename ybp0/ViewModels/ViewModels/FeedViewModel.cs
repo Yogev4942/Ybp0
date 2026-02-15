@@ -32,6 +32,11 @@ namespace ViewModels.ViewModels
             LoadPosts();
         }
 
+        public override void OnNavigatedTo()
+        {
+            LoadPosts();
+        }
+
         protected void LoadPosts()
         {
             try
@@ -50,6 +55,7 @@ namespace ViewModels.ViewModels
                         owner,
                         _activeUser,
                         _navigationService,
+                        _databaseService,
                         DeletePost // Pass delete action
                     );
 
@@ -65,7 +71,7 @@ namespace ViewModels.ViewModels
         private void DeletePost(PostViewModel postVM)
         {
             // Delete from database
-            //_databaseService.DeletePost(postVM.OwnerId); fill it
+            _databaseService.DeletePost(postVM.PostId);
 
             // Remove from UI
             Posts.Remove(postVM);

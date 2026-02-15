@@ -14,40 +14,51 @@ namespace ViewModels.ViewModels
         protected readonly INavigationService _navService;
         protected readonly User _currUser;
         private string content;
-        string Content
+        public string Content
         {
             get => content;
             set => SetProperty(ref content, value);
         }
         private string statusMessage;
-        string StatusMessage
+        public string StatusMessage
         {
             get => statusMessage;
             set => SetProperty(ref statusMessage, value);
         }
         private string header;
-        string Header
+        public string Header
         {
             get => header;
             set => SetProperty(ref header, value);
         }
-        public CreatePostViewModel(IDatabaseService dbService, INavigationService navService,User currUser)
+        public ICommand CreatePostCommand { get; }
+        public ICommand CancelCommand { get; }
+
+        public CreatePostViewModel(IDatabaseService dbService, INavigationService navService, User currUser)
         {
             _dbService = dbService;
             _navService = navService;
             _currUser = currUser;
+            CreatePostCommand = new RelayCommand(_ => CreatePost());
+            CancelCommand = new RelayCommand(_ => _navService.GoBack());
         }
-
-
-        public ICommand CreatePostCommand { get; }
 
         public void CreatePost()
         {
             try
             {
                 ValidatePost();
-                _dbService.CreatePost(Header, Content, _currUser);
-                StatusMessage = "Post created successfully";
+                bool success = _dbService.CreatePost(Header, Content, _currUser);
+                if (success)
+                {
+                    StatusMessage = "Post created successfully!";
+                    // Navigate back to feed so the user sees the new post
+                    _navService.GoBack();
+                }
+                else
+                {
+                    StatusMessage = "Failed to save post to database.";
+                }
             }
             catch (ArgumentException ex)
             {
@@ -56,7 +67,7 @@ namespace ViewModels.ViewModels
             catch (Exception ex)
             {
                 // unexpected system error
-                StatusMessage = "Unexpected error while creating post";
+                StatusMessage = "Unexpected error while creating post: " + ex.Message;
             }
         }
         private void ValidatePost()

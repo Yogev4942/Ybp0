@@ -755,38 +755,116 @@ namespace ViewModels.Services
                     user.Id,
                     header,
                     content,
-                    DateTime.Now
+                    DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
                     );
 
                 return affectedRows > 0;
             }
             catch (Exception ex)
             {
-                // Optional: log error
                 System.Diagnostics.Debug.WriteLine($"Creating Post error: {ex.Message}");
                 return false;
             }
 
         }
 
+        public bool DeletePost(int postId)
+        {
+            try
+            {
+                int affectedRows = _database.ExecuteNonQuery(
+                    "DELETE FROM [PostTbl] WHERE [Id] = ?",
+                    postId
+                );
+                return affectedRows > 0;
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Deleting Post error: {ex.Message}");
+                return false;
+            }
+        }
+
         public ObservableCollection<Post> GetAllPosts()
         {
-            var dt = _database.ExecuteQuery("SELECT * FROM PostTbl ORDER BY Id");
+            var dt = _database.ExecuteQuery("SELECT * FROM PostTbl ORDER BY Id DESC");
             var posts = new ObservableCollection<Post>();
 
             foreach (System.Data.DataRow row in dt.Rows)
             {
+                int postId = Convert.ToInt32(row["Id"]);
                 posts.Add(new Post
                 {
-                    Id = Convert.ToInt32(row["Id"]),
+                    Id = postId,
                     OwnerId = Convert.ToInt32(row["OwnerId"]),
                     Header = Convert.ToString(row["Header"]),
                     Content = Convert.ToString(row["Content"]),
-                    Likes = Convert.ToInt32(row["Likes"]),
-                    PostTime = Convert.ToDateTime(row["PostTime"])
+                    PostTime = Convert.ToDateTime(row["PostTime"]),
+                    LikeCount = GetLikeCount(postId)
                 });
             }
             return posts;
+        }
+
+        public bool ToggleLike(int postId, int userId)
+        {
+            try
+            {
+                if (IsPostLikedByUser(postId, userId))
+                {
+                    // Unlike
+                    _database.ExecuteNonQuery(
+                        "DELETE FROM [LikesTbl] WHERE [PostId] = ? AND [UserId] = ?",
+                        postId, userId
+                    );
+                    return false; // now unliked
+                }
+                else
+                {
+                    // Like
+                    _database.ExecuteNonQuery(
+                        "INSERT INTO [LikesTbl] ([PostId], [UserId]) VALUES (?, ?)",
+                        postId, userId
+                    );
+                    return true; // now liked
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Toggle like error: {ex.Message}");
+                return false;
+            }
+        }
+
+        public int GetLikeCount(int postId)
+        {
+            try
+            {
+                var dt = _database.ExecuteQuery(
+                    "SELECT COUNT(*) AS LikeCount FROM LikesTbl WHERE PostId = ?", postId);
+                if (dt.Rows.Count > 0)
+                    return Convert.ToInt32(dt.Rows[0]["LikeCount"]);
+                return 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        public bool IsPostLikedByUser(int postId, int userId)
+        {
+            try
+            {
+                var dt = _database.ExecuteQuery(
+                    "SELECT Id FROM LikesTbl WHERE PostId = ? AND UserId = ?",
+                    postId, userId);
+                return dt.Rows.Count > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         #endregion

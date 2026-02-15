@@ -26,5 +26,11 @@ namespace ViewModels
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        /// <summary>
+        /// Called when this ViewModel becomes the active/current view.
+        /// Override in subclasses to refresh data when navigating back.
+        /// </summary>
+        public virtual void OnNavigatedTo() { }
     }
 }

@@ -102,13 +102,21 @@
                 <StackPanel Grid.Row="2" Orientation="Horizontal">
                     <!-- Like -->
                     <Button Cursor="Hand"
-                            Command="{Binding LikePostCommand}"
-                            CommandParameter="{Binding}">
+                            Command="{Binding ToggleLikeCommand}">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
-                                <Border CornerRadius="12" Background="#2000B0FF" Padding="12,5" Margin="0,0,10,0">
-                                    <TextBlock Text="❤️ Like" Foreground="#0277BD" FontSize="12" FontWeight="SemiBold"/>
+                                <Border x:Name="likeBorder" CornerRadius="12" Background="#2000B0FF" Padding="12,5" Margin="0,0,10,0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding LikeButtonText}" FontSize="14" VerticalAlignment="Center"/>
+                                        <TextBlock Text="{Binding LikeCount}" Foreground="#0277BD" FontSize="12" FontWeight="SemiBold" 
+                                                   Margin="6,0,0,0" VerticalAlignment="Center"/>
+                                    </StackPanel>
                                 </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="likeBorder" Property="Background" Value="#3000B0FF"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
                             </ControlTemplate>
                         </Button.Template>
                     </Button>

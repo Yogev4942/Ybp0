@@ -79,6 +79,7 @@ namespace ViewModels
             // push and make current
             _stack.Push(vm);
             _setCurrentViewModel(vm);
+            vm.OnNavigatedTo();
         }
 
         public void GoBack()
@@ -91,6 +92,7 @@ namespace ViewModels
             // restore previous
             var previous = _stack.Peek();
             _setCurrentViewModel(previous);
+            previous.OnNavigatedTo();
         }
 
         public void OnLoginSuccess()
