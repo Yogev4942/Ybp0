@@ -143,7 +143,7 @@ namespace ViewModels.Services
             }
         }
         public bool RegisterTrainee(string username, string email, string password,
-                                   string fitnessGoal, double currentWeight, double height)
+                                 string fitnessGoal, double currentWeight, double height)
         {
             try
             {
@@ -684,35 +684,72 @@ namespace ViewModels.Services
         }
         #endregion
         #region TrainerRequestManagement
-        public string GetTrainerRequestStatus(int traineeId, int trainerId)
+        /// <summary>
+        /// Looks up the TraineesTbl.Id (PK) for a given UserTbl.Id.
+        /// Access FK on TrainerRequestsTbl.TraineeUserId references TraineesTbl.Id.
+        /// </summary>
+        private int? GetTraineeTableId(int userId)
         {
+            var dt = _database.ExecuteQuery("SELECT Id FROM TraineesTbl WHERE UserId = ?", userId);
+            if (dt.Rows.Count > 0)
+                return Convert.ToInt32(dt.Rows[0]["Id"]);
+            return null;
+        }
+
+        /// <summary>
+        /// Looks up the TrainersTbl.Id (PK) for a given UserTbl.Id.
+        /// Access FK on TrainerRequestsTbl.TrainerUserId references TrainersTbl.Id.
+        /// </summary>
+        private int? GetTrainerTableId(int userId)
+        {
+            var dt = _database.ExecuteQuery("SELECT Id FROM TrainersTbl WHERE UserId = ?", userId);
+            if (dt.Rows.Count > 0)
+                return Convert.ToInt32(dt.Rows[0]["Id"]);
+            return null;
+        }
+
+        public string GetTrainerRequestStatus(int traineeUserId, int trainerUserId)
+        {
+            var traineeTableId = GetTraineeTableId(traineeUserId);
+            var trainerTableId = GetTrainerTableId(trainerUserId);
+            if (traineeTableId == null || trainerTableId == null) return null;
+
             var dt = _database.ExecuteQuery(
                 "SELECT Status FROM TrainerRequestsTbl WHERE TraineeUserId = ? AND TrainerUserId = ?",
-                traineeId, trainerId
+                traineeTableId.Value, trainerTableId.Value
             );
             if (dt.Rows.Count > 0)
                 return dt.Rows[0]["Status"].ToString();
             return null;
         }
 
-        public bool SendTrainerRequest(int traineeId, int trainerId)
+        public bool SendTrainerRequest(int traineeUserId, int trainerUserId)
         {
+            // Look up the actual PK IDs that the FK constraints reference
+            var traineeTableId = GetTraineeTableId(traineeUserId);
+            var trainerTableId = GetTrainerTableId(trainerUserId);
+            if (traineeTableId == null || trainerTableId == null) return false;
+
             // Check if already exists
-            var status = GetTrainerRequestStatus(traineeId, trainerId);
+            var status = GetTrainerRequestStatus(traineeUserId, trainerUserId);
             if (status != null) return false;
 
             int affected = _database.ExecuteNonQuery(
                 "INSERT INTO TrainerRequestsTbl (TraineeUserId, TrainerUserId, Status, RequestDate) VALUES (?, ?, ?, ?)",
-                traineeId, trainerId, "Pending", DateTime.Now
+                traineeTableId.Value, trainerTableId.Value, "Pending", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
             );
             return affected > 0;
         }
 
-        public bool HandleTrainerRequest(int traineeId, int trainerId, string status)
+        public bool HandleTrainerRequest(int traineeUserId, int trainerUserId, string status)
         {
+            var traineeTableId = GetTraineeTableId(traineeUserId);
+            var trainerTableId = GetTrainerTableId(trainerUserId);
+            if (traineeTableId == null || trainerTableId == null) return false;
+
             int affected = _database.ExecuteNonQuery(
                 "UPDATE TrainerRequestsTbl SET Status = ? WHERE TraineeUserId = ? AND TrainerUserId = ?",
-                status, traineeId, trainerId
+                status, traineeTableId.Value, trainerTableId.Value
             );
 
             if (affected > 0 && status == "Approved")
@@ -720,22 +757,24 @@ namespace ViewModels.Services
                 // Link trainee to trainer in TraineesTbl
                 _database.ExecuteNonQuery(
                     "UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?",
-                    trainerId, traineeId
+                    trainerUserId, traineeUserId
                 );
             }
             return affected > 0;
         }
-        public List<Trainee> GetPendingRequests(int trainerId)
+        public List<Trainee> GetPendingRequests(int trainerUserId)
         {
+            var trainerTableId = GetTrainerTableId(trainerUserId);
+            if (trainerTableId == null) return new List<Trainee>();
+
             var dt = _database.ExecuteQuery(
-                @"SELECT u.*, t.* 
+                @"SELECT u.* 
                   FROM (UserTbl u 
                   INNER JOIN TraineesTbl t ON u.Id = t.UserId)
-                  INNER JOIN TrainerRequestsTbl tr ON u.Id = tr.TraineeUserId
+                  INNER JOIN TrainerRequestsTbl tr ON t.Id = tr.TraineeUserId
                   WHERE tr.TrainerUserId = ? AND tr.Status = 'Pending'",
-                trainerId
+                trainerTableId.Value
             );
-
             var trainees = new List<Trainee>();
             foreach (System.Data.DataRow row in dt.Rows)
             {
