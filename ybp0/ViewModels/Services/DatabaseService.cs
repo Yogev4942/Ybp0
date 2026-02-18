@@ -757,7 +757,7 @@ namespace ViewModels.Services
                 // Link trainee to trainer in TraineesTbl
                 _database.ExecuteNonQuery(
                     "UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?",
-                    trainerUserId, traineeUserId
+                    trainerTableId.Value, traineeUserId
                 );
             }
             return affected > 0;
