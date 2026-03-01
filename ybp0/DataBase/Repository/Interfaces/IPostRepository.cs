@@ -13,8 +13,5 @@ namespace DataBase.Repository.Interfaces
         bool CreatePost(string header, string content, int userId);
         bool DeletePost(int postId);
         ObservableCollection<Post> GetAllPosts();
-        bool ToggleLike(int postId, int userId);
-        int GetLikeCount(int postId);
-        bool IsPostLikedByUser(int postId, int userId);
     }
 }

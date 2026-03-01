@@ -62,10 +62,17 @@
     <Compile Include="Connection\IDataBaseConnection.cs" />
     <Compile Include="Mappers\UserMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repository\Access\AcccessExerciseRepository.cs" />
+    <Compile Include="Repository\Access\AccessLikeRepository.cs" />
+    <Compile Include="Repository\Access\AccessPostRepository.cs" />
     <Compile Include="Repository\Access\AccessTraineeRepository.cs" />
     <Compile Include="Repository\Access\AccessTrainerRepository.cs" />
+    <Compile Include="Repository\Access\AccessTrainerRequestRepository.cs" />
     <Compile Include="Repository\Access\AccessUserRepository.cs" />
+    <Compile Include="Repository\Access\AccessWeekPlanRepository.cs" />
+    <Compile Include="Repository\Access\AccessWorkoutSessionRepository.cs" />
     <Compile Include="Repository\Interfaces\IExerciseRepository.cs" />
+    <Compile Include="Repository\Interfaces\ILikeRepository.cs" />
     <Compile Include="Repository\Interfaces\IPostRepository.cs" />
     <Compile Include="Repository\Interfaces\ITraineeRepository.cs" />
     <Compile Include="Repository\Interfaces\ITrainerRepository.cs" />
