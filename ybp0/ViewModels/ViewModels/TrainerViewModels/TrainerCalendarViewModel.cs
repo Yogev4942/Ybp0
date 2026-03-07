@@ -95,7 +95,6 @@ namespace ViewModels.ViewModels
         {
             if (trainee == null)
             {
-                // Switched back to "My Plan" in the combobox
                 ViewMyPlan();
                 return;
             }
