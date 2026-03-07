@@ -40,7 +40,7 @@ namespace DataBase.Repository.Access
                 WHERE u.IsTrainer = True AND u.Username LIKE ?";
 
             var dt = string.IsNullOrWhiteSpace(searchQuery)
-                ? _database.ExecuteQuery("SELECT u.*, t.* FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer = True")
+                ? _database.ExecuteQuery("SELECT u.*, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer = True")
                 : _database.ExecuteQuery(query, "%" + searchQuery.Trim() + "%");
 
             var results = new List<Trainer>();

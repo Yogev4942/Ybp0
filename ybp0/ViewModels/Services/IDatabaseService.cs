@@ -1,4 +1,5 @@
-﻿using Models;
+﻿using DataBase.Repository.Interfaces;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +12,17 @@ namespace ViewModels
 {
     public interface IDatabaseService
     {
+        // Repository references
+        IUserRepository UserRepo { get; }
+        ITraineeRepository TraineeRepo { get; }
+        ITrainerRepository TrainerRepo { get; }
+        IExerciseRepository ExerciseRepo { get; }
+        IWorkoutSessionRepository WorkoutSessionRepo { get; }
+        IWeekPlanRepository WeekPlanRepo { get; }
+        ITrainerRequestRepository TrainerRequestRepo { get; }
+        IPostRepository PostRepo { get; }
+        ILikeRepository LikeRepo { get; }
+
         /// <summary>
         /// Returns a user if the username and password match, otherwise null.
         /// </summary>
