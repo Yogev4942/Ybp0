@@ -44,7 +44,7 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled"
                       Style="{StaticResource TransparentScrollViewer}">
-            <Grid MaxWidth="900" HorizontalAlignment="Center" Margin="30,25">
+            <Grid HorizontalAlignment="Stretch" Margin="30,25">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

@@ -28,6 +28,7 @@ namespace ViewModels.ViewModels
         public INavigationService Navigation { get; }
 
         public ICommand NavigateCommand { get; } // Generic generic command
+        public ICommand LogoutCommand { get; }
 
         private string _username;
         public string Username
@@ -91,6 +92,13 @@ namespace ViewModels.ViewModels
                             break;
                     }
                 }
+            });
+
+            LogoutCommand = new RelayCommand(_ =>
+            {
+                _currUser = null;
+                UpdateUserDisplayData(); // Will clear username/initials
+                Navigation.Logout();
             });
 
             // start on login

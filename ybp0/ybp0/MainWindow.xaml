@@ -206,6 +206,13 @@
                             </Button.Template>
                         </Button>
                     </StackPanel>
+
+                    <!-- Logout Button (Far Right) -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                        <Button Content="🚪 Logout" 
+                                Command="{Binding LogoutCommand}"
+                                Style="{StaticResource NavButtonStyle}"/>
+                    </StackPanel>
                 </Grid>
             </Border>
 

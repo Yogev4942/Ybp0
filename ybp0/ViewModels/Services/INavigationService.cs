@@ -13,6 +13,7 @@ namespace ViewModels
         void NavigateToProfile(int userId);
         void GoBack();
         void OnLoginSuccess();   // keep this so LoginViewModel can trigger the behavior you liked
+        void Logout();
     }
 }
 

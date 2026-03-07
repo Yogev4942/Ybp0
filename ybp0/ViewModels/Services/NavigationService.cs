@@ -105,6 +105,13 @@ namespace ViewModels
 
             // navigate to home (you can change to pass a parameter if needed)
         }
+
+        public void Logout()
+        {
+            _stack.Clear();
+            _viewModelCache.Clear();
+            NavigateTo<LoginViewModel>();
+        }
     }
 }
 

@@ -36,6 +36,9 @@ namespace DataBase.Repository.Access
                 );
             }
 
+            // Update the User's CurrentWeekPlanId to the newly created plan
+            _database.ExecuteNonQuery("UPDATE UserTbl SET CurrentWeekPlanId = ? WHERE Id = ?", weekPlanId, userId);
+
             return weekPlanId;
         }
 

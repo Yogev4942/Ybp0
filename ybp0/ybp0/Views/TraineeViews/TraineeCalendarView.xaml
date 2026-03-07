@@ -135,12 +135,11 @@
                                            HorizontalAlignment="Center"
                                            Margin="0,0,0,8"/>
                                 
-                                <!-- Workout Name Badge (for workout days) -->
+                                <!-- Workout Name Badge -->
                                 <Border Background="{Binding AccentColor, Converter={StaticResource StringToColorBrushConverter}}" 
                                         CornerRadius="8" 
                                         Padding="8,5"
-                                        Margin="0,0,0,10"
-                                        Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                        Margin="0,0,0,10">
                                     <TextBlock Text="{Binding WorkoutName}" 
                                                FontSize="12"
                                                FontWeight="SemiBold"
@@ -149,30 +148,8 @@
                                                TextTrimming="CharacterEllipsis"/>
                                 </Border>
                                 
-                                <!-- Rest Day Badge -->
-                                <Border Background="#FF6B6B" 
-                                        CornerRadius="8" 
-                                        Padding="8,5"
-                                        Margin="0,0,0,12"
-                                        Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}">
-                                    <TextBlock Text="Rest Day" 
-                                               FontSize="12"
-                                               FontWeight="SemiBold"
-                                               Foreground="White" 
-                                               HorizontalAlignment="Center"/>
-                                </Border>
-                                
-                                <!-- Rest Day Content -->
-                                <TextBlock Text="Recovery &amp; Stretching" 
-                                           FontSize="11"
-                                           Foreground="#888" 
-                                           TextWrapping="Wrap"
-                                           HorizontalAlignment="Center"
-                                           TextAlignment="Center"
-                                           Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                                
                                 <!-- Exercises List - NO SCROLLER, just StackPanel -->
-                                <StackPanel Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                <StackPanel>
                                     <ItemsControl ItemsSource="{Binding Exercises}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
