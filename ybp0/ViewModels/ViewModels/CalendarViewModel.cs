@@ -1,4 +1,4 @@
-﻿using Models;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -114,10 +114,14 @@ namespace ViewModels.ViewModels
             OpenExerciseModalCommand = new RelayCommand(param => OpenExerciseModal(param as DayViewModel));
             CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
             
-            int? weekPlanId = _currUser.CurrentWeekPlanId;
+            int? weekPlanId = _currUser.CurrentWeekPlanId > 0 ? _currUser.CurrentWeekPlanId : (int?)null;
             if (!weekPlanId.HasValue)
             {
                 weekPlanId = _dbService.GetUserWeekPlanId(_currUser.Id);
+            }
+            if (!weekPlanId.HasValue)
+            {
+                weekPlanId = _dbService.CreateEmptyWeekPlan(_currUser.Id, "My Week Plan");
             }
             LoadWeekPlan(_currUser.Id, weekPlanId.Value);
             DisplayWeekPlanId = weekPlanId.Value.ToString();
