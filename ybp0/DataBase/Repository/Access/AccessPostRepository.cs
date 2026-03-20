@@ -1,4 +1,4 @@
-﻿using DataBase.Repository.Interfaces;
+using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -30,6 +30,7 @@ namespace DataBase.Repository.Access
 
         public bool DeletePost(int postId)
         {
+            _database.ExecuteNonQuery("DELETE FROM [LikesTbl] WHERE [PostId] = ?", postId);
             return _database.ExecuteNonQuery("DELETE FROM [PostTbl] WHERE [Id] = ?", postId) > 0;
         }
 

@@ -52,7 +52,7 @@ namespace ViewModels.ViewModels
                     $"Another day, another gain — let’s go {UserName} 🚀"
                 };
 
-            return messages[_random.Next(messages.Count)] + $"  |  TYPE: {role}";
+            return messages[_random.Next(messages.Count)];
         }
     }
 }
