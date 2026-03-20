@@ -54,6 +54,7 @@ namespace ViewModels.ViewModels
                     StatusMessage = "Post created successfully!";
                     // Navigate back to feed so the user sees the new post
                     _navService.GoBack();
+                    //going back
                 }
                 else
                 {

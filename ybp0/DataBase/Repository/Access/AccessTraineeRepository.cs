@@ -1,4 +1,4 @@
-﻿using DataBase.Mappers;
+using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
@@ -31,15 +31,16 @@ namespace DataBase.Repository.Access
             return dt.Rows.Count > 0 ? UserMapper.MapTrainee(dt.Rows[0]) : null;
         }
 
-        public List<Trainee> GetTraineesByTrainerId(int trainerId)
+        public List<Trainee> GetTraineesByTrainerId(int trainerUserId)
         {
             string query = @"
                 SELECT u.*, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
-                FROM UserTbl u
-                INNER JOIN TraineesTbl t ON u.Id = t.UserId
-                WHERE t.TrainerId = ?";
+                FROM (UserTbl u
+                INNER JOIN TraineesTbl t ON u.Id = t.UserId)
+                INNER JOIN TrainersTbl tr ON t.TrainerId = tr.Id
+                WHERE tr.UserId = ?";
 
-            var dt = _database.ExecuteQuery(query, trainerId);
+            var dt = _database.ExecuteQuery(query, trainerUserId);
             var trainees = new List<Trainee>();
             foreach (DataRow row in dt.Rows)
             {
