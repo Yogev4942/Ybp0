@@ -25,6 +25,13 @@ namespace ViewModels.ViewModels
             get => _bio;
             set => SetProperty(ref _bio, value);
         }
+
+        private string _username;
+        public string Username
+        {
+            get => _username;
+            set => SetProperty(ref _username, value);
+        }
         
         // Trainee Properties
         private string _fitnessGoal;
@@ -75,6 +82,7 @@ namespace ViewModels.ViewModels
         public bool IsTrainee => _originalUser is Trainee;
 
         public ICommand SaveCommand { get; }
+        public ICommand SaveAccountCommand { get; }
         public ICommand CancelCommand { get; }
 
         public EditProfileViewModel(IDatabaseService database, INavigationService navigation, User user)
@@ -86,6 +94,7 @@ namespace ViewModels.ViewModels
             LoadUserData();
 
             SaveCommand = new RelayCommand(_ => SaveChanges());
+            SaveAccountCommand = new RelayCommand(_ => SaveAccountChanges());
             CancelCommand = new RelayCommand(_ => _navigation.GoBack());
         }
 
@@ -95,6 +104,7 @@ namespace ViewModels.ViewModels
 
             Email = _originalUser.Email;
             Bio = _originalUser.Bio;
+            Username = _originalUser.Username;
 
             if (IsTrainee && _originalUser is Trainee trainee)
             {
@@ -110,11 +120,21 @@ namespace ViewModels.ViewModels
             }
         }
 
+        private void SaveAccountChanges()
+        {
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Email)) return;
+
+            _originalUser.Username = Username;
+            _originalUser.Email = Email;
+
+            if (_database.UpdateUser(_originalUser))
+            {
+                // Optionally show success or just stay on page
+            }
+        }
+
         private void SaveChanges()
         {
-            // Update the original user object text properties
-            // Note: In a real app we might want to validate unique email etc.
-            _originalUser.Email = Email;
             _originalUser.Bio = Bio;
 
             if (IsTrainee && _originalUser is Trainee trainee)
@@ -132,14 +152,7 @@ namespace ViewModels.ViewModels
 
             if (_database.UpdateUser(_originalUser))
             {
-                // Navigate back on success
-                // We might want to refresh the PreviousViewModel but typically it binds to the same User object instance 
-                // or reloads it. Since we updated the instance in memory, it might reflect immediately if notified.
                 _navigation.GoBack();
-            }
-            else
-            {
-                // Handle error (maybe show message)
             }
         }
     }

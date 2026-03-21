@@ -35,14 +35,10 @@
                         BorderThickness="{TemplateBinding BorderThickness}" 
                         CornerRadius="15">
                             <Border.Effect>
-                                <DropShadowEffect x:Name="shadow" Color="#00FFCC" BlurRadius="5" ShadowDepth="0" Opacity="0.2"/>
+                                <DropShadowEffect x:Name="shadow" Color="#24000000" BlurRadius="12" ShadowDepth="3" Opacity="0.18"/>
                             </Border.Effect>
                             <Grid>
-                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}">
-                                    <ContentPresenter.Effect>
-                                        <DropShadowEffect Color="Black" BlurRadius="3" ShadowDepth="1" Opacity="0.5"/>
-                                    </ContentPresenter.Effect>
-                                </ContentPresenter>
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
@@ -55,10 +51,10 @@
                                                   To="#66FFFFFF" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="shadow"
                                                    Storyboard.TargetProperty="BlurRadius"
-                                                   To="20" Duration="0:0:0.2"/>
+                                                   To="16" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="shadow"
                                                    Storyboard.TargetProperty="Opacity"
-                                                   To="0.9" Duration="0:0:0.2"/>
+                                                   To="0.26" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.EnterActions>
@@ -70,10 +66,10 @@
                                                   To="#44FFFFFF" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="shadow"
                                                    Storyboard.TargetProperty="BlurRadius"
-                                                   To="5" Duration="0:0:0.2"/>
+                                                   To="12" Duration="0:0:0.2"/>
                                             <DoubleAnimation Storyboard.TargetName="shadow"
                                                    Storyboard.TargetProperty="Opacity"
-                                                   To="0.2" Duration="0:0:0.2"/>
+                                                   To="0.18" Duration="0:0:0.2"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </Trigger.ExitActions>
@@ -135,7 +131,7 @@
                         </LinearGradientBrush>
                     </Border.Background>
                     <Border.Effect>
-                        <DropShadowEffect Color="#00FFCC" BlurRadius="12" ShadowDepth="0" Opacity="0.3"/>
+                        <DropShadowEffect Color="#22000000" BlurRadius="18" ShadowDepth="4" Opacity="0.18"/>
                     </Border.Effect>
 
                     <Grid Margin="20,15">
@@ -268,23 +264,35 @@
 
                         <!-- Edit Profile Button (Top Right) -->
                         <Button Grid.Column="1"
-                                Content="✏️ Edit" 
+                                Content="Edit Profile" 
                                 Command="{Binding EditProfileCommand}"
                                 Visibility="{Binding IsOwnProfile, Converter={StaticResource BoolToVisibilityConverter}}"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
                                 Margin="0,20,20,0"
-                                Background="#33FFFFFF"
-                                BorderThickness="0"
+                                Background="#1EFFFFFF"
+                                BorderBrush="#55FFFFFF"
+                                BorderThickness="1"
                                 Foreground="White"
-                                Padding="15,8"
+                                Padding="18,10"
                                 FontSize="14"
                                 Cursor="Hand">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Border Background="{TemplateBinding Background}" CornerRadius="12">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="14">
+                                        <Border.Effect>
+                                            <DropShadowEffect Color="#24000000" BlurRadius="10" ShadowDepth="2" Opacity="0.16"/>
+                                        </Border.Effect>
                                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                     </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#30FFFFFF"/>
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
                                 </ControlTemplate>
                             </Button.Template>
                         </Button>

@@ -19,6 +19,7 @@ namespace ViewModels.Services
         private readonly ITraineeRepository _traineeRepo;
         private readonly ITrainerRepository _trainerRepo;
         private readonly IExerciseRepository _exerciseRepo;
+        private readonly IMuscleRepository _muscleRepo;
         private readonly IWorkoutSessionRepository _workoutSessionRepo;
         private readonly IWeekPlanRepository _weekPlanRepo;
         private readonly ITrainerRequestRepository _trainerRequestRepo;
@@ -30,6 +31,7 @@ namespace ViewModels.Services
         public ITraineeRepository TraineeRepo => _traineeRepo;
         public ITrainerRepository TrainerRepo => _trainerRepo;
         public IExerciseRepository ExerciseRepo => _exerciseRepo;
+        public IMuscleRepository MuscleRepo => _muscleRepo;
         public IWorkoutSessionRepository WorkoutSessionRepo => _workoutSessionRepo;
         public IWeekPlanRepository WeekPlanRepo => _weekPlanRepo;
         public ITrainerRequestRepository TrainerRequestRepo => _trainerRequestRepo;
@@ -42,6 +44,7 @@ namespace ViewModels.Services
             _traineeRepo = new AccessTraineeRepository();
             _trainerRepo = new AccessTrainerRepository();
             _exerciseRepo = new AccessExerciseRepository();
+            _muscleRepo = new AccessMusclesRepository();
             _workoutSessionRepo = new AccessWorkoutSessionRepository();
             _weekPlanRepo = new AccessWeekPlanRepository();
             _trainerRequestRepo = new AccessTrainerRequestRepository();
@@ -242,6 +245,11 @@ namespace ViewModels.Services
         public List<Exercise> GetAllExercises()
         {
             return _exerciseRepo.GetAllExercises();
+        }
+
+        public List<Muscle> GetAllMuscles()
+        {
+            return _muscleRepo.GetAllMuscles();
         }
         #endregion
 

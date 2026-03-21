@@ -1,4 +1,4 @@
-﻿using DataBase.Repository.Interfaces;
+using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -59,21 +59,47 @@ namespace DataBase.Repository.Access
 
         public List<Exercise> GetSessionExercises(int workoutSessionId)
         {
+            string exerciseTable = ExerciseSchemaHelper.GetExerciseTable(_database);
+            string selectSql = ExerciseSchemaHelper.BuildExerciseProjectionSql(_database, "e");
+            var joins = ExerciseSchemaHelper.BuildExerciseJoinSql(_database, "e");
+            string fromClause = $"[{exerciseTable}] e INNER JOIN WorkoutSessionSetsTbl wss ON e.Id = wss.ExerciseId";
+            foreach (var join in joins)
+            {
+                fromClause = $"({fromClause}) {join}";
+            }
+
             var dt = _database.ExecuteQuery(
-                @"SELECT DISTINCT e.Id, e.ExerciseName, e.MuscleGroup 
-                  FROM ExercisesTbl e 
-                  INNER JOIN WorkoutSessionSetsTbl wss ON e.Id = wss.ExerciseId 
+                $@"SELECT DISTINCT {selectSql}
+                  FROM {fromClause}
                   WHERE wss.WorkoutSessionId = ?", workoutSessionId
             );
 
             var exercises = new List<Exercise>();
             foreach (DataRow row in dt.Rows)
             {
+                var primaryMuscleName = row["MuscleGroup"]?.ToString();
+                var secondaryMuscleName = row["SecondaryMuscleGroup"]?.ToString();
+
                 exercises.Add(new Exercise
                 {
                     Id = Convert.ToInt32(row["Id"]),
                     ExerciseName = row["ExerciseName"].ToString(),
-                    MuscleGroup = row["MuscleGroup"]?.ToString()
+                    PrimaryMuscleId = row.Table.Columns.Contains("PrimaryMuscle") && row["PrimaryMuscle"] != DBNull.Value
+                        ? Convert.ToInt32(row["PrimaryMuscle"])
+                        : row.Table.Columns.Contains("PrimaryMuscleId") && row["PrimaryMuscleId"] != DBNull.Value
+                            ? Convert.ToInt32(row["PrimaryMuscleId"])
+                            : row.Table.Columns.Contains("MuscleId") && row["MuscleId"] != DBNull.Value
+                                ? Convert.ToInt32(row["MuscleId"])
+                                : (int?)null,
+                    SecondaryMuscleId = row.Table.Columns.Contains("SecondaryMuscle") && row["SecondaryMuscle"] != DBNull.Value
+                        ? Convert.ToInt32(row["SecondaryMuscle"])
+                        : row.Table.Columns.Contains("SecondaryMuscleId") && row["SecondaryMuscleId"] != DBNull.Value
+                            ? Convert.ToInt32(row["SecondaryMuscleId"])
+                            : (int?)null,
+                    MuscleGroup = primaryMuscleName,
+                    SecondaryMuscleGroup = secondaryMuscleName,
+                    PrimaryMuscle = string.IsNullOrWhiteSpace(primaryMuscleName) ? null : new Muscle { MuscleName = primaryMuscleName },
+                    SecondaryMuscle = string.IsNullOrWhiteSpace(secondaryMuscleName) ? null : new Muscle { MuscleName = secondaryMuscleName }
                 });
             }
             return exercises;

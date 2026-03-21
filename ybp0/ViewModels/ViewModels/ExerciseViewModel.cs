@@ -1,4 +1,4 @@
-﻿using Models;
+using Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,6 +33,13 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _muscleGroup, value);
         }
 
+        private string _secondaryMuscleGroup;
+        public string SecondaryMuscleGroup
+        {
+            get => _secondaryMuscleGroup;
+            set => SetProperty(ref _secondaryMuscleGroup, value);
+        }
+
         public ObservableCollection<SetViewModel> Sets
         {
             get => _sets;
@@ -58,6 +65,7 @@ namespace ViewModels.ViewModels
             _exerciseId = exercise.Id;
             _exerciseName = exercise.ExerciseName;
             _muscleGroup = exercise.MuscleGroup;
+            _secondaryMuscleGroup = exercise.SecondaryMuscleGroup;
             _setColor = setColor;
 
             Sets = new ObservableCollection<SetViewModel>();

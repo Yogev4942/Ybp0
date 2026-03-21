@@ -17,6 +17,7 @@ namespace ViewModels
         ITraineeRepository TraineeRepo { get; }
         ITrainerRepository TrainerRepo { get; }
         IExerciseRepository ExerciseRepo { get; }
+        IMuscleRepository MuscleRepo { get; }
         IWorkoutSessionRepository WorkoutSessionRepo { get; }
         IWeekPlanRepository WeekPlanRepo { get; }
         ITrainerRequestRepository TrainerRequestRepo { get; }
@@ -55,6 +56,7 @@ namespace ViewModels
 
         // Exercise Management
         List<Exercise> GetAllExercises();
+        List<Muscle> GetAllMuscles();
         void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId);
         void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId);
 

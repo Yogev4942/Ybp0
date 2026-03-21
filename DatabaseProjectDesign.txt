@@ -1,5 +1,0 @@
-Purpose of the architecture
-The purpose of the architecture is to separate the database from the client and introduce a dedicated server layer. This allows multiple clients to access shared data simultaneously without exposing the database directly to users. A centralized server enforces validation, security, and business logic in one place, improving maintainability and scalability. Database changes can be handled on the server without modifying every client, enabling a proper multi-user system instead of a single local application
-.
-Why a Web API
-A Web API was chosen because it uses standardized protocols (HTTP + JSON) instead of a custom networking solution. This avoids reinventing low-level networking and allows focus on application logic. The API acts as a secure middle layer, supports concurrent clients, and is platform independent. Any client can communicate with it regardless of programming language. This architecture reflects modern distributed system design and improves scalability, interoperability, and maintainability.

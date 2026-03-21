@@ -63,6 +63,7 @@
     <Compile Include="Mappers\UserMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Access\AcccessExerciseRepository.cs" />
+    <Compile Include="Repository\Access\AccessMusclesRepository.cs" />
     <Compile Include="Repository\Access\AccessLikeRepository.cs" />
     <Compile Include="Repository\Access\AccessPostRepository.cs" />
     <Compile Include="Repository\Access\AccessTraineeRepository.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Repository\Access\AccessWeekPlanRepository.cs" />
     <Compile Include="Repository\Access\AccessWorkoutSessionRepository.cs" />
     <Compile Include="Repository\Interfaces\IExerciseRepository.cs" />
+    <Compile Include="Repository\Interfaces\IMuscleRepository.cs" />
     <Compile Include="Repository\Interfaces\ILikeRepository.cs" />
     <Compile Include="Repository\Interfaces\IPostRepository.cs" />
     <Compile Include="Repository\Interfaces\ITraineeRepository.cs" />
@@ -80,6 +82,7 @@
     <Compile Include="Repository\Interfaces\IUserRepository.cs" />
     <Compile Include="Repository\Interfaces\IWeekPlanRepository.cs" />
     <Compile Include="Repository\Interfaces\IWorkoutSessionRepository.cs" />
+    <Compile Include="Repository\Access\ExerciseSchemaHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DataBase\DB.accdb">

@@ -31,4 +31,8 @@
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="images\ArnoldImage.png" />
+  </ItemGroup>
+
 </Project>

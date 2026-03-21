@@ -322,9 +322,19 @@
                                                                        FontWeight="SemiBold" 
                                                                        FontSize="15" 
                                                                        Foreground="#333"/>
-                                                            <TextBlock Text="{Binding MuscleGroup}" 
-                                                                       FontSize="12" 
-                                                                       Foreground="#888"/>
+                                                            <StackPanel Orientation="Horizontal">
+                                                                <TextBlock Text="{Binding MuscleGroup}" 
+                                                                           FontSize="12" 
+                                                                           Foreground="#888"/>
+                                                                <TextBlock Text=" | " 
+                                                                           FontSize="12" 
+                                                                           Foreground="#CCC"
+                                                                           Visibility="{Binding SecondaryMuscleGroup, Converter={StaticResource StringToVisibilityConverter}}"/>
+                                                                <TextBlock Text="{Binding SecondaryMuscleGroup}" 
+                                                                           FontSize="12" 
+                                                                           Foreground="#888"
+                                                                           FontStyle="Italic"/>
+                                                            </StackPanel>
                                                         </StackPanel>
                                                         
                                                         <!-- Arrow -->

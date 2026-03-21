@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ybp0.Views.ExerciseView"
+<UserControl x:Class="ybp0.Views.ExerciseView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -23,13 +23,26 @@
                 </Grid.ColumnDefinitions>
                 
                 <!-- Exercise Name -->
-                <TextBlock Grid.Column="0"
-                           Text="{Binding ExerciseName}" 
-                           FontSize="12" 
-                           FontWeight="Bold" 
-                           Foreground="#333"
-                           VerticalAlignment="Center"
-                           TextTrimming="CharacterEllipsis"/>
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="{Binding ExerciseName}" 
+                               FontSize="12" 
+                               FontWeight="Bold" 
+                               Foreground="#333"
+                               TextTrimming="CharacterEllipsis"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding MuscleGroup}" 
+                                   FontSize="9" 
+                                   Foreground="#999"/>
+                        <TextBlock Text="/" 
+                                   FontSize="9" 
+                                   Foreground="#CCC"
+                                   Visibility="{Binding SecondaryMuscleGroup, Converter={StaticResource StringToVisibilityConverter}}"/>
+                        <TextBlock Text="{Binding SecondaryMuscleGroup}" 
+                                   FontSize="9" 
+                                   Foreground="#999"
+                                   FontStyle="Italic"/>
+                    </StackPanel>
+                </StackPanel>
                 
                 <!-- Tiny X Remove Button -->
                 <Button Grid.Column="1"
