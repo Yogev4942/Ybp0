@@ -20,7 +20,8 @@ namespace ViewModels
         {
             typeof(HomeViewModel),
             typeof(CalendarViewModel),
-            typeof(FeedViewModel)
+            typeof(FeedViewModel),
+            typeof(WorkoutViewModel)
         };
 
         public NavigationService(

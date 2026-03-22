@@ -1,9 +1,6 @@
-﻿using System;
+using Models;
+using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Interfaces
 {
@@ -12,6 +9,9 @@ namespace DataBase.Repository.Interfaces
         int CreateEmptyWeekPlan(int userId, string planName);
         int? GetUserWeekPlanId(int userId);
         int? GetWeekPlanOwnerUserId(int weekPlanId);
-        DataTable GetWeekPlanDays(int weekPlanId);
+        List<WeekPlanDay> GetWeekPlanDays(int weekPlanId);
+        WeekPlanDay GetWeekPlanDayById(int weekPlanDayId);
+        WeekPlanDay GetWeekPlanDayForDate(int userId, DateTime date);
+        WeekPlanDay UpdateWeekPlanDayWorkout(int weekPlanDayId, int? workoutId, bool restDay);
     }
 }

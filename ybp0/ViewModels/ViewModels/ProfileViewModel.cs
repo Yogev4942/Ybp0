@@ -20,7 +20,9 @@ namespace ViewModels.ViewModels
         public string Email => ViewedUser?.Email;
         public string Bio => ViewedUser?.Bio;
         public string Gender => ViewedUser?.Gender;
-        public string JoinDateText => $"Joined {ViewedUser?.Joindate}";
+        public string JoinDateText => ViewedUser == null
+            ? string.Empty
+            : $"Joined {ViewedUser.JoinDate:dd MMM yyyy}";
         
         // User type labels - subclasses can override if needed
         public virtual string UserTypeLabel => ViewedUser is Trainer ? "Trainer" : "Trainee";

@@ -1,37 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Models
 {
     public abstract class User : BaseEntity
     {
-        // Common properties for all users
-        protected string email;
-        protected string username;
-        protected string password;
-        protected string joindate;
-        protected bool isTrainer;
-        protected string bio;
-        protected string gender;
-        private int currentWeekPlanId;
+        private string email;
+        private string username;
+        private string password;
+        private DateTime joinDate;
+        private bool isTrainer;
+        private bool isAdmin;
+        private string bio;
+        private string gender;
+        private int? currentWeekPlanId;
 
-        // Public properties
         public string Email { get => email; set => email = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
-        public string Joindate { get => joindate; set => joindate = value; }
+        public DateTime JoinDate { get => joinDate; set => joinDate = value; }
+        public string Joindate
+        {
+            get => JoinDate == default(DateTime) ? string.Empty : JoinDate.ToShortDateString();
+            set
+            {
+                if (DateTime.TryParse(value, out DateTime parsedDate))
+                {
+                    joinDate = parsedDate;
+                }
+            }
+        }
         public string Bio { get => bio; set => bio = value; }
         public string Gender { get => gender; set => gender = value; }
         public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
-        public int CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
+        public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
+        public int? CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
 
-        // Abstract method that each user type must implement
         public abstract string GetUserType();
 
-        // Virtual methods that can be overridden
         public virtual bool CanCreatePosts() => false;
         public virtual bool CanAccessOtherUserData() => false;
         public virtual bool CanModifyOtherUserWorkouts() => false;

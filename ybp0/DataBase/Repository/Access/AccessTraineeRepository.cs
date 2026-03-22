@@ -22,7 +22,7 @@ namespace DataBase.Repository.Access
         public Trainee GetTraineeById(int userId)
         {
             string query = @"
-                SELECT u.*, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
+                SELECT u.*, t.Id AS TraineeProfileId, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
                 FROM UserTbl u
                 INNER JOIN TraineesTbl t ON u.Id = t.UserId
                 WHERE u.Id = ?";
@@ -34,7 +34,7 @@ namespace DataBase.Repository.Access
         public List<Trainee> GetTraineesByTrainerId(int trainerUserId)
         {
             string query = @"
-                SELECT u.*, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
+                SELECT u.*, t.Id AS TraineeProfileId, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
                 FROM (UserTbl u
                 INNER JOIN TraineesTbl t ON u.Id = t.UserId)
                 INNER JOIN TrainersTbl tr ON t.TrainerId = tr.Id

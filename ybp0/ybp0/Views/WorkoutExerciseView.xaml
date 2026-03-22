@@ -1,0 +1,167 @@
+<UserControl x:Class="ybp0.Views.WorkoutExerciseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d"
+             d:DesignHeight="170"
+             d:DesignWidth="700">
+
+    <Border Margin="0,0,0,14"
+            Padding="18"
+            Background="#F7FBFA"
+            BorderBrush="#DDEBE8"
+            BorderThickness="1"
+            CornerRadius="18">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="{Binding ExerciseName}"
+                               FontSize="22"
+                               FontWeight="Bold"
+                               Foreground="#204A43"/>
+                    <TextBlock Text="{Binding MuscleGroup}"
+                               Margin="0,4,0,0"
+                               FontSize="14"
+                               Foreground="#6A8780"/>
+                </StackPanel>
+
+                <Button Grid.Column="1"
+                        Content="✕"
+                        Command="{Binding RemoveExerciseCommand}"
+                        Width="34"
+                        Height="34"
+                        Background="#D7ECF9"
+                        Foreground="#6A8780"
+                        BorderThickness="0"
+                        Cursor="Hand"/>
+            </Grid>
+
+            <Grid Grid.Row="1" Margin="0,0,0,8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0"
+                           Text="#"
+                           FontStyle="Italic"
+                           Foreground="#8DA6A0"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="1"
+                           Text="done"
+                           FontStyle="Italic"
+                           Foreground="#8DA6A0"
+                           HorizontalAlignment="Center"
+                           Visibility="{Binding IsSessionMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
+                <TextBlock Grid.Column="2"
+                           Text="reps"
+                           FontStyle="Italic"
+                           Foreground="#8DA6A0"
+                           HorizontalAlignment="Center"/>
+                <TextBlock Grid.Column="3"
+                           Text="weight"
+                           FontStyle="Italic"
+                           Foreground="#8DA6A0"
+                           HorizontalAlignment="Center"/>
+            </Grid>
+
+            <StackPanel Grid.Row="2">
+                <ItemsControl ItemsSource="{Binding Sets}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="80"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="40"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Width="38"
+                                        Height="38"
+                                        CornerRadius="19"
+                                        Background="#DDF2EE"
+                                        HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding SetNumber}"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="#1C9A89"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"/>
+                                </Border>
+
+                                <CheckBox Grid.Column="1"
+                                          IsChecked="{Binding IsCompleted, UpdateSourceTrigger=PropertyChanged}"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Visibility="{Binding IsSessionMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
+
+                                <Border Grid.Column="2"
+                                        Margin="6,0"
+                                        Padding="10,8"
+                                        Background="White"
+                                        CornerRadius="10">
+                                    <TextBox Text="{Binding Reps, UpdateSourceTrigger=PropertyChanged}"
+                                             BorderThickness="0"
+                                             Background="Transparent"
+                                             FontSize="16"
+                                             Foreground="#35564F"
+                                             TextAlignment="Center"/>
+                                </Border>
+
+                                <Border Grid.Column="3"
+                                        Margin="6,0"
+                                        Padding="10,8"
+                                        Background="White"
+                                        CornerRadius="10">
+                                    <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}"
+                                             BorderThickness="0"
+                                             Background="Transparent"
+                                             FontSize="16"
+                                             Foreground="#35564F"
+                                             TextAlignment="Center"/>
+                                </Border>
+
+                                <Button Grid.Column="4"
+                                        Content="×"
+                                        Command="{Binding DataContext.RemoveSetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                        CommandParameter="{Binding}"
+                                        Foreground="#B4C5C0"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <Button Content="+ Add Set"
+                        Command="{Binding AddSetCommand}"
+                        HorizontalAlignment="Left"
+                        Padding="12,8"
+                        Foreground="#1C9A89"
+                        Background="#E7F6F2"
+                        BorderBrush="#CAE9E2"
+                        BorderThickness="1"
+                        Cursor="Hand"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

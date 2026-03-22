@@ -139,6 +139,11 @@ namespace ViewModels.ViewModels
                     return new TraineeCalendarViewModel(Database, Navigation, _currUser);
             }
 
+            if (type == typeof(WorkoutViewModel))
+            {
+                return new WorkoutViewModel(Database, Navigation, _currUser);
+            }
+
             if (type == typeof(FeedViewModel))
             {
                 // Route to specific feed view model based on user type

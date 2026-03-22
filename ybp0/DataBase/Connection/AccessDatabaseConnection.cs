@@ -70,7 +70,11 @@ namespace DataBase
                 var result = command.ExecuteScalar();
                 if (result == null || result == DBNull.Value)
                     return default(T);
-                return (T)Convert.ChangeType(result, typeof(T));
+
+                Type targetType = typeof(T);
+                Type underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+                object convertedValue = Convert.ChangeType(result, underlyingType);
+                return (T)convertedValue;
             }
         }
         private OleDbCommand CreateCommand(OleDbConnection connection, string query, object[] parameters)

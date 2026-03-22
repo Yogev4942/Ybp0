@@ -1,68 +1,383 @@
-﻿<UserControl x:Class="ybp0.Views.WorkoutView"
+<UserControl x:Class="ybp0.Views.WorkoutView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ybp0.Views"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="400">
-    
-    <!-- Matching CalendarView glassmorphism style - embeddable in day cards -->
-    <StackPanel>
-        <!-- Workout Name Badge -->
-        <Border Background="{Binding AccentColor, Converter={StaticResource StringToColorBrushConverter}}" 
-                CornerRadius="8" 
-                Padding="8,5"
-                Margin="0,0,0,12"
-                Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}">
-            <TextBlock Text="{Binding WorkoutName, FallbackValue='Workout'}" 
-                       FontSize="12"
-                       FontWeight="SemiBold"
-                       Foreground="White" 
-                       HorizontalAlignment="Center"/>
-        </Border>
-        
-        <!-- Rest Day Badge -->
-        <Border Background="#FF6B6B" 
-                CornerRadius="8" 
-                Padding="8,5"
-                Margin="0,0,0,12"
-                Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}">
-            <TextBlock Text="Rest Day" 
-                       FontSize="12"
-                       FontWeight="SemiBold"
-                       Foreground="White" 
-                       HorizontalAlignment="Center"/>
-        </Border>
-        
-        <!-- Rest Day Content -->
-        <TextBlock Text="Recovery &amp; Stretching" 
-                   FontSize="11"
-                   Foreground="#888" 
-                   TextWrapping="Wrap"
-                   HorizontalAlignment="Center"
-                   TextAlignment="Center"
-                   Visibility="{Binding IsRestDay, Converter={StaticResource BoolToVisibilityConverter}, FallbackValue=Collapsed}"/>
-        
-        <!-- Exercises List (when not rest day) -->
-        <ScrollViewer MaxHeight="180" 
-                      VerticalScrollBarVisibility="Auto"
-                      Visibility="{Binding IsRestDay, Converter={StaticResource InverseBoolToVisibilityConverter}, FallbackValue=Visible}">
-            <ItemsControl ItemsSource="{Binding Exercises}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border CornerRadius="8" 
-                                Margin="0,4,0,4" 
-                                Padding="10">
-                            <Border.Background>
-                                <SolidColorBrush Color="White" Opacity="0.6"/>
-                            </Border.Background>
-                            
-                            <local:ExerciseView DataContext="{Binding}"/>
+             mc:Ignorable="d"
+             d:DesignHeight="450"
+             d:DesignWidth="900">
+
+    <UserControl.Resources>
+        <Style x:Key="WorkoutButtonBaseStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="14,9"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </ScrollViewer>
-    </StackPanel>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.92"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.82"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.45"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SubtleActionButtonStyle" TargetType="Button" BasedOn="{StaticResource WorkoutButtonBaseStyle}">
+            <Setter Property="Foreground" Value="#0E5A53"/>
+            <Setter Property="Background" Value="#DDF4F0"/>
+        </Style>
+
+        <Style x:Key="PrimaryActionButtonStyle" TargetType="Button" BasedOn="{StaticResource WorkoutButtonBaseStyle}">
+            <Setter Property="Background" Value="#26A69A"/>
+        </Style>
+
+        <Style x:Key="BlueActionButtonStyle" TargetType="Button" BasedOn="{StaticResource WorkoutButtonBaseStyle}">
+            <Setter Property="Background" Value="#2D8CFF"/>
+        </Style>
+
+        <Style x:Key="PurpleActionButtonStyle" TargetType="Button" BasedOn="{StaticResource WorkoutButtonBaseStyle}">
+            <Setter Property="Background" Value="#8B2BC5"/>
+        </Style>
+
+        <Style x:Key="DangerActionButtonStyle" TargetType="Button" BasedOn="{StaticResource WorkoutButtonBaseStyle}">
+            <Setter Property="Background" Value="#D94E1F"/>
+        </Style>
+
+        <Style x:Key="WorkoutComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Padding" Value="10,6"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#D5E9E3"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="#17483F"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#EAF7F3" Offset="0"/>
+                <GradientStop Color="#DDF3EE" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Border Grid.Row="0"
+                Margin="20,20,20,12"
+                Padding="28,22"
+                CornerRadius="24"
+                Background="#0E5A53">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel>
+                    <TextBlock Text="Current Workout"
+                               FontSize="30"
+                               FontWeight="Bold"
+                               Foreground="White"/>
+                    <TextBlock Text="{Binding SessionSubtitle}"
+                               Margin="0,8,0,0"
+                               FontSize="14"
+                               Foreground="#B5DAD3"/>
+                </StackPanel>
+
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Border Background="#1A6F68"
+                            CornerRadius="18"
+                            Padding="18,10"
+                            Margin="0,0,14,0">
+                        <StackPanel>
+                            <TextBlock Text="Elapsed"
+                                       FontSize="12"
+                                       Foreground="#DDF4F0"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding ElapsedTime}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel VerticalAlignment="Center">
+                        <Button Content="+ Add Exercise"
+                                Command="{Binding OpenExerciseModalCommand}"
+                                Visibility="{Binding HasActiveSession, Converter={StaticResource BoolToVisibilityConverter}}"
+                                Margin="0,0,0,8"
+                                Style="{StaticResource SubtleActionButtonStyle}"/>
+                        <Button Content="Finish Workout"
+                                Command="{Binding FinishWorkoutCommand}"
+                                Style="{StaticResource DangerActionButtonStyle}"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Grid Grid.Row="1" Margin="20,0,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="310"/>
+                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Background="#FCFEFD"
+                    CornerRadius="22"
+                    Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="14" ShadowDepth="0" Opacity="0.08"/>
+                </Border.Effect>
+
+                <StackPanel>
+                    <TextBlock Text="Start Options"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="#17483F"/>
+                    <TextBlock Text="Choose how you want to begin this session."
+                               Margin="0,6,0,18"
+                               Foreground="#68867F"
+                               TextWrapping="Wrap"/>
+
+                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Today's Plan"
+                                       FontWeight="Bold"
+                                       Foreground="#17483F"/>
+                            <TextBlock Text="{Binding TodayPlanSummary}"
+                                       Margin="0,6,0,14"
+                                       Foreground="#68867F"
+                                       TextWrapping="Wrap"/>
+                            <Button Content="Start Planned Workout"
+                                    Command="{Binding StartPlannedWorkoutCommand}"
+                                    Style="{StaticResource PrimaryActionButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16" Margin="0,0,0,12">
+                        <StackPanel>
+                            <TextBlock Text="Saved Workout"
+                                       FontWeight="Bold"
+                                       Foreground="#17483F"/>
+                            <ComboBox ItemsSource="{Binding SavedWorkouts}"
+                                      SelectedItem="{Binding SelectedSavedWorkout}"
+                                      DisplayMemberPath="WorkoutName"
+                                      Margin="0,10,0,12"
+                                      Style="{StaticResource WorkoutComboBoxStyle}"/>
+                            <Button Content="Start Saved Workout"
+                                    Command="{Binding StartSavedWorkoutCommand}"
+                                    Style="{StaticResource BlueActionButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16">
+                        <StackPanel>
+                            <TextBlock Text="Freestyle"
+                                       FontWeight="Bold"
+                                       Foreground="#17483F"/>
+                            <TextBlock Text="Start empty and add exercises while you train."
+                                       Margin="0,6,0,14"
+                                       Foreground="#68867F"
+                                       TextWrapping="Wrap"/>
+                            <Button Content="Start Freestyle"
+                                    Command="{Binding StartFreestyleWorkoutCommand}"
+                                    Style="{StaticResource PurpleActionButtonStyle}"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Background="#FCFEFD"
+                    CornerRadius="22"
+                    Padding="20">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="14" ShadowDepth="0" Opacity="0.08"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,14">
+                        <TextBlock Text="{Binding SessionTitle}"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#17483F"/>
+                        <TextBlock Text="{Binding SessionSubtitle}"
+                                   Margin="0,6,0,0"
+                                   Foreground="#68867F"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1">
+                        <Border Visibility="{Binding HasActiveSession, Converter={StaticResource InverseBoolToVisibilityConverter}}"
+                                Background="#F4FBF8"
+                                CornerRadius="18"
+                                Padding="24">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Text="No active workout yet."
+                                           FontSize="24"
+                                           FontWeight="Bold"
+                                           Foreground="#17483F"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Pick an option on the left to start a session, then manage exercises and sets here."
+                                           Margin="0,10,0,0"
+                                           Foreground="#68867F"
+                                           TextAlignment="Center"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer Visibility="{Binding HasActiveSession, Converter={StaticResource BoolToVisibilityConverter}}"
+                                      VerticalScrollBarVisibility="Auto">
+                            <ItemsControl ItemsSource="{Binding Exercises}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:WorkoutExerciseView DataContext="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <Grid Visibility="{Binding IsExerciseModalOpen, Converter={StaticResource BoolToVisibilityConverter}}"
+              Panel.ZIndex="20">
+            <Border Background="#70000000">
+                <Border.InputBindings>
+                    <MouseBinding MouseAction="LeftClick" Command="{Binding CloseExerciseModalCommand}"/>
+                </Border.InputBindings>
+            </Border>
+
+            <Border Width="420"
+                    Background="White"
+                    CornerRadius="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="24" ShadowDepth="0" Opacity="0.2"/>
+                </Border.Effect>
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Background="#129487" CornerRadius="20,20,0,0" Padding="20,16">
+                        <Grid>
+                            <TextBlock Text="Add Exercise"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                            <Button Content="✕"
+                                    Command="{Binding CloseExerciseModalCommand}"
+                                    HorizontalAlignment="Right"
+                                    Foreground="White"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"/>
+                        </Grid>
+                    </Border>
+
+                    <ScrollViewer Grid.Row="1"
+                                  Padding="12"
+                                  MaxHeight="360"
+                                  VerticalScrollBarVisibility="Auto">
+                        <ListBox ItemsSource="{Binding AllExercises}"
+                                 SelectedItem="{Binding SelectedExerciseToAdd}"
+                                 BorderThickness="0"
+                                 Background="Transparent">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Padding" Value="12"/>
+                                    <Setter Property="Margin" Value="0,4"/>
+                                    <Setter Property="Cursor" Value="Hand"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="ListBoxItem">
+                                                <Border x:Name="border"
+                                                        Background="#F7FCFB"
+                                                        BorderBrush="#D7ECE6"
+                                                        BorderThickness="1"
+                                                        CornerRadius="12"
+                                                        Padding="{TemplateBinding Padding}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding ExerciseName}"
+                                                                       FontWeight="SemiBold"
+                                                                       FontSize="15"
+                                                                       Foreground="#173E37"/>
+                                                            <TextBlock Text="{Binding MuscleGroup}"
+                                                                       Margin="0,4,0,0"
+                                                                       Foreground="#68867F"/>
+                                                        </StackPanel>
+
+                                                        <TextBlock Grid.Column="1"
+                                                                   Text="+"
+                                                                   FontSize="24"
+                                                                   Foreground="#129487"
+                                                                   VerticalAlignment="Center"/>
+                                                    </Grid>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="border" Property="BorderBrush" Value="#129487"/>
+                                                        <Setter TargetName="border" Property="Background" Value="#EEF9F6"/>
+                                                    </Trigger>
+                                                    <Trigger Property="IsSelected" Value="True">
+                                                        <Setter TargetName="border" Property="Background" Value="#E1F3EE"/>
+                                                        <Setter TargetName="border" Property="BorderBrush" Value="#129487"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
 </UserControl>

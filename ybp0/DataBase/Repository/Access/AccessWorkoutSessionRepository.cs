@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
@@ -16,164 +14,218 @@ namespace DataBase.Repository.Access
         public AccessWorkoutSessionRepository()
         {
             _database = new AccessDatabaseConnection();
+            EnsureSchema();
         }
 
-        public WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date)
+        public WorkoutSession GetActiveSession(int userId)
         {
             var dt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
-                userId, weekPlanDayId, date.Date
-            );
+                @"SELECT TOP 1 ws.*, w.WorkoutName
+                  FROM WorkoutSessionTbl ws
+                  LEFT JOIN WorkoutsTbl w ON ws.WorkoutId = w.Id
+                  WHERE ws.UserId = ? AND ws.IsCompleted = False
+                  ORDER BY ws.StartTime DESC, ws.Id DESC",
+                userId);
 
-            if (dt.Rows.Count > 0) return MapWorkoutSession(dt.Rows[0]);
+            return dt.Rows.Count > 0 ? MapWorkoutSession(dt.Rows[0]) : null;
+        }
 
-            var dayDt = _database.ExecuteQuery("SELECT WorkoutId FROM WeekPlanDaysTbl WHERE Id = ?", weekPlanDayId);
-            if (dayDt.Rows.Count == 0) return null;
+        public WorkoutSession GetSessionById(int workoutSessionId)
+        {
+            var dt = _database.ExecuteQuery(
+                @"SELECT TOP 1 ws.*, w.WorkoutName
+                  FROM WorkoutSessionTbl ws
+                  LEFT JOIN WorkoutsTbl w ON ws.WorkoutId = w.Id
+                  WHERE ws.Id = ?",
+                workoutSessionId);
 
-            int workoutId;
-            if (dayDt.Rows[0]["WorkoutId"] != DBNull.Value)
+            return dt.Rows.Count > 0 ? MapWorkoutSession(dt.Rows[0]) : null;
+        }
+
+        public WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId, DateTime startTime)
+        {
+            WorkoutSession existingSession = GetActiveSession(userId);
+            if (existingSession != null)
             {
-                workoutId = Convert.ToInt32(dayDt.Rows[0]["WorkoutId"]);
+                return existingSession;
+            }
+
+            bool hasSessionModeColumn = _database.ColumnExists("WorkoutSessionTbl", "SessionMode");
+            if (hasSessionModeColumn)
+            {
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted, SessionMode)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    userId,
+                    workoutId.HasValue ? (object)workoutId.Value : DBNull.Value,
+                    weekPlanDayId.HasValue ? (object)weekPlanDayId.Value : DBNull.Value,
+                    startTime.Date,
+                    startTime,
+                    DBNull.Value,
+                    false,
+                    mode.ToString());
             }
             else
             {
-                _database.ExecuteNonQuery("INSERT INTO WorkoutsTbl (UserId, WorkoutName) VALUES (?, ?)", userId, "Ad-hoc Workout");
-                System.Threading.Thread.Sleep(100);
-                var wDt = _database.ExecuteQuery("SELECT TOP 1 Id FROM WorkoutsTbl WHERE UserId = ? ORDER BY Id DESC", userId);
-                workoutId = Convert.ToInt32(wDt.Rows[0]["Id"]);
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted)
+                      VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    userId,
+                    workoutId.HasValue ? (object)workoutId.Value : DBNull.Value,
+                    weekPlanDayId.HasValue ? (object)weekPlanDayId.Value : DBNull.Value,
+                    startTime.Date,
+                    startTime,
+                    DBNull.Value,
+                    false);
             }
 
-            _database.ExecuteNonQuery(
-                "INSERT INTO WorkoutSessionTbl ([UserId], [WorkoutId], [WeekPlanDayId], [SessionDate]) VALUES (?, ?, ?, ?)",
-                userId, workoutId, weekPlanDayId, date.Date
-            );
-
             System.Threading.Thread.Sleep(100);
-            var newDt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionTbl WHERE UserId = ? AND WeekPlanDayId = ? AND SessionDate = ?",
-                userId, weekPlanDayId, date.Date
-            );
+            int sessionId = _database.ExecuteScalar<int>(
+                "SELECT TOP 1 Id FROM WorkoutSessionTbl WHERE UserId = ? ORDER BY Id DESC",
+                userId);
 
-            return newDt.Rows.Count > 0 ? MapWorkoutSession(newDt.Rows[0]) : null;
+            if (workoutId.HasValue)
+            {
+                CopyTemplateSetsToSession(sessionId, workoutId.Value);
+            }
+
+            return GetSessionById(sessionId);
         }
 
-        public List<Exercise> GetSessionExercises(int workoutSessionId)
+        public WorkoutSession FinishWorkoutSession(int workoutSessionId, DateTime endTime)
+        {
+            _database.ExecuteNonQuery(
+                @"DELETE FROM WorkoutSessionSetsTbl
+                  WHERE WorkoutSessionId = ?
+                    AND (IsCompleted = 0 OR IsCompleted IS NULL)",
+                workoutSessionId);
+
+            _database.ExecuteNonQuery(
+                "UPDATE WorkoutSessionTbl SET EndTime = ?, IsCompleted = ? WHERE Id = ?",
+                endTime.Date,
+                true,
+                workoutSessionId);
+
+            return GetSessionById(workoutSessionId);
+        }
+
+        public List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId)
         {
             string exerciseTable = ExerciseSchemaHelper.GetExerciseTable(_database);
             string selectSql = ExerciseSchemaHelper.BuildExerciseProjectionSql(_database, "e");
             var joins = ExerciseSchemaHelper.BuildExerciseJoinSql(_database, "e");
             string fromClause = $"[{exerciseTable}] e INNER JOIN WorkoutSessionSetsTbl wss ON e.Id = wss.ExerciseId";
-            foreach (var join in joins)
+            foreach (string join in joins)
             {
                 fromClause = $"({fromClause}) {join}";
             }
 
             var dt = _database.ExecuteQuery(
-                $@"SELECT DISTINCT {selectSql}
-                  FROM {fromClause}
-                  WHERE wss.WorkoutSessionId = ?", workoutSessionId
-            );
+                $@"SELECT DISTINCT e.Id, {selectSql}
+                   FROM {fromClause}
+                   WHERE wss.WorkoutSessionId = ?
+                   ORDER BY e.ExerciseName",
+                workoutSessionId);
 
-            var exercises = new List<Exercise>();
-            foreach (DataRow row in dt.Rows)
-            {
-                var primaryMuscleName = row["MuscleGroup"]?.ToString();
-                var secondaryMuscleName = row["SecondaryMuscleGroup"]?.ToString();
-
-                exercises.Add(new Exercise
+            return dt.Rows.Cast<DataRow>()
+                .Select(row =>
                 {
-                    Id = Convert.ToInt32(row["Id"]),
-                    ExerciseName = row["ExerciseName"].ToString(),
-                    PrimaryMuscleId = row.Table.Columns.Contains("PrimaryMuscle") && row["PrimaryMuscle"] != DBNull.Value
-                        ? Convert.ToInt32(row["PrimaryMuscle"])
-                        : row.Table.Columns.Contains("PrimaryMuscleId") && row["PrimaryMuscleId"] != DBNull.Value
-                            ? Convert.ToInt32(row["PrimaryMuscleId"])
-                            : row.Table.Columns.Contains("MuscleId") && row["MuscleId"] != DBNull.Value
-                                ? Convert.ToInt32(row["MuscleId"])
-                                : (int?)null,
-                    SecondaryMuscleId = row.Table.Columns.Contains("SecondaryMuscle") && row["SecondaryMuscle"] != DBNull.Value
-                        ? Convert.ToInt32(row["SecondaryMuscle"])
-                        : row.Table.Columns.Contains("SecondaryMuscleId") && row["SecondaryMuscleId"] != DBNull.Value
-                            ? Convert.ToInt32(row["SecondaryMuscleId"])
-                            : (int?)null,
-                    MuscleGroup = primaryMuscleName,
-                    SecondaryMuscleGroup = secondaryMuscleName,
-                    PrimaryMuscle = string.IsNullOrWhiteSpace(primaryMuscleName) ? null : new Muscle { MuscleName = primaryMuscleName },
-                    SecondaryMuscle = string.IsNullOrWhiteSpace(secondaryMuscleName) ? null : new Muscle { MuscleName = secondaryMuscleName }
-                });
-            }
-            return exercises;
+                    int exerciseId = Convert.ToInt32(row["Id"]);
+                    return new WorkoutSessionExercise
+                    {
+                        ExerciseId = exerciseId,
+                        ExerciseName = row["ExerciseName"]?.ToString(),
+                        MuscleGroup = row["MuscleGroup"]?.ToString(),
+                        SecondaryMuscleGroup = row["SecondaryMuscleGroup"]?.ToString(),
+                        Sets = GetSessionSets(workoutSessionId, exerciseId)
+                    };
+                })
+                .ToList();
         }
 
-        public List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId)
+        public List<WorkoutSessionSet> GetSessionSets(int workoutSessionId, int exerciseId)
         {
             var dt = _database.ExecuteQuery(
-                "SELECT * FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
-                workoutSessionId, exerciseId
-            );
+                @"SELECT * FROM WorkoutSessionSetsTbl
+                  WHERE WorkoutSessionId = ? AND ExerciseId = ?
+                  ORDER BY SetNumber",
+                workoutSessionId,
+                exerciseId);
 
-            var sets = new List<SessionSet>();
+            return dt.Rows.Cast<DataRow>()
+                .Select(MapSessionSet)
+                .ToList();
+        }
+
+        public WorkoutSessionSet SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight, bool isCompleted)
+        {
+            var dt = _database.ExecuteQuery(
+                @"SELECT * FROM WorkoutSessionSetsTbl
+                  WHERE WorkoutSessionId = ? AND ExerciseId = ? AND SetNumber = ?",
+                workoutSessionId,
+                exerciseId,
+                setNumber);
+
             if (dt.Rows.Count > 0)
             {
-                foreach (DataRow row in dt.Rows) sets.Add(MapSessionSet(row));
-                return sets;
-            }
-
-            var sessionDt = _database.ExecuteQuery("SELECT WorkoutId FROM WorkoutSessionTbl WHERE Id = ?", workoutSessionId);
-            if (sessionDt.Rows.Count == 0) return sets;
-            int workoutId = Convert.ToInt32(sessionDt.Rows[0]["WorkoutId"]);
-
-            var weDt = _database.ExecuteQuery(
-                "SELECT Id FROM WorkoutExercisesTbl WHERE WorkoutId = ? AND ExerciseId = ?",
-                workoutId, exerciseId
-            );
-            if (weDt.Rows.Count == 0) return sets;
-            int workoutExerciseId = Convert.ToInt32(weDt.Rows[0]["Id"]);
-
-            var templateDt = _database.ExecuteQuery("SELECT * FROM WorkoutSetsTbl WHERE WorkoutExerciseId = ?", workoutExerciseId);
-
-            foreach (DataRow row in templateDt.Rows)
-            {
-                int setNumber = Convert.ToInt32(row["SetNumber"]);
-                int reps = Convert.ToInt32(row["Reps"]);
-                double weight = Convert.ToDouble(row["Weight"]);
-
+                int setId = Convert.ToInt32(dt.Rows[0]["Id"]);
                 _database.ExecuteNonQuery(
-                    "INSERT INTO WorkoutSessionSetsTbl ([WorkoutSessionId], [ExerciseId], [SetNumber], [Reps], [Weight]) VALUES (?, ?, ?, ?, ?)",
-                    workoutSessionId, exerciseId, setNumber, reps, weight
-                );
+                    @"UPDATE WorkoutSessionSetsTbl
+                      SET Reps = ?, Weight = ?, IsCompleted = ?
+                      WHERE Id = ?",
+                    reps,
+                    weight,
+                    isCompleted,
+                    setId);
 
-                sets.Add(new SessionSet
+                return new WorkoutSessionSet
                 {
+                    Id = setId,
                     WorkoutSessionId = workoutSessionId,
                     ExerciseId = exerciseId,
                     SetNumber = setNumber,
                     Reps = reps,
-                    Weight = weight
-                });
+                    Weight = weight,
+                    IsCompleted = isCompleted
+                };
             }
-            return sets;
+
+            _database.ExecuteNonQuery(
+                @"INSERT INTO WorkoutSessionSetsTbl (WorkoutSessionId, ExerciseId, SetNumber, Reps, Weight, IsCompleted)
+                  VALUES (?, ?, ?, ?, ?, ?)",
+                workoutSessionId,
+                exerciseId,
+                setNumber,
+                reps,
+                weight,
+                isCompleted);
+
+            System.Threading.Thread.Sleep(100);
+            int newSetId = _database.ExecuteScalar<int>(
+                "SELECT TOP 1 Id FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? ORDER BY Id DESC",
+                workoutSessionId);
+
+            return new WorkoutSessionSet
+            {
+                Id = newSetId,
+                WorkoutSessionId = workoutSessionId,
+                ExerciseId = exerciseId,
+                SetNumber = setNumber,
+                Reps = reps,
+                Weight = weight,
+                IsCompleted = isCompleted
+            };
         }
 
-        public void SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight)
+        public WorkoutSessionSet AddSessionSet(int workoutSessionId, int exerciseId, int reps, double weight)
         {
-            var dt = _database.ExecuteQuery(
-                "SELECT Id FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ? AND SetNumber = ?",
-                workoutSessionId, exerciseId, setNumber
-            );
+            int nextSetNumber = (_database.ExecuteScalar<int?>(
+                @"SELECT MAX(SetNumber) FROM WorkoutSessionSetsTbl
+                  WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                workoutSessionId,
+                exerciseId) ?? 0) + 1;
 
-            if (dt.Rows.Count > 0)
-            {
-                int id = Convert.ToInt32(dt.Rows[0]["Id"]);
-                _database.ExecuteNonQuery("UPDATE WorkoutSessionSetsTbl SET Reps = ?, Weight = ? WHERE Id = ?", reps, weight, id);
-            }
-            else
-            {
-                _database.ExecuteNonQuery(
-                    "INSERT INTO WorkoutSessionSetsTbl ([WorkoutSessionId], [ExerciseId], [SetNumber], [Reps], [Weight]) VALUES (?, ?, ?, ?, ?)",
-                    workoutSessionId, exerciseId, setNumber, reps, weight
-                );
-            }
+            return SaveSessionSet(workoutSessionId, exerciseId, nextSetNumber, reps, weight, false);
         }
 
         public void DeleteSessionSet(int setId)
@@ -183,44 +235,125 @@ namespace DataBase.Repository.Access
 
         public void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId)
         {
-            var dt = _database.ExecuteQuery("SELECT Id FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?", workoutSessionId, exerciseId);
-            if (dt.Rows.Count == 0)
+            var existingDt = _database.ExecuteQuery(
+                @"SELECT TOP 1 Id FROM WorkoutSessionSetsTbl
+                  WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                workoutSessionId,
+                exerciseId);
+
+            if (existingDt.Rows.Count == 0)
             {
-                _database.ExecuteNonQuery(
-                    "INSERT INTO WorkoutSessionSetsTbl ([WorkoutSessionId], [ExerciseId], [SetNumber], [Reps], [Weight]) VALUES (?, ?, ?, ?, ?)",
-                    workoutSessionId, exerciseId, 1, 0, 0.0
-                );
+                SaveSessionSet(workoutSessionId, exerciseId, 1, 0, 0, false);
             }
         }
 
         public void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId)
         {
-            _database.ExecuteNonQuery("DELETE FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?", workoutSessionId, exerciseId);
+            _database.ExecuteNonQuery(
+                "DELETE FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ? AND ExerciseId = ?",
+                workoutSessionId,
+                exerciseId);
+        }
+
+        private void EnsureSchema()
+        {
+            if (!_database.ColumnExists("WorkoutSessionTbl", "SessionMode"))
+            {
+                try
+                {
+                    _database.ExecuteNonQuery("ALTER TABLE WorkoutSessionTbl ADD COLUMN SessionMode TEXT(50)");
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private void CopyTemplateSetsToSession(int workoutSessionId, int workoutId)
+        {
+            var workoutExerciseDt = _database.ExecuteQuery(
+                "SELECT Id, ExerciseId FROM WorkoutExercisesTbl WHERE WorkoutId = ? ORDER BY OrderNumber, Id",
+                workoutId);
+
+            foreach (DataRow exerciseRow in workoutExerciseDt.Rows)
+            {
+                int workoutExerciseId = Convert.ToInt32(exerciseRow["Id"]);
+                int exerciseId = Convert.ToInt32(exerciseRow["ExerciseId"]);
+
+                var setDt = _database.ExecuteQuery(
+                    "SELECT * FROM WorkoutSetsTbl WHERE WorkoutExerciseId = ? ORDER BY SetNumber",
+                    workoutExerciseId);
+
+                foreach (DataRow setRow in setDt.Rows)
+                {
+                    _database.ExecuteNonQuery(
+                        @"INSERT INTO WorkoutSessionSetsTbl (WorkoutSessionId, ExerciseId, SetNumber, Reps, Weight, IsCompleted)
+                          VALUES (?, ?, ?, ?, ?, ?)",
+                        workoutSessionId,
+                        exerciseId,
+                        Convert.ToInt32(setRow["SetNumber"]),
+                        Convert.ToInt32(setRow["Reps"]),
+                        Convert.ToDouble(setRow["Weight"]),
+                        false);
+                }
+            }
         }
 
         private WorkoutSession MapWorkoutSession(DataRow row)
         {
+            string rawMode = row.Table.Columns.Contains("SessionMode") && row["SessionMode"] != DBNull.Value
+                ? row["SessionMode"].ToString()
+                : null;
+
             return new WorkoutSession
             {
                 Id = Convert.ToInt32(row["Id"]),
                 UserId = Convert.ToInt32(row["UserId"]),
-                WorkoutId = Convert.ToInt32(row["WorkoutId"]),
+                WorkoutId = row["WorkoutId"] != DBNull.Value ? Convert.ToInt32(row["WorkoutId"]) : (int?)null,
                 WeekPlanDayId = row["WeekPlanDayId"] != DBNull.Value ? Convert.ToInt32(row["WeekPlanDayId"]) : (int?)null,
-                SessionDate = Convert.ToDateTime(row["SessionDate"])
+                SessionDate = row["SessionDate"] != DBNull.Value ? Convert.ToDateTime(row["SessionDate"]) : DateTime.Today,
+                StartTime = row["StartTime"] != DBNull.Value ? Convert.ToDateTime(row["StartTime"]) : DateTime.Now,
+                EndTime = row["EndTime"] != DBNull.Value ? Convert.ToDateTime(row["EndTime"]) : (DateTime?)null,
+                IsCompleted = row["IsCompleted"] != DBNull.Value && Convert.ToBoolean(row["IsCompleted"]),
+                Mode = InferSessionMode(rawMode, row["WorkoutId"] != DBNull.Value, row["WeekPlanDayId"] != DBNull.Value),
+                WorkoutName = row.Table.Columns.Contains("WorkoutName") && row["WorkoutName"] != DBNull.Value
+                    ? row["WorkoutName"].ToString()
+                    : null
             };
         }
 
-        private SessionSet MapSessionSet(DataRow row)
+        private static WorkoutSessionSet MapSessionSet(DataRow row)
         {
-            return new SessionSet
+            return new WorkoutSessionSet
             {
                 Id = Convert.ToInt32(row["Id"]),
                 WorkoutSessionId = Convert.ToInt32(row["WorkoutSessionId"]),
                 ExerciseId = Convert.ToInt32(row["ExerciseId"]),
                 SetNumber = Convert.ToInt32(row["SetNumber"]),
                 Reps = Convert.ToInt32(row["Reps"]),
-                Weight = Convert.ToDouble(row["Weight"])
+                Weight = Convert.ToDouble(row["Weight"]),
+                IsCompleted = row["IsCompleted"] != DBNull.Value && Convert.ToBoolean(row["IsCompleted"])
             };
+        }
+
+        private static SessionMode InferSessionMode(string rawMode, bool hasWorkoutId, bool hasWeekPlanDayId)
+        {
+            if (!string.IsNullOrWhiteSpace(rawMode) && Enum.TryParse(rawMode, true, out SessionMode parsedMode))
+            {
+                return parsedMode;
+            }
+
+            if (hasWeekPlanDayId)
+            {
+                return SessionMode.Plan;
+            }
+
+            if (hasWorkoutId)
+            {
+                return SessionMode.Saved;
+            }
+
+            return SessionMode.Freestyle;
         }
     }
 }

@@ -1,78 +1,72 @@
-﻿using DataBase.Repository.Interfaces;
+using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ViewModels
 {
     public interface IDatabaseService
     {
-        // Repository references
         IUserRepository UserRepo { get; }
         ITraineeRepository TraineeRepo { get; }
         ITrainerRepository TrainerRepo { get; }
         IExerciseRepository ExerciseRepo { get; }
         IMuscleRepository MuscleRepo { get; }
+        IWorkoutRepository WorkoutRepo { get; }
         IWorkoutSessionRepository WorkoutSessionRepo { get; }
         IWeekPlanRepository WeekPlanRepo { get; }
         ITrainerRequestRepository TrainerRequestRepo { get; }
         IPostRepository PostRepo { get; }
         ILikeRepository LikeRepo { get; }
 
-        /// <summary>
-        /// Returns a user if the username and password match, otherwise null.
-        /// </summary>
         User GetUserByUsernameAndPassword(string username, string password);
-
-        /// <summary>
-        /// checks if username and password are correct
-        /// </summary>
-        /// <param name="username"></param>
-        /// <param name="password"></param>
-        /// <returns></returns>
         bool ValidateLogin(string username, string password);
         bool UserExist(string username, string email);
         bool RegisterUser(string username, string email, string password);
-        bool RegisterTrainee(string username, string email, string password,
-                             string fitnessGoal, double currentWeight, double height);
-        bool RegisterTrainer(string username, string email, string password,
-                             string specialization, double hourlyRate, int maxTrainees);
+        bool RegisterTrainee(string username, string email, string password, string fitnessGoal, double currentWeight, double height);
+        bool RegisterTrainer(string username, string email, string password, string specialization, double hourlyRate, int maxTrainees);
         bool UpdateUser(User user);
-        // Session Management
-        WorkoutSession GetOrCreateWorkoutSession(int userId, int weekPlanDayId, DateTime date);
-        // Exercise & Sets
-        List<Exercise> GetSessionExercises(int workoutSessionId);
-        List<SessionSet> GetSessionSets(int workoutSessionId, int exerciseId);
-        void SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight);
+        User GetUserById(int userId);
+
+        List<WeekPlanDay> GetWeekPlanDays(int weekPlanId);
+        WeekPlanDay GetWeekPlanDayById(int weekPlanDayId);
+        WeekPlanDay GetWeekPlanDayForDate(int userId, DateTime date);
+        WeekPlanDay UpdateWeekPlanDayWorkout(int weekPlanDayId, int? workoutId, bool restDay);
+
+        Workout GetWorkoutById(int workoutId);
+        List<Workout> GetWorkoutsByUserId(int userId);
+        int CreateWorkout(int userId, string workoutName);
+        WorkoutExercise AddExerciseToWorkout(int workoutId, int exerciseId);
+        void RemoveExerciseFromWorkout(int workoutExerciseId);
+        WorkoutSet SaveWorkoutSet(int workoutExerciseId, int setNumber, int reps, double weight);
+        void DeleteWorkoutSet(int setId);
+
+        WorkoutSession GetActiveSession(int userId);
+        WorkoutSession GetSessionById(int workoutSessionId);
+        WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId);
+        WorkoutSession FinishWorkoutSession(int workoutSessionId);
+        List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId);
+        List<WorkoutSessionSet> GetSessionSets(int workoutSessionId, int exerciseId);
+        WorkoutSessionSet SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight, bool isCompleted);
+        WorkoutSessionSet AddSessionSet(int workoutSessionId, int exerciseId, int reps, double weight);
         void DeleteSessionSet(int setId);
-
-        // Week Plan
-        System.Data.DataTable GetWeekPlanDays(int weekPlanId);
-
-        // Exercise Management
-        List<Exercise> GetAllExercises();
-        List<Muscle> GetAllMuscles();
         void AddExerciseToWorkoutSession(int workoutSessionId, int exerciseId);
         void RemoveExerciseFromWorkoutSession(int workoutSessionId, int exerciseId);
 
-        // WeekPlan Validation
+        List<Exercise> GetAllExercises();
+        List<Muscle> GetAllMuscles();
+
         int? GetWeekPlanOwnerUserId(int weekPlanId);
         List<Trainee> GetTraineesByTrainerId(int trainerId);
-
-        // WeekPlan Management
         int? GetUserWeekPlanId(int userId);
         int CreateEmptyWeekPlan(int userId, string planName);
-        // Trainer Request Management
+
         string GetTrainerRequestStatus(int traineeId, int trainerId);
         bool SendTrainerRequest(int traineeId, int trainerId);
         bool HandleTrainerRequest(int traineeId, int trainerId, string status);
-        User GetUserById(int userId);
         List<Trainee> GetPendingRequests(int trainerId);
+
         bool CreatePost(string header, string content, User user);
         bool DeletePost(int postId);
         ObservableCollection<Post> GetAllPosts();

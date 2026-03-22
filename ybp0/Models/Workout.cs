@@ -1,8 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Models
 {
@@ -10,7 +6,7 @@ namespace Models
     {
         private int userId;
         private string workoutName;
-        private List<WorkoutExercise> workoutExercises;
+        private List<WorkoutExercise> workoutExercises = new List<WorkoutExercise>();
 
         public string WorkoutName { get => workoutName; set => workoutName = value; }
         public List<WorkoutExercise> WorkoutExercises { get => workoutExercises; set => workoutExercises = value; }

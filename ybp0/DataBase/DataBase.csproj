@@ -71,6 +71,7 @@
     <Compile Include="Repository\Access\AccessTrainerRequestRepository.cs" />
     <Compile Include="Repository\Access\AccessUserRepository.cs" />
     <Compile Include="Repository\Access\AccessWeekPlanRepository.cs" />
+    <Compile Include="Repository\Access\AccessWorkoutRepository.cs" />
     <Compile Include="Repository\Access\AccessWorkoutSessionRepository.cs" />
     <Compile Include="Repository\Interfaces\IExerciseRepository.cs" />
     <Compile Include="Repository\Interfaces\IMuscleRepository.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="Repository\Interfaces\ITrainerRequestRepository.cs" />
     <Compile Include="Repository\Interfaces\IUserRepository.cs" />
     <Compile Include="Repository\Interfaces\IWeekPlanRepository.cs" />
+    <Compile Include="Repository\Interfaces\IWorkoutRepository.cs" />
     <Compile Include="Repository\Interfaces\IWorkoutSessionRepository.cs" />
     <Compile Include="Repository\Access\ExerciseSchemaHelper.cs" />
   </ItemGroup>

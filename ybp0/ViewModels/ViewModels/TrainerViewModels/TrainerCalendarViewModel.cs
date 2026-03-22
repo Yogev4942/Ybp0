@@ -100,7 +100,7 @@ namespace ViewModels.ViewModels
             }
 
             // Load the selected trainee's week plan
-            int? traineeWeekPlanId = trainee.CurrentWeekPlanId > 0
+            int? traineeWeekPlanId = trainee.CurrentWeekPlanId.HasValue && trainee.CurrentWeekPlanId.Value > 0
                 ? trainee.CurrentWeekPlanId
                 : _dbService.GetUserWeekPlanId(trainee.Id);
 
@@ -127,7 +127,7 @@ namespace ViewModels.ViewModels
             _selectedTrainee = null;
             OnPropertyChanged(nameof(SelectedTrainee));
 
-            int? myWeekPlanId = _currUser.CurrentWeekPlanId > 0
+            int? myWeekPlanId = _currUser.CurrentWeekPlanId.HasValue && _currUser.CurrentWeekPlanId.Value > 0
                 ? _currUser.CurrentWeekPlanId
                 : _dbService.GetUserWeekPlanId(_currUser.Id);
 

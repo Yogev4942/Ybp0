@@ -22,7 +22,7 @@ namespace DataBase.Repository.Access
         public Trainer GetTrainerById(int userId)
         {
             string query = @"
-                SELECT u.*, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings
+                SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings
                 FROM UserTbl u
                 INNER JOIN TrainersTbl t ON u.Id = t.UserId
                 WHERE u.Id = ?";
@@ -34,13 +34,13 @@ namespace DataBase.Repository.Access
         public List<Trainer> SearchTrainers(string searchQuery)
         {
             string query = @"
-                SELECT u.*, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings
+                SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings
                 FROM UserTbl u
                 INNER JOIN TrainersTbl t ON u.Id = t.UserId
                 WHERE u.IsTrainer = True AND u.Username LIKE ?";
 
             var dt = string.IsNullOrWhiteSpace(searchQuery)
-                ? _database.ExecuteQuery("SELECT u.*, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer = True")
+                ? _database.ExecuteQuery("SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer = True")
                 : _database.ExecuteQuery(query, "%" + searchQuery.Trim() + "%");
 
             var results = new List<Trainer>();

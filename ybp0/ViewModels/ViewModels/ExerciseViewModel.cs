@@ -1,10 +1,7 @@
 using Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using ViewModels.Services;
 
@@ -13,12 +10,15 @@ namespace ViewModels.ViewModels
     public class ExerciseViewModel : BaseViewModel
     {
         private readonly IDatabaseService _dbService;
-        private readonly int _workoutSessionId;
+        private readonly int? _workoutExerciseId;
+        private readonly int? _workoutSessionId;
         private readonly int _exerciseId;
         private readonly string _setColor;
+        private readonly bool _isSessionMode;
 
         private string _exerciseName;
         private string _muscleGroup;
+        private string _secondaryMuscleGroup;
         private ObservableCollection<SetViewModel> _sets;
 
         public string ExerciseName
@@ -33,7 +33,6 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _muscleGroup, value);
         }
 
-        private string _secondaryMuscleGroup;
         public string SecondaryMuscleGroup
         {
             get => _secondaryMuscleGroup;
@@ -47,97 +46,137 @@ namespace ViewModels.ViewModels
         }
 
         public string SetColor => _setColor;
-
-        // Public property for exercise identification (needed by parent)
         public int ExerciseId => _exerciseId;
+        public int? WorkoutExerciseId => _workoutExerciseId;
+        public bool IsSessionMode => _isSessionMode;
 
-        // Event to request removal from parent DayViewModel
         public event EventHandler RequestRemove;
 
         public ICommand AddSetCommand { get; }
         public ICommand RemoveSetCommand { get; }
         public ICommand RemoveExerciseCommand { get; }
 
-        public ExerciseViewModel(IDatabaseService dbService, int workoutSessionId, Exercise exercise, string setColor = "#26A69A")
+        public ExerciseViewModel(IDatabaseService dbService, WorkoutExercise workoutExercise, string setColor = "#26A69A")
+        {
+            _dbService = dbService;
+            _workoutExerciseId = workoutExercise.Id;
+            _exerciseId = workoutExercise.ExerciseId;
+            _setColor = setColor;
+            _isSessionMode = false;
+
+            ExerciseName = workoutExercise.ExerciseName;
+            MuscleGroup = workoutExercise.MuscleGroup;
+            SecondaryMuscleGroup = workoutExercise.SecondaryMuscleGroup;
+            Sets = new ObservableCollection<SetViewModel>();
+
+            AddSetCommand = new RelayCommand(_ => AddTemplateSet());
+            RemoveSetCommand = new RelayCommand(param => RemoveTemplateSet(param as SetViewModel));
+            RemoveExerciseCommand = new RelayCommand(_ => RequestRemove?.Invoke(this, EventArgs.Empty));
+
+            LoadTemplateSets(workoutExercise);
+        }
+
+        public ExerciseViewModel(IDatabaseService dbService, int workoutSessionId, WorkoutSessionExercise workoutSessionExercise, string setColor = "#26A69A")
         {
             _dbService = dbService;
             _workoutSessionId = workoutSessionId;
-            _exerciseId = exercise.Id;
-            _exerciseName = exercise.ExerciseName;
-            _muscleGroup = exercise.MuscleGroup;
-            _secondaryMuscleGroup = exercise.SecondaryMuscleGroup;
+            _exerciseId = workoutSessionExercise.ExerciseId;
             _setColor = setColor;
+            _isSessionMode = true;
 
+            ExerciseName = workoutSessionExercise.ExerciseName;
+            MuscleGroup = workoutSessionExercise.MuscleGroup;
+            SecondaryMuscleGroup = workoutSessionExercise.SecondaryMuscleGroup;
             Sets = new ObservableCollection<SetViewModel>();
 
-            AddSetCommand = new RelayCommand(param => AddSet());
-            RemoveSetCommand = new RelayCommand(param => RemoveSet(param as SetViewModel));
+            AddSetCommand = new RelayCommand(_ => AddSessionSet());
+            RemoveSetCommand = new RelayCommand(param => RemoveSessionSet(param as SetViewModel));
             RemoveExerciseCommand = new RelayCommand(_ => RequestRemove?.Invoke(this, EventArgs.Empty));
 
-            LoadSets();
+            LoadSessionSets(workoutSessionExercise);
         }
 
-        private void LoadSets()
+        private void LoadTemplateSets(WorkoutExercise workoutExercise)
         {
-            // Skip loading from DB if no database service (for sample data)
-            if (_dbService == null) return;
-
-            var sessionSets = _dbService.GetSessionSets(_workoutSessionId, _exerciseId);
-
-            foreach (var sessionSet in sessionSets)
+            Sets.Clear();
+            foreach (WorkoutSet workoutSet in workoutExercise.Sets.OrderBy(set => set.SetNumber))
             {
-                var setVm = new SetViewModel(_dbService, _workoutSessionId, _exerciseId, _setColor)
-                {
-                    Id = sessionSet.Id,
-                    SetNumber = sessionSet.SetNumber,
-                    Reps = sessionSet.Reps.ToString(),
-                    Weight = sessionSet.Weight.ToString()
-                };
-                Sets.Add(setVm);
+                Sets.Add(new SetViewModel(_dbService, _workoutExerciseId.Value, workoutSet, _setColor));
             }
         }
 
-        private void AddSet()
+        private void LoadSessionSets(WorkoutSessionExercise workoutSessionExercise)
         {
-            int newSetNumber = Sets.Count + 1;
-            
-            // Copy values from last set if available
-            string reps = Sets.Count > 0 ? Sets.Last().Reps : "0";
-            string weight = Sets.Count > 0 ? Sets.Last().Weight : "0";
-
-            var newSet = new SetViewModel(_dbService, _workoutSessionId, _exerciseId, _setColor)
+            Sets.Clear();
+            foreach (WorkoutSessionSet sessionSet in workoutSessionExercise.Sets.OrderBy(set => set.SetNumber))
             {
-                SetNumber = newSetNumber,
-                Reps = reps,
-                Weight = weight
-            };
-
-            Sets.Add(newSet);
-
-            // Trigger immediate save for the new set (skip if no DB service)
-            if (_dbService != null && int.TryParse(reps, out int r) && double.TryParse(weight, out double w))
-            {
-                _dbService.SaveSessionSet(_workoutSessionId, _exerciseId, newSetNumber, r, w);
+                Sets.Add(new SetViewModel(_dbService, _workoutSessionId.Value, _exerciseId, sessionSet, _setColor));
             }
         }
 
-        private void RemoveSet(SetViewModel set)
+        private void AddTemplateSet()
         {
-            if (set == null) return;
+            if (!_workoutExerciseId.HasValue)
+            {
+                return;
+            }
 
-            // Delete from database if it has an ID (skip if no DB service)
-            if (_dbService != null && set.Id > 0)
+            int newSetNumber = Sets.Count == 0 ? 1 : Sets.Max(set => set.SetNumber) + 1;
+            int reps = Sets.Count > 0 && int.TryParse(Sets.Last().Reps, out int parsedReps) ? parsedReps : 0;
+            double weight = Sets.Count > 0 && double.TryParse(Sets.Last().Weight, out double parsedWeight) ? parsedWeight : 0;
+
+            WorkoutSet savedSet = _dbService.SaveWorkoutSet(_workoutExerciseId.Value, newSetNumber, reps, weight);
+            if (savedSet != null)
+            {
+                Sets.Add(new SetViewModel(_dbService, _workoutExerciseId.Value, savedSet, _setColor));
+            }
+        }
+
+        private void AddSessionSet()
+        {
+            if (!_workoutSessionId.HasValue)
+            {
+                return;
+            }
+
+            int reps = Sets.Count > 0 && int.TryParse(Sets.Last().Reps, out int parsedReps) ? parsedReps : 0;
+            double weight = Sets.Count > 0 && double.TryParse(Sets.Last().Weight, out double parsedWeight) ? parsedWeight : 0;
+
+            WorkoutSessionSet savedSet = _dbService.AddSessionSet(_workoutSessionId.Value, _exerciseId, reps, weight);
+            if (savedSet != null)
+            {
+                Sets.Add(new SetViewModel(_dbService, _workoutSessionId.Value, _exerciseId, savedSet, _setColor));
+            }
+        }
+
+        private void RemoveTemplateSet(SetViewModel set)
+        {
+            if (set == null)
+            {
+                return;
+            }
+
+            if (set.Id > 0)
+            {
+                _dbService.DeleteWorkoutSet(set.Id);
+            }
+
+            Sets.Remove(set);
+        }
+
+        private void RemoveSessionSet(SetViewModel set)
+        {
+            if (set == null)
+            {
+                return;
+            }
+
+            if (set.Id > 0)
             {
                 _dbService.DeleteSessionSet(set.Id);
             }
 
             Sets.Remove(set);
-
-            // Re-number remaining sets
-            for (int i = 0; i < Sets.Count; i++)
-            {
-                Sets[i].SetNumber = i + 1;
-            }
         }
     }
 }
