@@ -32,7 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="images\ArnoldImage.png" />
+    <Content Include="images\ArnoldImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
