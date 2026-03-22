@@ -20,8 +20,7 @@ namespace ViewModels
         {
             typeof(HomeViewModel),
             typeof(CalendarViewModel),
-            typeof(FeedViewModel),
-            typeof(WorkoutViewModel)
+            typeof(FeedViewModel)
         };
 
         public NavigationService(
@@ -58,6 +57,9 @@ namespace ViewModels
             if (!typeof(BaseViewModel).IsAssignableFrom(viewModelType))
                 throw new ArgumentException("Type must inherit from BaseViewModel", nameof(viewModelType));
 
+            BaseViewModel current = _stack.Count > 0 ? _stack.Peek() : null;
+            current?.OnNavigatedFrom();
+
             BaseViewModel vm;
 
             // Check if this type should be cached (singleton)
@@ -88,7 +90,8 @@ namespace ViewModels
             if (_stack.Count <= 1) return; // nothing to go back to
 
             // remove current
-            _stack.Pop();
+            var current = _stack.Pop();
+            current.OnNavigatedFrom();
 
             // restore previous
             var previous = _stack.Peek();
@@ -109,6 +112,11 @@ namespace ViewModels
 
         public void Logout()
         {
+            if (_stack.Count > 0)
+            {
+                _stack.Peek().OnNavigatedFrom();
+            }
+
             _stack.Clear();
             _viewModelCache.Clear();
             NavigateTo<LoginViewModel>();

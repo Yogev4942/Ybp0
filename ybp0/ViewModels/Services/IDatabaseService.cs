@@ -46,6 +46,7 @@ namespace ViewModels
         WorkoutSession GetSessionById(int workoutSessionId);
         WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId);
         WorkoutSession FinishWorkoutSession(int workoutSessionId);
+        void CancelWorkoutSession(int workoutSessionId);
         List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId);
         List<WorkoutSessionSet> GetSessionSets(int workoutSessionId, int exerciseId);
         WorkoutSessionSet SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight, bool isCompleted);

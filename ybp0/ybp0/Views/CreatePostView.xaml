@@ -46,6 +46,73 @@
             <Setter Property="Foreground" Value="#00695C"/>
             <Setter Property="Margin" Value="0,0,0,5"/>
         </Style>
+
+        <Style x:Key="OutlinedActionButtonStyle" TargetType="Button">
+            <Setter Property="Foreground" Value="#00695C"/>
+            <Setter Property="Background" Value="#90FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#44009688"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="14,8"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="White"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#009688"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.88"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="FilledActionButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="#1FA593"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="14">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.92"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Opacity" Value="0.86"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border" Property="Opacity" Value="0.55"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -141,102 +208,16 @@
 
                         <!-- Cancel Button -->
                         <Button Grid.Column="0"
-                            Content="Cancel"
-                            Command="{Binding CancelCommand}"
-                            Height="45"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Cursor="Hand"
-                            BorderThickness="1"
-                            BorderBrush="#26A69A"
-                            Background="Transparent" 
-                            Foreground="#26A69A">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border"
-                                        Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="10">
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter TargetName="border" Property="Background" Value="#1126A69A"/>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Opacity" Value="0.8"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                                Content="Cancel"
+                                Command="{Binding CancelCommand}"
+                                Height="45"
+                                Style="{StaticResource OutlinedActionButtonStyle}"/>
 
                         <!-- Post Button -->
                         <Button Grid.Column="2"
-                            Content="Post"
-                            Command="{Binding CreatePostCommand}"
-                            Height="45"
-                            FontSize="16"
-                            FontWeight="SemiBold"
-                            Cursor="Hand"
-                            BorderThickness="0"
-                            Background="#26A69A" 
-                            Foreground="White">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Border x:Name="border"
-                                        Background="{TemplateBinding Background}"
-                                        CornerRadius="10">
-                                        <Border.Effect>
-                                            <DropShadowEffect x:Name="glow" 
-                                                        Color="#26A69A" 
-                                                        BlurRadius="0" 
-                                                        ShadowDepth="0" 
-                                                        Opacity="0"/>
-                                        </Border.Effect>
-                                        <ContentPresenter HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"/>
-                                    </Border>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsMouseOver" Value="True">
-                                            <Trigger.EnterActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                   Storyboard.TargetProperty="BlurRadius"
-                                                                   To="10" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                   Storyboard.TargetProperty="Opacity"
-                                                                   To="0.4" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.EnterActions>
-                                            <Trigger.ExitActions>
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                   Storyboard.TargetProperty="BlurRadius"
-                                                                   To="0" Duration="0:0:0.2"/>
-                                                        <DoubleAnimation Storyboard.TargetName="glow"
-                                                                   Storyboard.TargetProperty="Opacity"
-                                                                   To="0" Duration="0:0:0.2"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </Trigger.ExitActions>
-                                        </Trigger>
-                                        <Trigger Property="IsPressed" Value="True">
-                                            <Setter TargetName="border" Property="Opacity" Value="0.9"/>
-                                        </Trigger>
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter TargetName="border" Property="Background" Value="#AAAAAA"/>
-                                            <Setter TargetName="border" Property="Opacity" Value="0.6"/>
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                                Content="Post"
+                                Command="{Binding CreatePostCommand}"
+                                Style="{StaticResource FilledActionButtonStyle}"/>
                     </Grid>
                 </StackPanel>
             </ScrollViewer>

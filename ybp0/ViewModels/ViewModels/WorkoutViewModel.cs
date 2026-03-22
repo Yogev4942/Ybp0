@@ -125,6 +125,7 @@ namespace ViewModels.ViewModels
         public ICommand StartSavedWorkoutCommand { get; }
         public ICommand StartFreestyleWorkoutCommand { get; }
         public ICommand FinishWorkoutCommand { get; }
+        public ICommand StopWorkoutCommand { get; }
         public ICommand OpenExerciseModalCommand { get; }
         public ICommand CloseExerciseModalCommand { get; }
 
@@ -148,6 +149,7 @@ namespace ViewModels.ViewModels
             StartSavedWorkoutCommand = new RelayCommand(_ => StartSavedWorkout(), _ => SelectedSavedWorkout != null);
             StartFreestyleWorkoutCommand = new RelayCommand(_ => StartFreestyleWorkout());
             FinishWorkoutCommand = new RelayCommand(_ => FinishWorkout(), _ => HasActiveSession);
+            StopWorkoutCommand = new RelayCommand(_ => StopWorkout(), _ => HasActiveSession);
             OpenExerciseModalCommand = new RelayCommand(_ => OpenExerciseModal(), _ => HasActiveSession);
             CloseExerciseModalCommand = new RelayCommand(_ => CloseExerciseModal());
 
@@ -158,6 +160,27 @@ namespace ViewModels.ViewModels
         {
             base.OnNavigatedTo();
             RefreshViewState();
+        }
+
+        public override void OnNavigatedFrom()
+        {
+            base.OnNavigatedFrom();
+            StopTimer();
+            CloseExerciseModal();
+
+            if (!HasActiveSession)
+            {
+                return;
+            }
+
+            _dbService.CancelWorkoutSession(ActiveSession.Id);
+            ActiveSession = null;
+            Exercises.Clear();
+            ElapsedTime = "00:00:00";
+            SessionTitle = "Current Workout";
+            SessionSubtitle = "Start a session from today's plan, a saved template, or freestyle mode.";
+            _sessionStartedAt = null;
+            RaiseCommandState();
         }
 
         private void RefreshViewState()
@@ -265,7 +288,7 @@ namespace ViewModels.ViewModels
             var exercises = _dbService.GetSessionExercises(session.Id);
             Exercises.Clear();
 
-            string[] colors = { "#26A69A", "#66BB6A", "#42A5F5", "#AB47BC", "#FF9800", "#7E57C2" };
+            string[] colors = { "#26A69A", "#32B09B", "#43BAA1", "#5DC7AD", "#77D2BA", "#94DEC9" };
             int colorIndex = 0;
 
             foreach (WorkoutSessionExercise exercise in exercises)
@@ -289,6 +312,18 @@ namespace ViewModels.ViewModels
             }
 
             _dbService.FinishWorkoutSession(ActiveSession.Id);
+            CloseExerciseModal();
+            RefreshViewState();
+        }
+
+        private void StopWorkout()
+        {
+            if (!HasActiveSession)
+            {
+                return;
+            }
+
+            _dbService.CancelWorkoutSession(ActiveSession.Id);
             CloseExerciseModal();
             RefreshViewState();
         }
@@ -413,6 +448,7 @@ namespace ViewModels.ViewModels
             (StartPlannedWorkoutCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (StartSavedWorkoutCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (FinishWorkoutCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            (StopWorkoutCommand as RelayCommand)?.RaiseCanExecuteChanged();
             (OpenExerciseModalCommand as RelayCommand)?.RaiseCanExecuteChanged();
         }
 

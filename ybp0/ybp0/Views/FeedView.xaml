@@ -10,9 +10,9 @@
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#E0F7FA" Offset="0.0" />
-                <GradientStop Color="#80DEEA" Offset="0.5" />
-                <GradientStop Color="#B2EBF2" Offset="1.0" />
+                <GradientStop Color="#EAF7F3" Offset="0.0" />
+                <GradientStop Color="#D8F1EB" Offset="0.5" />
+                <GradientStop Color="#E7F8F3" Offset="1.0" />
             </LinearGradientBrush>
         </Grid.Background>
 
@@ -43,11 +43,7 @@
                        FontWeight="Bold" 
                        Foreground="#006064"
                        VerticalAlignment="Center"
-                       Margin="10,0,0,0">
-                    <TextBlock.Effect>
-                        <DropShadowEffect Color="White" BlurRadius="5" ShadowDepth="1" Opacity="0.8"/>
-                    </TextBlock.Effect>
-                </TextBlock>
+                       Margin="10,0,0,0"/>
 
                 <Button HorizontalAlignment="Right" 
                         VerticalAlignment="Center"
@@ -63,17 +59,10 @@
                                     BorderThickness="1.5">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#26A69A" Offset="0"/>
-                                        <GradientStop Color="#00897B" Offset="1"/>
+                                        <GradientStop Color="#31B3A5" Offset="0"/>
+                                        <GradientStop Color="#0F9D8C" Offset="1"/>
                                     </LinearGradientBrush>
                                 </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect x:Name="fabGlow" 
-                                                      Color="#26A69A" 
-                                                      BlurRadius="8" 
-                                                      ShadowDepth="2" 
-                                                      Opacity="0.3"/>
-                                </Border.Effect>
                                 <TextBlock Text="+" 
                                            FontSize="28" 
                                            FontWeight="Bold" 
@@ -84,30 +73,7 @@
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
-                                    <Trigger.EnterActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="fabGlow"
-                                                                 Storyboard.TargetProperty="BlurRadius"
-                                                                 To="18" Duration="0:0:0.2"/>
-                                                <DoubleAnimation Storyboard.TargetName="fabGlow"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0.6" Duration="0:0:0.2"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.EnterActions>
-                                    <Trigger.ExitActions>
-                                        <BeginStoryboard>
-                                            <Storyboard>
-                                                <DoubleAnimation Storyboard.TargetName="fabGlow"
-                                                                 Storyboard.TargetProperty="BlurRadius"
-                                                                 To="8" Duration="0:0:0.2"/>
-                                                <DoubleAnimation Storyboard.TargetName="fabGlow"
-                                                                 Storyboard.TargetProperty="Opacity"
-                                                                 To="0.3" Duration="0:0:0.2"/>
-                                            </Storyboard>
-                                        </BeginStoryboard>
-                                    </Trigger.ExitActions>
+                                    <Setter TargetName="fabBorder" Property="Opacity" Value="0.92"/>
                                 </Trigger>
                                 <Trigger Property="IsPressed" Value="True">
                                     <Setter TargetName="fabBorder" Property="Opacity" Value="0.85"/>

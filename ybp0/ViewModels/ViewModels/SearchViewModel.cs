@@ -33,15 +33,29 @@ namespace ViewModels.ViewModels
         public bool HasSearched
         {
             get => _hasSearched;
-            set => SetProperty(ref _hasSearched, value);
+            set
+            {
+                if (SetProperty(ref _hasSearched, value))
+                {
+                    OnPropertyChanged(nameof(ShowEmptyState));
+                }
+            }
         }
 
         private bool _hasResults;
         public bool HasResults
         {
             get => _hasResults;
-            set => SetProperty(ref _hasResults, value);
+            set
+            {
+                if (SetProperty(ref _hasResults, value))
+                {
+                    OnPropertyChanged(nameof(ShowEmptyState));
+                }
+            }
         }
+
+        public bool ShowEmptyState => HasSearched && !HasResults;
 
         public ICommand SearchCommand { get; }
 

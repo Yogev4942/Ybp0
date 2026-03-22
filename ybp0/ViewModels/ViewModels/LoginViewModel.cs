@@ -74,6 +74,7 @@ namespace ViewModels.ViewModels
 
                     if (currentUser != null)
                     {
+                        CleanupStaleWorkoutSession(currentUser);
                         _navigationService.OnLoginSuccess();
                         // Login successful - navigate to home/dashboard
                         _navigationService.NavigateTo<HomeViewModel>(currentUser);
@@ -104,6 +105,15 @@ namespace ViewModels.ViewModels
         private void OnNavigateToSignUp(object parameter)
         {
             _navigationService.NavigateTo<RegisterSelectionViewModel>();
+        }
+
+        private void CleanupStaleWorkoutSession(User user)
+        {
+            WorkoutSession activeSession = _databaseService.GetActiveSession(user.Id);
+            if (activeSession != null)
+            {
+                _databaseService.CancelWorkoutSession(activeSession.Id);
+            }
         }
     }
 }

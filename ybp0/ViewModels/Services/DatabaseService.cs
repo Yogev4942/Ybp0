@@ -267,6 +267,11 @@ namespace ViewModels.Services
             return _workoutSessionRepo.FinishWorkoutSession(workoutSessionId, DateTime.Now);
         }
 
+        public void CancelWorkoutSession(int workoutSessionId)
+        {
+            _workoutSessionRepo.CancelWorkoutSession(workoutSessionId);
+        }
+
         public List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId)
         {
             return _workoutSessionRepo.GetSessionExercises(workoutSessionId);

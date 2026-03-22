@@ -32,5 +32,6 @@ namespace ViewModels
         /// Override in subclasses to refresh data when navigating back.
         /// </summary>
         public virtual void OnNavigatedTo() { }
+        public virtual void OnNavigatedFrom() { }
     }
 }

@@ -84,6 +84,12 @@ namespace DataBase
 
             foreach (var param in parameters)
             {
+                if (param is OleDbParameter oleDbParameter)
+                {
+                    command.Parameters.Add(oleDbParameter);
+                    continue;
+                }
+
                 command.Parameters.AddWithValue("?", param ?? DBNull.Value);
             }
 

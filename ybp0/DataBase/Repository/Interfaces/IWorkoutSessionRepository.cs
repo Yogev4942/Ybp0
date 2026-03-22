@@ -10,6 +10,7 @@ namespace DataBase.Repository.Interfaces
         WorkoutSession GetSessionById(int workoutSessionId);
         WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId, DateTime startTime);
         WorkoutSession FinishWorkoutSession(int workoutSessionId, DateTime endTime);
+        void CancelWorkoutSession(int workoutSessionId);
         List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId);
         List<WorkoutSessionSet> GetSessionSets(int workoutSessionId, int exerciseId);
         WorkoutSessionSet SaveSessionSet(int workoutSessionId, int exerciseId, int setNumber, int reps, double weight, bool isCompleted);

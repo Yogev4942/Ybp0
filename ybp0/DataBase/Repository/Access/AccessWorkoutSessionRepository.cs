@@ -3,6 +3,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.OleDb;
 using System.Linq;
 
 namespace DataBase.Repository.Access
@@ -51,33 +52,7 @@ namespace DataBase.Repository.Access
             }
 
             bool hasSessionModeColumn = _database.ColumnExists("WorkoutSessionTbl", "SessionMode");
-            if (hasSessionModeColumn)
-            {
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted, SessionMode)
-                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    userId,
-                    workoutId.HasValue ? (object)workoutId.Value : DBNull.Value,
-                    weekPlanDayId.HasValue ? (object)weekPlanDayId.Value : DBNull.Value,
-                    startTime.Date,
-                    startTime,
-                    DBNull.Value,
-                    false,
-                    mode.ToString());
-            }
-            else
-            {
-                _database.ExecuteNonQuery(
-                    @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted)
-                      VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    userId,
-                    workoutId.HasValue ? (object)workoutId.Value : DBNull.Value,
-                    weekPlanDayId.HasValue ? (object)weekPlanDayId.Value : DBNull.Value,
-                    startTime.Date,
-                    startTime,
-                    DBNull.Value,
-                    false);
-            }
+            InsertWorkoutSession(userId, mode, workoutId, weekPlanDayId, startTime, hasSessionModeColumn);
 
             System.Threading.Thread.Sleep(100);
             int sessionId = _database.ExecuteScalar<int>(
@@ -102,11 +77,23 @@ namespace DataBase.Repository.Access
 
             _database.ExecuteNonQuery(
                 "UPDATE WorkoutSessionTbl SET EndTime = ?, IsCompleted = ? WHERE Id = ?",
-                endTime.Date,
-                true,
-                workoutSessionId);
+                CreateParameter(OleDbType.Date, endTime),
+                CreateParameter(OleDbType.Boolean, true),
+                CreateParameter(OleDbType.Integer, workoutSessionId));
 
             return GetSessionById(workoutSessionId);
+        }
+
+        public void CancelWorkoutSession(int workoutSessionId)
+        {
+            _database.ExecuteNonQuery(
+                "DELETE FROM WorkoutSessionSetsTbl WHERE WorkoutSessionId = ?",
+                workoutSessionId);
+
+            _database.ExecuteNonQuery(
+                @"DELETE FROM WorkoutSessionTbl
+                  WHERE Id = ? AND (IsCompleted = 0 OR IsCompleted IS NULL)",
+                workoutSessionId);
         }
 
         public List<WorkoutSessionExercise> GetSessionExercises(int workoutSessionId)
@@ -175,7 +162,7 @@ namespace DataBase.Repository.Access
                       WHERE Id = ?",
                     reps,
                     weight,
-                    isCompleted,
+                    isCompleted ? 1 : 0,
                     setId);
 
                 return new WorkoutSessionSet
@@ -198,7 +185,7 @@ namespace DataBase.Repository.Access
                 setNumber,
                 reps,
                 weight,
-                isCompleted);
+                isCompleted ? 1 : 0);
 
             System.Threading.Thread.Sleep(100);
             int newSetId = _database.ExecuteScalar<int>(
@@ -269,6 +256,44 @@ namespace DataBase.Repository.Access
             }
         }
 
+        private void InsertWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId, DateTime startTime, bool hasSessionModeColumn)
+        {
+            var parameters = new List<object>
+            {
+                CreateParameter(OleDbType.Integer, userId),
+                CreateParameter(OleDbType.Integer, workoutId),
+                CreateParameter(OleDbType.Integer, weekPlanDayId),
+                CreateParameter(OleDbType.Date, startTime.Date),
+                CreateParameter(OleDbType.Date, startTime),
+                CreateParameter(OleDbType.Date, null),
+                CreateParameter(OleDbType.Boolean, false)
+            };
+
+            if (hasSessionModeColumn)
+            {
+                parameters.Add(CreateParameter(OleDbType.VarWChar, mode.ToString()));
+                _database.ExecuteNonQuery(
+                    @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted, SessionMode)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                    parameters.ToArray());
+                return;
+            }
+
+            _database.ExecuteNonQuery(
+                @"INSERT INTO WorkoutSessionTbl (UserId, WorkoutId, WeekPlanDayId, SessionDate, StartTime, EndTime, IsCompleted)
+                  VALUES (?, ?, ?, ?, ?, ?, ?)",
+                parameters.ToArray());
+        }
+
+        private static OleDbParameter CreateParameter(OleDbType type, object value)
+        {
+            return new OleDbParameter
+            {
+                OleDbType = type,
+                Value = value ?? DBNull.Value
+            };
+        }
+
         private void CopyTemplateSetsToSession(int workoutSessionId, int workoutId)
         {
             var workoutExerciseDt = _database.ExecuteQuery(
@@ -294,7 +319,7 @@ namespace DataBase.Repository.Access
                         Convert.ToInt32(setRow["SetNumber"]),
                         Convert.ToInt32(setRow["Reps"]),
                         Convert.ToDouble(setRow["Weight"]),
-                        false);
+                        0);
                 }
             }
         }

@@ -62,7 +62,7 @@ namespace ViewModels.ViewModels
                     Posts.Add(postViewModel);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 // TODO: Actually handle this error
             }

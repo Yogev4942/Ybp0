@@ -21,6 +21,13 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _username, value);
         }
 
+        private string _header;
+        public string Header
+        {
+            get => _header;
+            set => SetProperty(ref _header, value);
+        }
+
         private string _content;
         public string Content
         {
@@ -77,7 +84,7 @@ namespace ViewModels.ViewModels
         public ICommand ToggleLikeCommand { get; }
 
         public PostViewModel(INavigationService navigation, IDatabaseService databaseService, int currentUserId,
-            int postId, int ownerId, string username, string content, string timestamp, string avatarColor, 
+            int postId, int ownerId, string username, string header, string content, string timestamp, string avatarColor, 
             bool canDelete, int likeCount, bool isLiked, Action<PostViewModel> deleteAction = null)
         {
             _navigation = navigation;
@@ -86,6 +93,7 @@ namespace ViewModels.ViewModels
             PostId = postId;
             OwnerId = ownerId;
             Username = username;
+            Header = header;
             Content = content;
             Timestamp = timestamp;
             AvatarColor = avatarColor;
@@ -116,6 +124,7 @@ namespace ViewModels.ViewModels
                    post.Id,
                    owner.Id,
                    owner.Username,
+                   post.Header,
                    post.Content,
                    post.PostTime.ToString("MMM dd, yyyy"),
                    GetColorForUser(owner.Username),

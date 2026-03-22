@@ -96,6 +96,7 @@ namespace ViewModels.ViewModels
 
             LogoutCommand = new RelayCommand(_ =>
             {
+                CleanupActiveWorkoutSession();
                 _currUser = null;
                 UpdateUserDisplayData(); // Will clear username/initials
                 Navigation.Logout();
@@ -209,6 +210,20 @@ namespace ViewModels.ViewModels
             int hash = username.GetHashCode();
             var colors = new[] { "#FF00BCD4", "#FF9C27B0", "#FF4CAF50", "#FFFF9800", "#FF3F51B5", "#FFE91E63" };
             return colors[Math.Abs(hash) % colors.Length];
+        }
+
+        private void CleanupActiveWorkoutSession()
+        {
+            if (_currUser == null)
+            {
+                return;
+            }
+
+            WorkoutSession activeSession = Database.GetActiveSession(_currUser.Id);
+            if (activeSession != null)
+            {
+                Database.CancelWorkoutSession(activeSession.Id);
+            }
         }
     }
 
