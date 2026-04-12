@@ -145,6 +145,11 @@ namespace ViewModels.ViewModels
                 return new WorkoutViewModel(Database, Navigation, _currUser);
             }
 
+            if (type == typeof(WorkoutPlansViewModel))
+            {
+                return new WorkoutPlansViewModel(Database, Navigation, _currUser);
+            }
+
             if (type == typeof(FeedViewModel))
             {
                 // Route to specific feed view model based on user type

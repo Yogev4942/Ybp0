@@ -8,6 +8,7 @@ namespace DataBase.Repository.Interfaces
         Workout GetWorkoutById(int workoutId);
         List<Workout> GetWorkoutsByUserId(int userId);
         int CreateWorkout(int userId, string workoutName);
+        void UpdateWorkoutName(int workoutId, string workoutName);
         WorkoutExercise AddExerciseToWorkout(int workoutId, int exerciseId);
         void RemoveExerciseFromWorkout(int workoutExerciseId);
         List<WorkoutSet> GetWorkoutSets(int workoutExerciseId);

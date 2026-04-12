@@ -58,6 +58,14 @@ namespace DataBase.Repository.Access
                 userId);
         }
 
+        public void UpdateWorkoutName(int workoutId, string workoutName)
+        {
+            _database.ExecuteNonQuery(
+                "UPDATE WorkoutsTbl SET WorkoutName = ? WHERE Id = ?",
+                workoutName,
+                workoutId);
+        }
+
         public WorkoutExercise AddExerciseToWorkout(int workoutId, int exerciseId)
         {
             var existingDt = _database.ExecuteQuery(

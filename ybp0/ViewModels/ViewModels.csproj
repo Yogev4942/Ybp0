@@ -74,6 +74,8 @@
     <Compile Include="ViewModels\SetViewModel.cs" />
     <Compile Include="ViewModels\SearchViewModel.cs" />
     <Compile Include="ViewModels\WorkoutViewModel.cs" />
+    <Compile Include="ViewModels\WorkoutPlanItemViewModel.cs" />
+    <Compile Include="ViewModels\WorkoutPlansViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DataBase\DataBase.csproj">

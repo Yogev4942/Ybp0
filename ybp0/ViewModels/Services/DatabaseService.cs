@@ -227,6 +227,11 @@ namespace ViewModels.Services
             return _workoutRepo.CreateWorkout(userId, workoutName);
         }
 
+        public void UpdateWorkoutName(int workoutId, string workoutName)
+        {
+            _workoutRepo.UpdateWorkoutName(workoutId, workoutName);
+        }
+
         public WorkoutExercise AddExerciseToWorkout(int workoutId, int exerciseId)
         {
             return _workoutRepo.AddExerciseToWorkout(workoutId, exerciseId);

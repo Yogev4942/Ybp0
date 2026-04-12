@@ -153,6 +153,11 @@
                                 Command="{Binding NavigateCommand}"
                                 CommandParameter="{x:Type vm:WorkoutViewModel}"
                                 Style="{StaticResource NavButtonStyle}"/>
+
+                        <Button Content="🗂 Plans"
+                                Command="{Binding NavigateCommand}"
+                                CommandParameter="{x:Type vm:WorkoutPlansViewModel}"
+                                Style="{StaticResource NavButtonStyle}"/>
                         
                         <!-- Feed Button -->
                         <Button Content="📰 Feed" 
