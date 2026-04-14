@@ -290,7 +290,7 @@
                                 </Button.Template>
                             </Button>
 
-                            <StackPanel Orientation="Horizontal"
+                            <!--<StackPanel Orientation="Horizontal"
                                         HorizontalAlignment="Center"
                                         Margin="0,0,0,18">
                                 <Rectangle Width="68" Height="1" Fill="#3300695C"/>
@@ -320,7 +320,7 @@
                                                Foreground="White"
                                                FontWeight="SemiBold"/>
                                 </Button>
-                            </StackPanel>
+                            </StackPanel>-->
                         </StackPanel>
                     </Border>
 
@@ -342,18 +342,6 @@
                                 <RowDefinition Height="*"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-
-                            <Border HorizontalAlignment="Left"
-                                    Background="#1CFFFFFF"
-                                    BorderBrush="#30FFFFFF"
-                                    BorderThickness="1"
-                                    CornerRadius="16"
-                                    Padding="12,6">
-                                <TextBlock Text=' "The body achieves what the mind believes" - Arnold Schwarzenegger '
-                                           Foreground="White"
-                                           FontSize="12"
-                                           FontWeight="SemiBold"/>
-                            </Border>
 
                             <Grid Grid.Row="1" Margin="0,26,0,26">
                                 <Grid.ColumnDefinitions>

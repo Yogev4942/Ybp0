@@ -158,7 +158,12 @@
                                 Command="{Binding NavigateCommand}"
                                 CommandParameter="{x:Type vm:WorkoutPlansViewModel}"
                                 Style="{StaticResource NavButtonStyle}"/>
-                        
+
+                        <Button Content="💬 Chats" 
+                            Command="{Binding NavigateCommand}" 
+                            CommandParameter="{x:Type vm:ChatsViewModel}"
+                            Style="{StaticResource NavButtonStyle}"/>
+
                         <!-- Feed Button -->
                         <Button Content="📰 Feed" 
                                 Command="{Binding NavigateCommand}" 

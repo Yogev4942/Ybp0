@@ -190,9 +190,14 @@ namespace ViewModels.ViewModels
             if (type == typeof(CreatePostViewModel))
             {
                 User targetUser = (parameter as User) ?? _currUser;
+               
                 return new CreatePostViewModel(Database, Navigation, targetUser);
             }
-
+            if (type == typeof(ChatsViewModel))
+            {
+                User targetUser = (parameter as User) ?? _currUser;
+                return new ChatsViewModel(Database, Navigation, targetUser);
+            }
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);
         }

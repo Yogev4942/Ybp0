@@ -74,5 +74,8 @@
         <DataTemplate DataType="{x:Type vm:SearchViewModel}">
             <views:SearchView />
         </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ChatsViewModel}">
+            <views:ChatsView />
+        </DataTemplate>
     </Application.Resources>
 </Application>
