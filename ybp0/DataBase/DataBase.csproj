@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -79,6 +79,7 @@
     <Compile Include="Repository\Access\AcccessExerciseRepository.cs" />
     <Compile Include="Repository\Access\AccessMusclesRepository.cs" />
     <Compile Include="Repository\Access\AccessLikeRepository.cs" />
+    <Compile Include="Repository\Access\AccessMessageRepository.cs" />
     <Compile Include="Repository\Access\AccessPostRepository.cs" />
     <Compile Include="Repository\Access\AccessTraineeRepository.cs" />
     <Compile Include="Repository\Access\AccessTrainerRepository.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Repository\Interfaces\IExerciseRepository.cs" />
     <Compile Include="Repository\Interfaces\IMuscleRepository.cs" />
     <Compile Include="Repository\Interfaces\ILikeRepository.cs" />
+    <Compile Include="Repository\Interfaces\IMessageRepository.cs" />
     <Compile Include="Repository\Interfaces\IPostRepository.cs" />
     <Compile Include="Repository\Interfaces\ITraineeRepository.cs" />
     <Compile Include="Repository\Interfaces\ITrainerRepository.cs" />

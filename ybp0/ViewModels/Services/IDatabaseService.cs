@@ -19,6 +19,7 @@ namespace ViewModels
         ITrainerRequestRepository TrainerRequestRepo { get; }
         IPostRepository PostRepo { get; }
         ILikeRepository LikeRepo { get; }
+        IMessageRepository MessageRepo { get; }
 
         User GetUserByUsernameAndPassword(string username, string password);
         bool ValidateLogin(string username, string password);
@@ -76,5 +77,10 @@ namespace ViewModels
         int GetLikeCount(int postId);
         bool IsPostLikedByUser(int postId, int userId);
         List<Trainer> SearchTrainers(string query);
+
+        void SendMessage(int senderId, int recipientId, string messageText);
+        List<Message> GetConversation(int userIdA, int userIdB);
+        Message GetLatestMessage(int userIdA, int userIdB);
+        List<int> GetChatContactIds(int userId);
     }
 }

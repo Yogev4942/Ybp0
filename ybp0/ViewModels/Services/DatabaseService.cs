@@ -21,6 +21,7 @@ namespace ViewModels.Services
         private readonly ITrainerRequestRepository _trainerRequestRepo;
         private readonly IPostRepository _postRepo;
         private readonly ILikeRepository _likeRepo;
+        private readonly IMessageRepository _messageRepo;
         private readonly IDataBaseConnection _connection;
 
         public IUserRepository UserRepo => _userRepo;
@@ -34,6 +35,7 @@ namespace ViewModels.Services
         public ITrainerRequestRepository TrainerRequestRepo => _trainerRequestRepo;
         public IPostRepository PostRepo => _postRepo;
         public ILikeRepository LikeRepo => _likeRepo;
+        public IMessageRepository MessageRepo => _messageRepo;
 
         public DatabaseService()
         {
@@ -49,6 +51,7 @@ namespace ViewModels.Services
             _trainerRequestRepo = new AccessTrainerRequestRepository(_connection);
             _postRepo = new AccessPostRepository(_connection);
             _likeRepo = new AccessLikeRepository(_connection);
+            _messageRepo = new AccessMessageRepository(_connection);
         }
 
         public bool ValidateLogin(string username, string password)
@@ -398,6 +401,26 @@ namespace ViewModels.Services
         public List<Trainer> SearchTrainers(string query)
         {
             return _trainerRepo.SearchTrainers(query);
+        }
+
+        public void SendMessage(int senderId, int recipientId, string messageText)
+        {
+            _messageRepo.SendMessage(senderId, recipientId, messageText);
+        }
+
+        public List<Message> GetConversation(int userIdA, int userIdB)
+        {
+            return _messageRepo.GetConversation(userIdA, userIdB);
+        }
+
+        public Message GetLatestMessage(int userIdA, int userIdB)
+        {
+            return _messageRepo.GetLatestMessage(userIdA, userIdB);
+        }
+
+        public List<int> GetChatContactIds(int userId)
+        {
+            return _messageRepo.GetChatContactIds(userId);
         }
     }
 }

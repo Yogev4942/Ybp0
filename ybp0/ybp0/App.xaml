@@ -11,6 +11,8 @@
         <converters:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter"/>
         <converters:StringToColorBrushConverter x:Key="StringToColorBrushConverter"/>
         <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+        <converters:BoolToAlignmentConverter x:Key="BoolToAlignmentConverter"/>
+        <converters:BoolToBubbleCornerConverter x:Key="BoolToBubbleCornerConverter"/>
         <DataTemplate DataType="{x:Type vm:HomeViewModel}">
             <views:HomeView />
         </DataTemplate>

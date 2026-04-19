@@ -125,7 +125,8 @@ namespace ViewModels.ViewModels
                 contacts.AddRange(_dbService.SearchTrainers(string.Empty).Cast<User>());
             }
 
-            foreach (int contactId in ChatStore.GetContactsForUser(_currentUser.Id))
+            // Add any users this person has chatted with (from DB)
+            foreach (int contactId in _dbService.GetChatContactIds(_currentUser.Id))
             {
                 User contact = _dbService.GetUserById(contactId);
                 if (contact != null)
@@ -144,13 +145,13 @@ namespace ViewModels.ViewModels
 
         private ChatPreviewItemViewModel CreateChatPreview(User user)
         {
-            ChatMessageRecord latestMessage = ChatStore.GetLatestMessage(_currentUser.Id, user.Id);
+            Message latestMessage = _dbService.GetLatestMessage(_currentUser.Id, user.Id);
             return new ChatPreviewItemViewModel
             {
                 UserId = user.Id,
                 Name = user.Username,
-                LastMessage = latestMessage != null ? latestMessage.Text : "No messages yet",
-                LastActivity = latestMessage?.Timestamp,
+                LastMessage = latestMessage != null ? latestMessage.MessageText : "No messages yet",
+                LastActivity = latestMessage?.SentAt,
                 AvatarColor = GetColorForUser(user.Username)
             };
         }
@@ -172,13 +173,14 @@ namespace ViewModels.ViewModels
                 return;
             }
 
-            foreach (ChatMessageRecord record in ChatStore.GetMessages(_currentUser.Id, SelectedChat.UserId))
+            foreach (Message msg in _dbService.GetConversation(_currentUser.Id, SelectedChat.UserId))
             {
                 Messages.Add(new ChatMessageItemViewModel
                 {
-                    SenderId = record.SenderId,
-                    Text = record.SenderId == _currentUser.Id ? $"You: {record.Text}" : record.Text,
-                    Timestamp = record.Timestamp
+                    SenderId = msg.SenderId,
+                    Text = msg.MessageText,
+                    Timestamp = msg.SentAt,
+                    IsSentByMe = msg.SenderId == _currentUser.Id
                 });
             }
         }
@@ -192,7 +194,7 @@ namespace ViewModels.ViewModels
 
             int selectedChatUserId = SelectedChat.UserId;
             string text = NewMessage.Trim();
-            ChatStore.AddMessage(_currentUser.Id, selectedChatUserId, text);
+            _dbService.SendMessage(_currentUser.Id, selectedChatUserId, text);
             NewMessage = string.Empty;
 
             LoadChats();
@@ -229,122 +231,9 @@ namespace ViewModels.ViewModels
         public int SenderId { get; set; }
         public string Text { get; set; }
         public DateTime Timestamp { get; set; }
-    }
+        public bool IsSentByMe { get; set; }
 
-    internal class ChatMessageRecord
-    {
-        public int SenderId { get; set; }
-        public int RecipientId { get; set; }
-        public string Text { get; set; }
-        public DateTime Timestamp { get; set; }
-    }
-
-    internal static class ChatStore
-    {
-        private static readonly object SyncRoot = new object();
-        private static readonly Dictionary<string, List<ChatMessageRecord>> Conversations = new Dictionary<string, List<ChatMessageRecord>>();
-
-        public static void AddMessage(int senderId, int recipientId, string text)
-        {
-            lock (SyncRoot)
-            {
-                string key = BuildKey(senderId, recipientId);
-                if (!Conversations.TryGetValue(key, out List<ChatMessageRecord> messages))
-                {
-                    messages = new List<ChatMessageRecord>();
-                    Conversations[key] = messages;
-                }
-
-                messages.Add(new ChatMessageRecord
-                {
-                    SenderId = senderId,
-                    RecipientId = recipientId,
-                    Text = text,
-                    Timestamp = DateTime.Now
-                });
-            }
-        }
-
-        public static List<ChatMessageRecord> GetMessages(int firstUserId, int secondUserId)
-        {
-            lock (SyncRoot)
-            {
-                string key = BuildKey(firstUserId, secondUserId);
-                if (!Conversations.TryGetValue(key, out List<ChatMessageRecord> messages))
-                {
-                    return new List<ChatMessageRecord>();
-                }
-
-                return messages
-                    .OrderBy(message => message.Timestamp)
-                    .Select(message => new ChatMessageRecord
-                    {
-                        SenderId = message.SenderId,
-                        RecipientId = message.RecipientId,
-                        Text = message.Text,
-                        Timestamp = message.Timestamp
-                    })
-                    .ToList();
-            }
-        }
-
-        public static ChatMessageRecord GetLatestMessage(int firstUserId, int secondUserId)
-        {
-            lock (SyncRoot)
-            {
-                string key = BuildKey(firstUserId, secondUserId);
-                if (!Conversations.TryGetValue(key, out List<ChatMessageRecord> messages))
-                {
-                    return null;
-                }
-
-                ChatMessageRecord latest = messages.OrderByDescending(message => message.Timestamp).FirstOrDefault();
-                if (latest == null)
-                {
-                    return null;
-                }
-
-                return new ChatMessageRecord
-                {
-                    SenderId = latest.SenderId,
-                    RecipientId = latest.RecipientId,
-                    Text = latest.Text,
-                    Timestamp = latest.Timestamp
-                };
-            }
-        }
-
-        public static IEnumerable<int> GetContactsForUser(int userId)
-        {
-            lock (SyncRoot)
-            {
-                return Conversations.Keys
-                    .SelectMany(key => ParseParticipants(key)
-                        .Contains(userId)
-                        ? ParseParticipants(key).Where(id => id != userId)
-                        : Enumerable.Empty<int>())
-                    .Distinct()
-                    .ToList();
-            }
-        }
-
-        private static string BuildKey(int firstUserId, int secondUserId)
-        {
-            int lowerId = Math.Min(firstUserId, secondUserId);
-            int higherId = Math.Max(firstUserId, secondUserId);
-            return $"{lowerId}:{higherId}";
-        }
-
-        private static IEnumerable<int> ParseParticipants(string key)
-        {
-            string[] parts = key.Split(':');
-            foreach (string part in parts)
-            {
-                if (int.TryParse(part, out int userId))
-                {
-                    yield return userId;
-                }
-            }
-        }
+        public string FormattedTime => Timestamp.ToString("HH:mm");
+        public string SenderLabel => IsSentByMe ? "You" : "";
     }
 }
