@@ -50,7 +50,9 @@ namespace ViewModels.ViewModels
             ViewedUser = viewedUser;
 
             EditProfileCommand = new RelayCommand(_ => _navigation.NavigateTo<EditProfileViewModel>(ActiveUser));
-            OpenChatCommand = new RelayCommand(_ => _navigation.NavigateTo<ChatsViewModel>(ViewedUser), _ => CanOpenChat);
+            OpenChatCommand = new RelayCommand(
+                _ => _navigation.NavigateTo<ChatsViewModel>(ViewedUser?.Id),
+                _ => CanOpenChat);
         }
 
         protected string GetColorForUser(string username)

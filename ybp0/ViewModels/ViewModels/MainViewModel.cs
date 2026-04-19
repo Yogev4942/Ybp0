@@ -196,6 +196,11 @@ namespace ViewModels.ViewModels
             if (type == typeof(ChatsViewModel))
             {
                 User initialChatUser = parameter as User;
+                if (initialChatUser == null && parameter is int userId)
+                {
+                    initialChatUser = Database.GetUserById(userId);
+                }
+
                 if (initialChatUser != null && _currUser != null && initialChatUser.Id == _currUser.Id)
                 {
                     initialChatUser = null;

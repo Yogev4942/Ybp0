@@ -268,6 +268,11 @@ namespace ViewModels.Services
             return _workoutSessionRepo.GetSessionById(workoutSessionId);
         }
 
+        public List<WorkoutSession> GetCompletedSessionsByUserId(int userId, int maxCount = 120)
+        {
+            return _workoutSessionRepo.GetCompletedSessionsByUserId(userId, maxCount);
+        }
+
         public WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId)
         {
             return _workoutSessionRepo.StartWorkoutSession(userId, mode, workoutId, weekPlanDayId, DateTime.Now);

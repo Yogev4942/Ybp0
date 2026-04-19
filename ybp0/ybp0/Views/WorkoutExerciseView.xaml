@@ -9,10 +9,14 @@
 
     <Border Margin="0,0,0,14"
             Padding="18"
-            Background="#F7FBFA"
+            Background="#F9FCFB"
             BorderBrush="#DDEBE8"
             BorderThickness="1"
             CornerRadius="18">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="0.05"/>
+        </Border.Effect>
+
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -27,22 +31,36 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel>
-                    <TextBlock Text="{Binding ExerciseName}"
-                               FontSize="22"
-                               FontWeight="Bold"
-                               Foreground="#204A43"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Border Background="{Binding SetColor}"
+                                CornerRadius="10"
+                                Padding="8,4"
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center">
+                            <TextBlock Text="EX"
+                                       Foreground="White"
+                                       FontSize="10"
+                                       FontWeight="Bold"/>
+                        </Border>
+                        <TextBlock Text="{Binding ExerciseName}"
+                                   FontSize="22"
+                                   FontWeight="Bold"
+                                   Foreground="#204A43"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
                     <TextBlock Text="{Binding MuscleGroup}"
-                               Margin="0,4,0,0"
+                               Margin="0,6,0,0"
                                FontSize="14"
                                Foreground="#6A8780"/>
                 </StackPanel>
 
                 <Button Grid.Column="1"
-                        Content="✕"
+                        Content="X"
                         Command="{Binding RemoveExerciseCommand}"
                         Width="34"
                         Height="34"
-                        Background="#D7ECF9"
+                        Background="#ECF5F2"
                         Foreground="#6A8780"
                         BorderThickness="0"
                         Cursor="Hand"/>
@@ -117,7 +135,9 @@
                                         Margin="6,0"
                                         Padding="10,8"
                                         Background="White"
-                                        CornerRadius="10">
+                                        BorderBrush="#E2EEEA"
+                                        BorderThickness="1"
+                                        CornerRadius="12">
                                     <TextBox Text="{Binding Reps, UpdateSourceTrigger=PropertyChanged}"
                                              BorderThickness="0"
                                              Background="Transparent"
@@ -130,7 +150,9 @@
                                         Margin="6,0"
                                         Padding="10,8"
                                         Background="White"
-                                        CornerRadius="10">
+                                        BorderBrush="#E2EEEA"
+                                        BorderThickness="1"
+                                        CornerRadius="12">
                                     <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}"
                                              BorderThickness="0"
                                              Background="Transparent"
@@ -140,10 +162,10 @@
                                 </Border>
 
                                 <Button Grid.Column="4"
-                                        Content="×"
+                                        Content="-"
                                         Command="{Binding DataContext.RemoveSetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding}"
-                                        Foreground="#B4C5C0"
+                                        Foreground="#9EB7B1"
                                         Background="Transparent"
                                         BorderThickness="0"
                                         Cursor="Hand"/>
@@ -155,7 +177,7 @@
                 <Button Content="+ Add Set"
                         Command="{Binding AddSetCommand}"
                         HorizontalAlignment="Left"
-                        Padding="12,8"
+                        Padding="14,8"
                         Foreground="#1C9A89"
                         Background="#E7F6F2"
                         BorderBrush="#CAE9E2"

@@ -8,6 +8,7 @@ namespace DataBase.Repository.Interfaces
     {
         WorkoutSession GetActiveSession(int userId);
         WorkoutSession GetSessionById(int workoutSessionId);
+        List<WorkoutSession> GetCompletedSessionsByUserId(int userId, int maxCount = 120);
         WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId, DateTime startTime);
         WorkoutSession FinishWorkoutSession(int workoutSessionId, DateTime endTime);
         void CancelWorkoutSession(int workoutSessionId);

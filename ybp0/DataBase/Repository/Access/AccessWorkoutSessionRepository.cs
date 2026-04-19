@@ -48,6 +48,21 @@ namespace DataBase.Repository.Access
             return dt.Rows.Count > 0 ? MapWorkoutSession(dt.Rows[0]) : null;
         }
 
+        public List<WorkoutSession> GetCompletedSessionsByUserId(int userId, int maxCount = 120)
+        {
+            var dt = _database.ExecuteQuery(
+                $@"SELECT TOP {Math.Max(1, maxCount)} ws.*, w.WorkoutName
+                   FROM WorkoutSessionTbl ws
+                   LEFT JOIN WorkoutsTbl w ON ws.WorkoutId = w.Id
+                   WHERE ws.UserId = ? AND ws.IsCompleted = True
+                   ORDER BY ws.SessionDate DESC, ws.StartTime DESC, ws.Id DESC",
+                userId);
+
+            return dt.Rows.Cast<DataRow>()
+                .Select(MapWorkoutSession)
+                .ToList();
+        }
+
         public WorkoutSession StartWorkoutSession(int userId, SessionMode mode, int? workoutId, int? weekPlanDayId, DateTime startTime)
         {
             WorkoutSession existingSession = GetActiveSession(userId);

@@ -1,28 +1,47 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Collections.Specialized;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using ViewModels.ViewModels;
 
 namespace ybp0.Views
 {
-    /// <summary>
-    /// Interaction logic for ChatsView.xaml
-    /// </summary>
     public partial class ChatsView : UserControl
     {
+        private INotifyCollectionChanged _messagesCollection;
+
         public ChatsView()
         {
             InitializeComponent();
+            DataContextChanged += OnDataContextChanged;
+            Loaded += (sender, args) => ScrollToBottom();
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (_messagesCollection != null)
+            {
+                _messagesCollection.CollectionChanged -= OnMessagesCollectionChanged;
+                _messagesCollection = null;
+            }
+
+            var viewModel = DataContext as ChatsViewModel;
+            if (viewModel?.Messages != null)
+            {
+                _messagesCollection = viewModel.Messages;
+                _messagesCollection.CollectionChanged += OnMessagesCollectionChanged;
+            }
+
+            ScrollToBottom();
+        }
+
+        private void OnMessagesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Dispatcher.BeginInvoke(new System.Action(ScrollToBottom));
+        }
+
+        private void ScrollToBottom()
+        {
+            MessagesScrollViewer?.ScrollToEnd();
         }
     }
 }

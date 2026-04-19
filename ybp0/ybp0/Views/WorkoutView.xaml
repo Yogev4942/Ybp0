@@ -198,9 +198,20 @@
                                Foreground="#68867F"
                                TextWrapping="Wrap"/>
 
-                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16" Margin="0,0,0,12">
+                    <Border Background="#F2FAF7" CornerRadius="18" Padding="18" Margin="0,0,0,12">
                         <StackPanel>
+                            <Border Background="#DDF2ED"
+                                    CornerRadius="12"
+                                    Padding="10,5"
+                                    HorizontalAlignment="Left">
+                                <TextBlock Text="TODAY"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           Foreground="#147D70"/>
+                            </Border>
                             <TextBlock Text="Today's Plan"
+                                       Margin="0,12,0,0"
+                                       FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#17483F"/>
                             <TextBlock Text="{Binding TodayPlanSummary}"
@@ -213,15 +224,20 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16" Margin="0,0,0,12">
+                    <Border Background="#F7FBFA" CornerRadius="18" Padding="18" Margin="0,0,0,12">
                         <StackPanel>
                             <TextBlock Text="Saved Workout"
+                                       FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#17483F"/>
+                            <TextBlock Text="Pick one of your templates and jump straight in."
+                                       Margin="0,6,0,10"
+                                       Foreground="#68867F"
+                                       TextWrapping="Wrap"/>
                             <ComboBox ItemsSource="{Binding SavedWorkouts}"
                                       SelectedItem="{Binding SelectedSavedWorkout}"
                                       DisplayMemberPath="WorkoutName"
-                                      Margin="0,10,0,12"
+                                      Margin="0,0,0,12"
                                       Style="{StaticResource WorkoutComboBoxStyle}"/>
                             <Button Content="Start Saved Workout"
                                     Command="{Binding StartSavedWorkoutCommand}"
@@ -229,9 +245,10 @@
                         </StackPanel>
                     </Border>
 
-                    <Border Background="#F2FAF7" CornerRadius="16" Padding="16">
+                    <Border Background="#F7FBFA" CornerRadius="18" Padding="18">
                         <StackPanel>
                             <TextBlock Text="Freestyle"
+                                       FontSize="18"
                                        FontWeight="Bold"
                                        Foreground="#17483F"/>
                             <TextBlock Text="Start empty and add exercises while you train."
@@ -260,15 +277,41 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Grid.Row="0" Margin="0,0,0,14">
-                        <TextBlock Text="{Binding SessionTitle}"
-                                   FontSize="24"
-                                   FontWeight="Bold"
-                                   Foreground="#17483F"/>
-                        <TextBlock Text="{Binding SessionSubtitle}"
-                                   Margin="0,6,0,0"
-                                   Foreground="#68867F"/>
-                    </StackPanel>
+                    <Grid Grid.Row="0" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="{Binding SessionTitle}"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="#17483F"/>
+                            <TextBlock Text="{Binding SessionSubtitle}"
+                                       Margin="0,6,0,0"
+                                       Foreground="#68867F"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#F1FAF7"
+                                BorderBrush="#D3E7E1"
+                                BorderThickness="1"
+                                CornerRadius="16"
+                                Padding="14,10"
+                                VerticalAlignment="Top">
+                            <StackPanel>
+                                <TextBlock Text="Live Session"
+                                           FontSize="11"
+                                           FontWeight="Bold"
+                                           Foreground="#15907F"/>
+                                <TextBlock Text="{Binding Exercises.Count, StringFormat={}{0} exercises}"
+                                           Margin="0,4,0,0"
+                                           FontWeight="SemiBold"
+                                           Foreground="#17483F"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
 
                     <Grid Grid.Row="1">
                         <Grid.ColumnDefinitions>

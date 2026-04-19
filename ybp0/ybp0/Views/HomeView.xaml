@@ -1,104 +1,289 @@
-﻿<UserControl x:Class="ybp0.Views.HomeView"
+<UserControl x:Class="ybp0.Views.HomeView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              mc:Ignorable="d"
-             d:DesignWidth="900" d:DesignHeight="550">
+             d:DesignWidth="960"
+             d:DesignHeight="640">
 
-    <!-- Elegant home view-->
     <Grid>
         <Grid.Background>
             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                <GradientStop Color="#E8F5E9" Offset="0.0" />
-                <GradientStop Color="#E0F2F1" Offset="1.0" />
+                <GradientStop Color="#EFF8F5" Offset="0"/>
+                <GradientStop Color="#DAEEE7" Offset="1"/>
             </LinearGradientBrush>
         </Grid.Background>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="24,20,24,24">
+                <Border Padding="28,24"
+                        CornerRadius="26"
+                        Margin="0,0,0,18">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1FAE9C" Offset="0"/>
+                            <GradientStop Color="#0D8F81" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.14"/>
+                    </Border.Effect>
 
-        <!-- Welcome Header Banner -->
-        <Border Grid.Row="0" 
-                Margin="30,25,30,15"
-                Padding="35,25"
-                CornerRadius="20">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
-                    <GradientStop Color="#26A69A" Offset="0"/>
-                    <GradientStop Color="#00897B" Offset="0.5"/>
-                    <GradientStop Color="#00695C" Offset="1"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <DropShadowEffect Color="#00FFCC" BlurRadius="15" ShadowDepth="0" Opacity="0.35"/>
-            </Border.Effect>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="220"/>
+                        </Grid.ColumnDefinitions>
 
-            <StackPanel>
-                <TextBlock Text="{Binding WelcomeMessage}"
-                           FontSize="28"
-                           FontWeight="Bold"
-                           Foreground="White"
-                           HorizontalAlignment="Left"/>
-                <TextBlock Text="Ready to crush your goals today?"
-                           FontSize="14"
-                           Foreground="#CCFFFFFF"
-                           HorizontalAlignment="Left"
-                           Margin="0,8,0,0"/>
+                        <StackPanel>
+                            <TextBlock Text="{Binding WelcomeMessage}"
+                                       FontSize="31"
+                                       FontWeight="Bold"
+                                       Foreground="White"/>
+                            <TextBlock Text="Your last month at a glance, with consistency blocks and strength progression."
+                                       Margin="0,10,0,0"
+                                       FontSize="14"
+                                       Foreground="#D9FFFA"
+                                       TextWrapping="Wrap"/>
+                        </StackPanel>
+
+                        <Border Grid.Column="1"
+                                Background="#1DFFFFFF"
+                                CornerRadius="20"
+                                Padding="18,14"
+                                HorizontalAlignment="Right">
+                            <StackPanel>
+                                <TextBlock Text="Monthly Focus"
+                                           FontSize="12"
+                                           Foreground="#D7FFFA"/>
+                                <TextBlock Text="{Binding MonthSummary}"
+                                           Margin="0,6,0,0"
+                                           FontSize="19"
+                                           FontWeight="SemiBold"
+                                           Foreground="White"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Border>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.15*"/>
+                        <ColumnDefinition Width="18"/>
+                        <ColumnDefinition Width="0.85*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0"
+                            Background="#FCFFFE"
+                            CornerRadius="24"
+                            Padding="22"
+                            Margin="0,0,0,18">
+                        <Border.Effect>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.07"/>
+                        </Border.Effect>
+
+                        <StackPanel>
+                            <TextBlock Text="Exercise Blocks"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       Foreground="#163F38"/>
+                            <TextBlock Text="A minimal 30-day streak board. Filled blocks mean you completed at least one workout that day."
+                                       Margin="0,8,0,18"
+                                       Foreground="#69827D"
+                                       TextWrapping="Wrap"/>
+
+                            <ItemsControl ItemsSource="{Binding ActivityDays}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Columns="6"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{Binding FillColor}"
+                                                CornerRadius="16"
+                                                Margin="6"
+                                                Padding="10">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="8" ShadowDepth="0" Opacity="0.04"/>
+                                            </Border.Effect>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding WeekdayLabel}"
+                                                           FontSize="10"
+                                                           FontWeight="SemiBold"
+                                                           Foreground="#6C8480"/>
+                                                <TextBlock Text="{Binding DayLabel}"
+                                                           Margin="0,8,0,0"
+                                                           FontSize="24"
+                                                           FontWeight="Bold"
+                                                           Foreground="#163F38"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+
+                    <StackPanel Grid.Column="2">
+                        <Border Background="#FCFFFE"
+                                CornerRadius="24"
+                                Padding="22"
+                                Margin="0,0,0,18">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.07"/>
+                            </Border.Effect>
+
+                            <StackPanel>
+                                <TextBlock Text="Progress Metric"
+                                           FontSize="22"
+                                           FontWeight="Bold"
+                                           Foreground="#163F38"/>
+                                <TextBlock Text="{Binding StatisticsSummary}"
+                                           Margin="0,8,0,0"
+                                           Foreground="#69827D"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="#F4FBF8"
+                                CornerRadius="24"
+                                Padding="22">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.06"/>
+                            </Border.Effect>
+
+                            <StackPanel>
+                                <TextBlock Text="How To Read It"
+                                           FontSize="18"
+                                           FontWeight="Bold"
+                                           Foreground="#163F38"/>
+                                <TextBlock Text="Each card below compares volume across recent completed sessions for the same exercise."
+                                           Margin="0,8,0,12"
+                                           Foreground="#69827D"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="Higher bars mean more total work. This helps track progress even when sets and reps change between sessions."
+                                           Foreground="#69827D"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Grid>
+
+                <Border Background="#FCFFFE"
+                        CornerRadius="24"
+                        Padding="22">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.07"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+                        <TextBlock Text="Exercise Progression"
+                                   FontSize="24"
+                                   FontWeight="Bold"
+                                   Foreground="#163F38"/>
+                        <TextBlock Text="Recent volume history for the exercises you log most consistently."
+                                   Margin="0,8,0,18"
+                                   Foreground="#69827D"
+                                   TextWrapping="Wrap"/>
+
+                        <ItemsControl ItemsSource="{Binding ExerciseProgressCards}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#F6FCFA"
+                                            BorderBrush="#D9EBE5"
+                                            BorderThickness="1"
+                                            CornerRadius="18"
+                                            Padding="18"
+                                            Margin="0,0,0,14">
+                                        <StackPanel>
+                                            <Grid Margin="0,0,0,12">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding ExerciseName}"
+                                                               FontSize="18"
+                                                               FontWeight="Bold"
+                                                               Foreground="#163F38"/>
+                                                    <TextBlock Text="{Binding Summary}"
+                                                               Margin="0,6,0,0"
+                                                               Foreground="#69827D"
+                                                               TextWrapping="Wrap"/>
+                                                </StackPanel>
+
+                                                <Border Grid.Column="1"
+                                                        Background="{Binding AccentColor}"
+                                                        CornerRadius="14"
+                                                        Padding="12,8"
+                                                        VerticalAlignment="Top">
+                                                    <TextBlock Text="{Binding LatestVolume, StringFormat=Latest {0:0}}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="White"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <ItemsControl ItemsSource="{Binding Points}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Grid Margin="0,0,0,10">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="80"/>
+                                                                <ColumnDefinition Width="240"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <TextBlock Text="{Binding Label}"
+                                                                       VerticalAlignment="Center"
+                                                                       Foreground="#6B827D"/>
+
+                                                            <Border Grid.Column="1"
+                                                                    Height="18"
+                                                                    Background="#E1F0EB"
+                                                                    CornerRadius="9"
+                                                                    VerticalAlignment="Center">
+                                                                <Border Width="{Binding BarWidth}"
+                                                                        HorizontalAlignment="Left"
+                                                                        Background="#26A69A"
+                                                                        CornerRadius="9"/>
+                                                            </Border>
+
+                                                            <TextBlock Grid.Column="2"
+                                                                       Text="{Binding VolumeLabel}"
+                                                                       Margin="10,0,0,0"
+                                                                       VerticalAlignment="Center"
+                                                                       FontWeight="SemiBold"
+                                                                       Foreground="#163F38"/>
+                                                        </Grid>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <TextBlock Text="Complete at least two sessions for the same exercise to see a progression card."
+                                   Foreground="#7A918C">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ExerciseProgressCards.Count}" Value="0">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </Border>
             </StackPanel>
-        </Border>
-
-        <!-- Main Content Card (for future data) -->
-        <Border Grid.Row="1"
-                MaxWidth="700"
-                MaxHeight="320"
-                Margin="30,10,30,30"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Top"
-                CornerRadius="20"
-                Padding="40">
-            <Border.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Color="#55FFFFFF" Offset="0.0"/>
-                    <GradientStop Color="#33FFFFFF" Offset="1.0"/>
-                </LinearGradientBrush>
-            </Border.Background>
-            <Border.Effect>
-                <DropShadowEffect Color="#00FFCC"
-                                 BlurRadius="18"
-                                 ShadowDepth="0"
-                                 Opacity="0.2"/>
-            </Border.Effect>
-
-            <Grid>
-                <!-- Content placeholder -->
-                <StackPanel HorizontalAlignment="Center"
-                           VerticalAlignment="Center">
-                    <TextBlock Text="📊 Your Daily Focus"
-                               FontSize="22"
-                               FontWeight="SemiBold"
-                               Foreground="#00695C"
-                               HorizontalAlignment="Center"
-                               Margin="0,0,0,12"/>
-
-                    <TextBlock Text="Track your progress and stay motivated"
-                               FontSize="14"
-                               Foreground="#26A69A"
-                               HorizontalAlignment="Center"
-                               Opacity="0.85"/>
-                </StackPanel>
-
-                <!-- Subtle decorative glow -->
-                <Ellipse Width="350" Height="350"
-                        Fill="#1000FFCC"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        IsHitTestVisible="False"
-                        Opacity="0.12"/>
-            </Grid>
-        </Border>
+        </ScrollViewer>
     </Grid>
 </UserControl>
-

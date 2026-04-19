@@ -404,13 +404,15 @@
                         </StackPanel>
 
                         <!-- Messages list -->
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                        <ScrollViewer x:Name="MessagesScrollViewer"
+                                      VerticalScrollBarVisibility="Auto"
                                       Style="{StaticResource TransparentScrollViewer}"
-                                      Padding="20,16">
-                            <ItemsControl ItemsSource="{Binding Messages}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,4">
+                                      Padding="18,18,18,10">
+                            <Grid VerticalAlignment="Bottom">
+                                <ItemsControl ItemsSource="{Binding Messages}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,0,0,5">
                                             <!-- Message Bubble -->
                                             <Border MaxWidth="460"
                                                     Padding="14,10,14,8"
@@ -466,7 +468,7 @@
                                                     <!-- Timestamp -->
                                                     <TextBlock Text="{Binding FormattedTime}"
                                                                FontSize="10"
-                                                               Margin="0,4,0,0"
+                                                               Margin="0,6,0,0"
                                                                HorizontalAlignment="Right">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock">
@@ -481,10 +483,11 @@
                                                     </TextBlock>
                                                 </StackPanel>
                                             </Border>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Grid>
                         </ScrollViewer>
                     </Grid>
                 </Border>

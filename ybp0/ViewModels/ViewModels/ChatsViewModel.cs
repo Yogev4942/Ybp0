@@ -13,6 +13,7 @@ namespace ViewModels.ViewModels
         private readonly INavigationService _navigationService;
         private readonly User _currentUser;
         private User _initialChatUser;
+        private int? _preferredChatUserId;
 
         private ObservableCollection<ChatPreviewItemViewModel> _chats;
         public ObservableCollection<ChatPreviewItemViewModel> Chats
@@ -57,6 +58,7 @@ namespace ViewModels.ViewModels
             _navigationService = navigationService;
             _currentUser = currentUser;
             _initialChatUser = initialChatUser;
+            _preferredChatUserId = initialChatUser?.Id;
 
             Chats = new ObservableCollection<ChatPreviewItemViewModel>();
             Messages = new ObservableCollection<ChatMessageItemViewModel>();
@@ -82,9 +84,9 @@ namespace ViewModels.ViewModels
                 return;
             }
 
-            int? selectedChatUserId = SelectedChat?.UserId ?? _initialChatUser?.Id;
+            int? selectedChatUserId = _preferredChatUserId ?? SelectedChat?.UserId ?? _initialChatUser?.Id;
 
-            List<User> contacts = ResolveContacts()
+            List<User> contacts = ResolveContacts(selectedChatUserId)
                 .Where(user => user != null && user.Id != _currentUser.Id)
                 .GroupBy(user => user.Id)
                 .Select(group => group.First())
@@ -100,11 +102,12 @@ namespace ViewModels.ViewModels
                 Chats.Add(chat);
             }
 
-            _initialChatUser = null;
-
             SelectedChat = selectedChatUserId.HasValue
                 ? Chats.FirstOrDefault(chat => chat.UserId == selectedChatUserId.Value) ?? Chats.FirstOrDefault()
                 : Chats.FirstOrDefault();
+
+            _preferredChatUserId = SelectedChat?.UserId ?? selectedChatUserId;
+            _initialChatUser = null;
 
             if (SelectedChat == null)
             {
@@ -112,7 +115,7 @@ namespace ViewModels.ViewModels
             }
         }
 
-        private List<User> ResolveContacts()
+        private List<User> ResolveContacts(int? selectedChatUserId)
         {
             var contacts = new List<User>();
 
@@ -122,10 +125,19 @@ namespace ViewModels.ViewModels
             }
             else
             {
-                contacts.AddRange(_dbService.SearchTrainers(string.Empty).Cast<User>());
+                Trainee activeTrainee = _dbService.GetUserById(_currentUser.Id) as Trainee;
+                if (activeTrainee != null && activeTrainee.TrainerId.HasValue)
+                {
+                    Trainer assignedTrainer = _dbService.SearchTrainers(string.Empty)
+                        .FirstOrDefault(trainer => trainer.TrainerProfileId == activeTrainee.TrainerId.Value);
+
+                    if (assignedTrainer != null)
+                    {
+                        contacts.Add(assignedTrainer);
+                    }
+                }
             }
 
-            // Add any users this person has chatted with (from DB)
             foreach (int contactId in _dbService.GetChatContactIds(_currentUser.Id))
             {
                 User contact = _dbService.GetUserById(contactId);
@@ -135,9 +147,13 @@ namespace ViewModels.ViewModels
                 }
             }
 
-            if (_initialChatUser != null)
+            if (selectedChatUserId.HasValue)
             {
-                contacts.Add(_initialChatUser);
+                User selectedUser = _dbService.GetUserById(selectedChatUserId.Value);
+                if (selectedUser != null)
+                {
+                    contacts.Add(selectedUser);
+                }
             }
 
             return contacts;
@@ -160,6 +176,7 @@ namespace ViewModels.ViewModels
         {
             if (chat != null)
             {
+                _preferredChatUserId = chat.UserId;
                 SelectedChat = chat;
             }
         }
@@ -197,6 +214,7 @@ namespace ViewModels.ViewModels
             _dbService.SendMessage(_currentUser.Id, selectedChatUserId, text);
             NewMessage = string.Empty;
 
+            _preferredChatUserId = selectedChatUserId;
             LoadChats();
             SelectedChat = Chats.FirstOrDefault(chat => chat.UserId == selectedChatUserId);
         }

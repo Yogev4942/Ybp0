@@ -175,6 +175,22 @@
                                        TextWrapping="Wrap"/>
                         </StackPanel>
                     </Border>
+
+                    <Border Background="#F7FBFA"
+                            CornerRadius="16"
+                            Padding="16"
+                            Margin="0,12,0,0">
+                        <StackPanel>
+                            <TextBlock Text="Library"
+                                       FontWeight="Bold"
+                                       Foreground="#17483F"/>
+                            <TextBlock Text="{Binding WorkoutPlans.Count, StringFormat={}{0} saved templates}"
+                                       Margin="0,8,0,0"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="#15907F"/>
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
 
@@ -236,15 +252,34 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
 
-                            <Border Background="#26A69A"
-                                    CornerRadius="10"
-                                    Padding="10,6"
-                                    HorizontalAlignment="Left">
-                                <TextBlock Text="{Binding SelectedWorkoutPlan.DisplayName}"
-                                           FontSize="13"
-                                           FontWeight="SemiBold"
-                                           Foreground="White"/>
-                            </Border>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="12"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Background="#26A69A"
+                                        CornerRadius="10"
+                                        Padding="10,6"
+                                        HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding SelectedWorkoutPlan.DisplayName}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="White"/>
+                                </Border>
+
+                                <Border Grid.Column="2"
+                                        Background="#E7F5F1"
+                                        CornerRadius="10"
+                                        Padding="10,6"
+                                        HorizontalAlignment="Left">
+                                    <TextBlock Text="{Binding SelectedWorkoutPlan.Exercises.Count, StringFormat={}{0} exercises}"
+                                               FontSize="13"
+                                               FontWeight="SemiBold"
+                                               Foreground="#147D70"/>
+                                </Border>
+                            </Grid>
 
                             <Grid Grid.Row="1" Margin="0,14,0,0">
                                 <Border Background="#F4FBF8"
