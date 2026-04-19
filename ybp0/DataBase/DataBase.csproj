@@ -71,6 +71,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Connection\AccessDatabaseConnection.cs" />
+    <Compile Include="Connection\DatabaseFilter.cs" />
     <Compile Include="Connection\IDataBaseConnection.cs" />
     <Compile Include="Connection\SqliteDatabaseConnection.cs" />
     <Compile Include="Mappers\UserMapper.cs" />

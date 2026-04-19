@@ -1,22 +1,24 @@
-﻿using DataBase.Mappers;
+using DataBase.Connection;
+using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
     public class AccessTrainerRepository : ITrainerRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessTrainerRepository()
+        public AccessTrainerRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessTrainerRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public Trainer GetTrainerById(int userId)
@@ -48,6 +50,7 @@ namespace DataBase.Repository.Access
             {
                 results.Add(UserMapper.MapTrainer(row));
             }
+
             return results;
         }
 
@@ -55,8 +58,7 @@ namespace DataBase.Repository.Access
         {
             int affected = _database.ExecuteNonQuery(
                 "INSERT INTO TrainersTbl ([UserId], [Specialization], [HourlyRate], [MaxTrainees]) VALUES (?, ?, ?, ?)",
-                userId, specialization, hourlyRate, maxTrainees
-            );
+                userId, specialization, hourlyRate, maxTrainees);
             return affected > 0;
         }
 
@@ -64,8 +66,7 @@ namespace DataBase.Repository.Access
         {
             int affected = _database.ExecuteNonQuery(
                 "UPDATE TrainersTbl SET Specialization = ?, HourlyRate = ?, MaxTrainees = ? WHERE UserId = ?",
-                trainer.Specialization, trainer.HourlyRate, trainer.MaxTrainees, trainer.Id
-            );
+                trainer.Specialization, trainer.HourlyRate, trainer.MaxTrainees, trainer.Id);
             return affected > 0;
         }
     }

@@ -195,8 +195,13 @@ namespace ViewModels.ViewModels
             }
             if (type == typeof(ChatsViewModel))
             {
-                User targetUser = (parameter as User) ?? _currUser;
-                return new ChatsViewModel(Database, Navigation, targetUser);
+                User initialChatUser = parameter as User;
+                if (initialChatUser != null && _currUser != null && initialChatUser.Id == _currUser.Id)
+                {
+                    initialChatUser = null;
+                }
+
+                return new ChatsViewModel(Database, Navigation, _currUser, initialChatUser);
             }
             // fallback
             return (BaseViewModel)Activator.CreateInstance(type);

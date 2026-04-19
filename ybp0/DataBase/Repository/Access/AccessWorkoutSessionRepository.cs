@@ -1,3 +1,4 @@
+using DataBase.Connection;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
@@ -10,11 +11,15 @@ namespace DataBase.Repository.Access
 {
     public class AccessWorkoutSessionRepository : IWorkoutSessionRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessWorkoutSessionRepository()
+        public AccessWorkoutSessionRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessWorkoutSessionRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
             EnsureSchema();
         }
 

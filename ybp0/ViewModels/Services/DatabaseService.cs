@@ -1,3 +1,4 @@
+using DataBase.Connection;
 using DataBase.Repository.Access;
 using DataBase.Repository.Interfaces;
 using Models;
@@ -20,6 +21,7 @@ namespace ViewModels.Services
         private readonly ITrainerRequestRepository _trainerRequestRepo;
         private readonly IPostRepository _postRepo;
         private readonly ILikeRepository _likeRepo;
+        private readonly IDataBaseConnection _connection;
 
         public IUserRepository UserRepo => _userRepo;
         public ITraineeRepository TraineeRepo => _traineeRepo;
@@ -35,17 +37,18 @@ namespace ViewModels.Services
 
         public DatabaseService()
         {
-            _userRepo = new AccessUserRepository();
-            _traineeRepo = new AccessTraineeRepository();
-            _trainerRepo = new AccessTrainerRepository();
-            _exerciseRepo = new AccessExerciseRepository();
-            _muscleRepo = new AccessMusclesRepository();
-            _workoutRepo = new AccessWorkoutRepository();
-            _workoutSessionRepo = new AccessWorkoutSessionRepository();
-            _weekPlanRepo = new AccessWeekPlanRepository();
-            _trainerRequestRepo = new AccessTrainerRequestRepository();
-            _postRepo = new AccessPostRepository();
-            _likeRepo = new AccessLikeRepository();
+            _connection = DatabaseFilter.CreateConnection();
+            _userRepo = new AccessUserRepository(_connection);
+            _traineeRepo = new AccessTraineeRepository(_connection);
+            _trainerRepo = new AccessTrainerRepository(_connection);
+            _exerciseRepo = new AccessExerciseRepository(_connection);
+            _muscleRepo = new AccessMusclesRepository(_connection);
+            _workoutRepo = new AccessWorkoutRepository(_connection);
+            _workoutSessionRepo = new AccessWorkoutSessionRepository(_connection);
+            _weekPlanRepo = new AccessWeekPlanRepository(_connection);
+            _trainerRequestRepo = new AccessTrainerRequestRepository(_connection);
+            _postRepo = new AccessPostRepository(_connection);
+            _likeRepo = new AccessLikeRepository(_connection);
         }
 
         public bool ValidateLogin(string username, string password)

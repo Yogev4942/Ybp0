@@ -1,30 +1,30 @@
+using DataBase.Connection;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
     public class AccessPostRepository : IPostRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessPostRepository()
+        public AccessPostRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessPostRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public bool CreatePost(string header, string content, int userId)
         {
             int affected = _database.ExecuteNonQuery(
                 "INSERT INTO [PostTbl] ([OwnerId], [Header], [Content], [PostTime]) VALUES (?, ?, ?, ?)",
-                userId, header, content, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            );
+                userId, header, content, DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return affected > 0;
         }
 
@@ -52,6 +52,7 @@ namespace DataBase.Repository.Access
                     LikeCount = GetLikeCount(postId)
                 });
             }
+
             return posts;
         }
 
@@ -62,11 +63,9 @@ namespace DataBase.Repository.Access
                 _database.ExecuteNonQuery("DELETE FROM [LikesTbl] WHERE [PostId] = ? AND [UserId] = ?", postId, userId);
                 return false;
             }
-            else
-            {
-                _database.ExecuteNonQuery("INSERT INTO [LikesTbl] ([PostId], [UserId]) VALUES (?, ?)", postId, userId);
-                return true;
-            }
+
+            _database.ExecuteNonQuery("INSERT INTO [LikesTbl] ([PostId], [UserId]) VALUES (?, ?)", postId, userId);
+            return true;
         }
 
         public int GetLikeCount(int postId)
@@ -76,6 +75,7 @@ namespace DataBase.Repository.Access
             {
                 return Convert.ToInt32(dt.Rows[0]["LikeCount"]);
             }
+
             return 0;
         }
 

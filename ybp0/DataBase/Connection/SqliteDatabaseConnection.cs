@@ -1,133 +1,197 @@
-﻿using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
+using Microsoft.Data.Sqlite;
+using SQLitePCL;
 using System;
-using DataBase.Connection;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
+using System.Text;
+using System.Text.RegularExpressions;
 
-namespace PokemonGame.Services.Data.ConnectionsService
+namespace DataBase.Connection
 {
-    /// <summary>
-    /// <see cref="IDbConnectionService"/> implementation for SQLite databases
-    /// using <see cref="Microsoft.Data.Sqlite"/>.
-    /// </summary>
-    /// <remarks>
-    /// Cross-platform and file-based. Parameters use named <c>@Name</c> syntax,
-    /// which is also the syntax expected by repositories — no translation needed.
-    /// </remarks>
-    public class SQLiteConnectionService : IDataBaseConnection
+    public class SqliteDatabaseConnection : IDataBaseConnection
     {
         private readonly string _connectionString;
+        private static bool _sqliteInitialized;
 
-        /// <summary>
-        /// Initialises a new instance targeting a SQLite database file.
-        /// </summary>
-        /// <param name="dbPath">Full path to the .db file.</param>
-        public SQLiteConnectionService(string dbPath)
-            => _connectionString = $"Data Source={dbPath}";
-
-        /// <inheritdoc/>
-        public override T QuerySingle<T>(string sql, object parameters = null)
+        public SqliteDatabaseConnection(string dbPath)
         {
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            return reader.Read() ? MapReaderToObject<T>(reader) : default!;
-        }
-        public override T QueryScalar<T>(string sql, object parameters = null)
-        {
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-
-            object result = cmd.ExecuteScalar();
-
-            if (result == null || result == DBNull.Value)
+            if (!_sqliteInitialized)
             {
-                return default!;
+                Batteries_V2.Init();
+                _sqliteInitialized = true;
             }
 
-            // This handles converting SQLite's types (like long) to C# types (like int)
-            return (T)Convert.ChangeType(result, typeof(T));
+            _connectionString = $"Data Source={dbPath}";
         }
-        public override List<T> QueryScalarList<T>(string sql, object parameters = null)
+
+        public DataTable ExecuteQuery(string query, params object[] parameters)
         {
-            var list = new List<T>();
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            using (var connection = new SqliteConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                var val = reader.GetValue(0);
-                list.Add((T)Convert.ChangeType(val, typeof(T)));
+                connection.Open();
+                using (var reader = command.ExecuteReader())
+                {
+                    var dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    return dataTable;
+                }
             }
-            return list;
         }
-        /// <inheritdoc/>
-        public override List<T> Query<T>(string sql) => Query<T>(sql, null);
 
-        /// <inheritdoc/>
-        public override List<T> Query<T>(string sql, object parameters)
+        public int ExecuteNonQuery(string query, params object[] parameters)
         {
-            var list = new List<T>();
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-            using var reader = cmd.ExecuteReader();
-            while (reader.Read())
+            using (var connection = new SqliteConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
             {
-                list.Add(MapReaderToObject<T>(reader));
+                connection.Open();
+                return command.ExecuteNonQuery();
+            }
+        }
+
+        public T ExecuteScalar<T>(string query, params object[] parameters)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            using (var command = CreateCommand(connection, query, parameters))
+            {
+                connection.Open();
+                object result = command.ExecuteScalar();
+
+                if (result == null || result == DBNull.Value)
+                {
+                    return default(T);
+                }
+
+                Type targetType = typeof(T);
+                Type underlyingType = Nullable.GetUnderlyingType(targetType) ?? targetType;
+                object convertedValue = Convert.ChangeType(result, underlyingType);
+                return (T)convertedValue;
+            }
+        }
+
+        public bool TableExists(string tableName)
+        {
+            return ExecuteScalar<long>(
+                "SELECT COUNT(*) FROM sqlite_master WHERE type = ? AND name = ?",
+                "table",
+                tableName) > 0;
+        }
+
+        public bool ColumnExists(string tableName, string columnName)
+        {
+            using (var connection = new SqliteConnection(_connectionString))
+            using (var command = connection.CreateCommand())
+            {
+                command.CommandText = $"PRAGMA table_info({QuoteIdentifier(tableName)})";
+                connection.Open();
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (string.Equals(reader["name"]?.ToString(), columnName, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
+                    }
+                }
             }
 
-            return list;
+            return false;
         }
 
-        /// <inheritdoc/>
-        public override int Execute(string sql, object parameters = null)
+        private SqliteCommand CreateCommand(SqliteConnection connection, string query, object[] parameters)
         {
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-            return cmd.ExecuteNonQuery();
+            List<object> values = ExtractValues(parameters);
+            string translatedQuery = TranslateQuery(query, values.Count);
+
+            var command = connection.CreateCommand();
+            command.CommandText = translatedQuery;
+
+            for (int i = 0; i < values.Count; i++)
+            {
+                command.Parameters.AddWithValue($"@p{i}", values[i] ?? DBNull.Value);
+            }
+
+            return command;
         }
 
-        /// <summary>
-        /// Binds properties of <paramref name="parameters"/> to <paramref name="cmd"/>
-        /// as named SQLite parameters.
-        /// </summary>
-        /// <remarks>
-        /// Each property on the anonymous object becomes a <c>@PropertyName</c> parameter.
-        /// <see langword="null"/> property values are bound as <see cref="DBNull.Value"/>.
-        /// </remarks>
-        /// <param name="cmd">The command to add parameters to.</param>
-        /// <param name="parameters">An anonymous object whose properties map to SQL parameters. Pass <see langword="null"/> for parameter-free queries.</param>
-        private static void AddParameters(SqliteCommand cmd, object parameters)
+        private static List<object> ExtractValues(object[] parameters)
         {
+            var values = new List<object>();
+
             if (parameters == null)
             {
-                return;
+                return values;
             }
 
-            foreach (var prop in parameters.GetType().GetProperties())
+            foreach (object parameter in parameters)
             {
-                cmd.Parameters.AddWithValue("@" + prop.Name, prop.GetValue(parameters) ?? DBNull.Value);
+                if (parameter is OleDbParameter oleDbParameter)
+                {
+                    values.Add(oleDbParameter.Value ?? DBNull.Value);
+                }
+                else
+                {
+                    values.Add(parameter ?? DBNull.Value);
+                }
             }
-        }
-        public override int ExecuteAndGetLastId(string sql, object parameters = null)
-        {
-            using var conn = new SqliteConnection(_connectionString);
-            conn.Open();
-            using var cmd = new SqliteCommand(sql, conn);
-            AddParameters(cmd, parameters);
-            cmd.ExecuteNonQuery();
 
-            using var idCmd = new SqliteCommand("SELECT last_insert_rowid();", conn);
-            return (int)(long)idCmd.ExecuteScalar();
+            return values;
+        }
+
+        private static string TranslateQuery(string query, int parameterCount)
+        {
+            string translated = TranslateTopClause(query);
+            translated = Regex.Replace(translated, @"\bTrue\b", "1", RegexOptions.IgnoreCase);
+            translated = Regex.Replace(translated, @"\bFalse\b", "0", RegexOptions.IgnoreCase);
+
+            for (int i = 0; i < parameterCount; i++)
+            {
+                translated = ReplaceFirst(translated, "?", $"@p{i}");
+            }
+
+            return translated;
+        }
+
+        private static string TranslateTopClause(string query)
+        {
+            Match match = Regex.Match(query, @"^\s*SELECT\s+TOP\s+(\d+)\s+", RegexOptions.IgnoreCase);
+            if (!match.Success)
+            {
+                return query;
+            }
+
+            string limit = match.Groups[1].Value;
+            string translated = Regex.Replace(query, @"^\s*SELECT\s+TOP\s+\d+\s+", "SELECT ", RegexOptions.IgnoreCase);
+
+            if (!Regex.IsMatch(translated, @"\bLIMIT\b", RegexOptions.IgnoreCase))
+            {
+                translated = translated.TrimEnd().TrimEnd(';') + $" LIMIT {limit}";
+            }
+
+            return translated;
+        }
+
+        private static string ReplaceFirst(string input, string oldValue, string newValue)
+        {
+            int index = input.IndexOf(oldValue, StringComparison.Ordinal);
+            if (index < 0)
+            {
+                return input;
+            }
+
+            var builder = new StringBuilder();
+            builder.Append(input.Substring(0, index));
+            builder.Append(newValue);
+            builder.Append(input.Substring(index + oldValue.Length));
+            return builder.ToString();
+        }
+
+        private static string QuoteIdentifier(string identifier)
+        {
+            return "\"" + identifier.Replace("\"", "\"\"") + "\"";
         }
     }
 }

@@ -1,3 +1,4 @@
+using DataBase.Connection;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
@@ -14,11 +15,15 @@ namespace DataBase.Repository.Access
             "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
         };
 
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessWeekPlanRepository()
+        public AccessWeekPlanRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessWeekPlanRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public int CreateEmptyWeekPlan(int userId, string planName)

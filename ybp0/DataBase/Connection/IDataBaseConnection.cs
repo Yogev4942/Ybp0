@@ -12,5 +12,7 @@ namespace DataBase.Connection
         DataTable ExecuteQuery(string query, params object[] parameters);
         int ExecuteNonQuery(string query, params object[] parameters);
         T ExecuteScalar<T>(string query, params object[] parameters);
+        bool TableExists(string tableName);
+        bool ColumnExists(string tableName, string columnName);
     }
 }

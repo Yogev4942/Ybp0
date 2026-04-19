@@ -1,31 +1,32 @@
 using System;
+using DataBase.Connection;
 
 namespace DataBase.Repository.Access
 {
     internal static class ExerciseSchemaHelper
     {
-        internal static string GetExerciseTable(AccessDatabaseConnection database)
+        internal static string GetExerciseTable(IDataBaseConnection database)
         {
             if (database.TableExists("ExerciseTbl")) return "ExerciseTbl";
             if (database.TableExists("ExercisesTbl")) return "ExercisesTbl";
             return "ExercisesTbl";
         }
 
-        internal static string GetMuscleTable(AccessDatabaseConnection database)
+        internal static string GetMuscleTable(IDataBaseConnection database)
         {
             if (database.TableExists("MuscleTbl")) return "MuscleTbl";
             if (database.TableExists("MusclesTbl")) return "MusclesTbl";
             return null;
         }
 
-        internal static string GetExerciseNameColumn(AccessDatabaseConnection database, string exerciseTable)
+        internal static string GetExerciseNameColumn(IDataBaseConnection database, string exerciseTable)
         {
             if (database.ColumnExists(exerciseTable, "ExerciseName")) return "ExerciseName";
             if (database.ColumnExists(exerciseTable, "Name")) return "Name";
             return "ExerciseName";
         }
 
-        internal static string GetMuscleNameColumn(AccessDatabaseConnection database, string muscleTable)
+        internal static string GetMuscleNameColumn(IDataBaseConnection database, string muscleTable)
         {
             if (string.IsNullOrWhiteSpace(muscleTable)) return null;
             if (database.ColumnExists(muscleTable, "MuscleName")) return "MuscleName";
@@ -33,7 +34,7 @@ namespace DataBase.Repository.Access
             return "MuscleName";
         }
 
-        internal static string GetExerciseMuscleForeignKeyColumn(AccessDatabaseConnection database, string exerciseTable)
+        internal static string GetExerciseMuscleForeignKeyColumn(IDataBaseConnection database, string exerciseTable)
         {
             if (database.ColumnExists(exerciseTable, "PrimaryMuscle")) return "PrimaryMuscle";
             if (database.ColumnExists(exerciseTable, "PrimaryMuscleId")) return "PrimaryMuscleId";
@@ -43,19 +44,19 @@ namespace DataBase.Repository.Access
             return null;
         }
 
-        internal static string GetExerciseSecondaryMuscleForeignKeyColumn(AccessDatabaseConnection database, string exerciseTable)
+        internal static string GetExerciseSecondaryMuscleForeignKeyColumn(IDataBaseConnection database, string exerciseTable)
         {
             if (database.ColumnExists(exerciseTable, "SecondaryMuscle")) return "SecondaryMuscle";
             if (database.ColumnExists(exerciseTable, "SecondaryMuscleId")) return "SecondaryMuscleId";
             return null;
         }
 
-        internal static bool HasLegacyMuscleGroupColumn(AccessDatabaseConnection database, string exerciseTable)
+        internal static bool HasLegacyMuscleGroupColumn(IDataBaseConnection database, string exerciseTable)
         {
             return database.ColumnExists(exerciseTable, "MuscleGroup");
         }
 
-        internal static string BuildExerciseProjectionSql(AccessDatabaseConnection database, string exerciseAlias, string joinAlias = "m", string secondaryJoinAlias = "sm")
+        internal static string BuildExerciseProjectionSql(IDataBaseConnection database, string exerciseAlias, string joinAlias = "m", string secondaryJoinAlias = "sm")
         {
             string exerciseTable = GetExerciseTable(database);
             string muscleTable = GetMuscleTable(database);
@@ -93,7 +94,7 @@ namespace DataBase.Repository.Access
             return sql;
         }
 
-        internal static System.Collections.Generic.List<string> BuildExerciseJoinSql(AccessDatabaseConnection database, string exerciseAlias, string joinAlias = "m", string secondaryJoinAlias = "sm")
+        internal static System.Collections.Generic.List<string> BuildExerciseJoinSql(IDataBaseConnection database, string exerciseAlias, string joinAlias = "m", string secondaryJoinAlias = "sm")
         {
             var joins = new System.Collections.Generic.List<string>();
             string exerciseTable = GetExerciseTable(database);

@@ -1,3 +1,4 @@
+using DataBase.Connection;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
@@ -8,11 +9,15 @@ namespace DataBase.Repository.Access
 {
     public class AccessMusclesRepository : IMuscleRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessMusclesRepository()
+        public AccessMusclesRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessMusclesRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public List<Muscle> GetAllMuscles()
@@ -32,6 +37,7 @@ namespace DataBase.Repository.Access
             {
                 selectSql += $", [{bodyRegionColumn}] AS BodyRegion";
             }
+
             if (!string.IsNullOrWhiteSpace(diagramZoneColumn))
             {
                 selectSql += $", [{diagramZoneColumn}] AS DiagramZone";

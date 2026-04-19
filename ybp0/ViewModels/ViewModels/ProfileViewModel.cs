@@ -36,9 +36,11 @@ namespace ViewModels.ViewModels
 
         // Profile ownership
         public bool IsOwnProfile => ActiveUser?.Id == ViewedUser?.Id;
+        public bool CanOpenChat => ActiveUser != null && ViewedUser != null && !IsOwnProfile;
 
         // Common commands
         public ICommand EditProfileCommand { get; }
+        public ICommand OpenChatCommand { get; }
 
         protected ProfileViewModel(IDatabaseService database, INavigationService navigation, User activeUser, User viewedUser)
         {
@@ -48,6 +50,7 @@ namespace ViewModels.ViewModels
             ViewedUser = viewedUser;
 
             EditProfileCommand = new RelayCommand(_ => _navigation.NavigateTo<EditProfileViewModel>(ActiveUser));
+            OpenChatCommand = new RelayCommand(_ => _navigation.NavigateTo<ChatsViewModel>(ViewedUser), _ => CanOpenChat);
         }
 
         protected string GetColorForUser(string username)

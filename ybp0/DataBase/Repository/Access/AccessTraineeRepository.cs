@@ -1,22 +1,24 @@
+using DataBase.Connection;
 using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
     public class AccessTraineeRepository : ITraineeRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessTraineeRepository()
+        public AccessTraineeRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessTraineeRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public Trainee GetTraineeById(int userId)
@@ -46,6 +48,7 @@ namespace DataBase.Repository.Access
             {
                 trainees.Add(UserMapper.MapTrainee(row));
             }
+
             return trainees;
         }
 
@@ -53,8 +56,7 @@ namespace DataBase.Repository.Access
         {
             int affected = _database.ExecuteNonQuery(
                 "INSERT INTO TraineesTbl ([UserId], [TrainerId], [FitnessGoal], [CurrentWeight], [Height]) VALUES (?, NULL, ?, ?, ?)",
-                userId, fitnessGoal, currentWeight, height
-            );
+                userId, fitnessGoal, currentWeight, height);
             return affected > 0;
         }
 
@@ -62,8 +64,7 @@ namespace DataBase.Repository.Access
         {
             int affected = _database.ExecuteNonQuery(
                 "UPDATE TraineesTbl SET FitnessGoal = ?, CurrentWeight = ?, Height = ? WHERE UserId = ?",
-                trainee.FitnessGoal, trainee.CurrentWeight, trainee.Height, trainee.Id
-            );
+                trainee.FitnessGoal, trainee.CurrentWeight, trainee.Height, trainee.Id);
             return affected > 0;
         }
 
@@ -71,8 +72,7 @@ namespace DataBase.Repository.Access
         {
             int affected = _database.ExecuteNonQuery(
                 "UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?",
-                trainerId, traineeUserId
-            );
+                trainerId, traineeUserId);
             return affected > 0;
         }
     }

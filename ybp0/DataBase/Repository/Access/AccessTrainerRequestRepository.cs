@@ -1,22 +1,24 @@
-﻿using DataBase.Mappers;
+using DataBase.Connection;
+using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
     public class AccessTrainerRequestRepository : ITrainerRequestRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessTrainerRequestRepository()
+        public AccessTrainerRequestRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessTrainerRequestRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         private int? GetTraineeTableId(int userId)
@@ -39,8 +41,7 @@ namespace DataBase.Repository.Access
 
             var dt = _database.ExecuteQuery(
                 "SELECT Status FROM TrainerRequestsTbl WHERE TraineeUserId = ? AND TrainerUserId = ?",
-                traineeId.Value, trainerId.Value
-            );
+                traineeId.Value, trainerId.Value);
             return dt.Rows.Count > 0 ? dt.Rows[0]["Status"].ToString() : null;
         }
 
@@ -54,8 +55,7 @@ namespace DataBase.Repository.Access
 
             int affected = _database.ExecuteNonQuery(
                 "INSERT INTO TrainerRequestsTbl (TraineeUserId, TrainerUserId, Status, RequestDate) VALUES (?, ?, ?, ?)",
-                traineeId.Value, trainerId.Value, "Pending", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")
-            );
+                traineeId.Value, trainerId.Value, "Pending", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
             return affected > 0;
         }
 
@@ -67,13 +67,13 @@ namespace DataBase.Repository.Access
 
             int affected = _database.ExecuteNonQuery(
                 "UPDATE TrainerRequestsTbl SET Status = ? WHERE TraineeUserId = ? AND TrainerUserId = ?",
-                status, traineeId.Value, trainerId.Value
-            );
+                status, traineeId.Value, trainerId.Value);
 
             if (affected > 0 && status == "Approved")
             {
                 _database.ExecuteNonQuery("UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?", trainerId.Value, traineeUserId);
             }
+
             return affected > 0;
         }
 
@@ -88,14 +88,14 @@ namespace DataBase.Repository.Access
                   INNER JOIN TraineesTbl t ON u.Id = t.UserId)
                   INNER JOIN TrainerRequestsTbl tr ON t.Id = tr.TraineeUserId
                   WHERE tr.TrainerUserId = ? AND tr.Status = 'Pending'",
-                trainerId.Value
-            );
+                trainerId.Value);
 
             var trainees = new List<Trainee>();
             foreach (DataRow row in dt.Rows)
             {
                 trainees.Add(UserMapper.MapTrainee(row));
             }
+
             return trainees;
         }
     }

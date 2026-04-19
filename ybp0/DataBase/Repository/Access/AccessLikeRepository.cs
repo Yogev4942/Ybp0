@@ -1,19 +1,21 @@
-﻿using DataBase.Repository.Interfaces;
+using DataBase.Connection;
+using DataBase.Repository.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace DataBase.Repository.Access
 {
     public class AccessLikeRepository : ILikeRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessLikeRepository()
+        public AccessLikeRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessLikeRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public bool ToggleLike(int postId, int userId)
@@ -23,11 +25,9 @@ namespace DataBase.Repository.Access
                 _database.ExecuteNonQuery("DELETE FROM [LikesTbl] WHERE [PostId] = ? AND [UserId] = ?", postId, userId);
                 return false;
             }
-            else
-            {
-                _database.ExecuteNonQuery("INSERT INTO [LikesTbl] ([PostId], [UserId]) VALUES (?, ?)", postId, userId);
-                return true;
-            }
+
+            _database.ExecuteNonQuery("INSERT INTO [LikesTbl] ([PostId], [UserId]) VALUES (?, ?)", postId, userId);
+            return true;
         }
 
         public int GetLikeCount(int postId)
@@ -37,6 +37,7 @@ namespace DataBase.Repository.Access
             {
                 return Convert.ToInt32(dt.Rows[0]["LikeCount"]);
             }
+
             return 0;
         }
 

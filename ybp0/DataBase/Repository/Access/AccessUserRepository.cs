@@ -1,22 +1,24 @@
-﻿using DataBase.Mappers;
+using DataBase.Connection;
+using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
 using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataBase.Repository.Access
 {
     public class AccessUserRepository : IUserRepository
     {
-        private readonly AccessDatabaseConnection _database;
+        private readonly IDataBaseConnection _database;
 
-        public AccessUserRepository()
+        public AccessUserRepository() : this(DatabaseFilter.CreateConnection())
         {
-            _database = new AccessDatabaseConnection();
+        }
+
+        public AccessUserRepository(IDataBaseConnection database)
+        {
+            _database = database ?? DatabaseFilter.CreateConnection();
         }
 
         public User GetById(int userId)
@@ -45,7 +47,8 @@ namespace DataBase.Repository.Access
             {
                 users.Add(UserMapper.MapBaseUser(row));
             }
-            return users    ;
+
+            return users;
         }
 
         public bool UserExists(string username, string email)
@@ -53,11 +56,13 @@ namespace DataBase.Repository.Access
             var dt = _database.ExecuteQuery("SELECT Id FROM UserTbl WHERE Username = ? OR Email = ?", username, email);
             return dt.Rows.Count > 0;
         }
+
         public bool ValidateLogin(string username, string password)
         {
             var dt = _database.ExecuteQuery("SELECT Id FROM UserTbl WHERE Username = ? AND Password = ?", username, password);
             return dt.Rows.Count > 0;
         }
+
         public int CreateUser(User userData)
         {
             int isTrainerFlag = userData.IsTrainer ? -1 : 0;
@@ -70,24 +75,23 @@ namespace DataBase.Repository.Access
                 userData.Password,
                 joinDate,
                 isTrainerFlag,
-                DBNull.Value
-            );
+                DBNull.Value);
 
-            // Using the fallback Thread.Sleep method as requested
             System.Threading.Thread.Sleep(100);
 
             var dt = _database.ExecuteQuery(
                 "SELECT Id FROM UserTbl WHERE Username = ? AND Email = ?",
                 userData.Username,
-                userData.Email ?? (object)DBNull.Value
-            );
+                userData.Email ?? (object)DBNull.Value);
 
             if (dt.Rows.Count > 0)
             {
                 return Convert.ToInt32(dt.Rows[0]["Id"]);
             }
+
             return 0;
         }
+
         public bool UpdateUserCommon(int userId, string bio, string email)
         {
             int affected = _database.ExecuteNonQuery(
@@ -95,6 +99,7 @@ namespace DataBase.Repository.Access
                 bio ?? (object)DBNull.Value, email ?? (object)DBNull.Value, userId);
             return affected > 0;
         }
+
         public bool UpdateCurrentWeekPlanId(int userId, int weekPlanId)
         {
             int affected = _database.ExecuteNonQuery(
@@ -102,6 +107,7 @@ namespace DataBase.Repository.Access
                 weekPlanId, userId);
             return affected > 0;
         }
+
         public void DeleteUser(int userId)
         {
             _database.ExecuteNonQuery("DELETE FROM UserTbl WHERE Id = ?", userId);
