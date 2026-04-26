@@ -1,0 +1,112 @@
+<Project>
+  <PropertyGroup>
+    <AssemblyName>ybp0</AssemblyName>
+    <IntermediateOutputPath>obj\Debug\</IntermediateOutputPath>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <MSBuildProjectExtensionsPath>C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\</MSBuildProjectExtensionsPath>
+    <_TargetAssemblyProjectName>ybp0</_TargetAssemblyProjectName>
+  </PropertyGroup>
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>ybp0</RootNamespace>
+    <AssemblyName>ybp0</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>TRACE</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.10" />
+    <PackageReference Include="System.Memory" Version="4.6.3" />
+    <PackageReference Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="images\ArnoldImage.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ReferencePath Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\DataBase\bin\Debug\DataBase.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Microsoft.CSharp.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\microsoft.data.sqlite.core\9.0.10\lib\netstandard2.0\Microsoft.Data.Sqlite.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\Models\bin\Debug\Models.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\mscorlib.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationCore.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\PresentationFramework.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\sqlitepclraw.bundle_e_sqlite3\2.1.11\lib\net461\SQLitePCLRaw.batteries_v2.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\sqlitepclraw.core\2.1.11\lib\netstandard2.0\SQLitePCLRaw.core.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\sqlitepclraw.provider.dynamic_cdecl\2.1.11\lib\netstandard2.0\SQLitePCLRaw.provider.dynamic_cdecl.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\system.buffers\4.6.1\lib\net462\System.Buffers.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Core.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.DataSetExtensions.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Data.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Drawing.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.IO.Compression.FileSystem.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\system.memory\4.6.3\lib\net462\System.Memory.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Net.Http.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Numerics.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\system.numerics.vectors\4.6.1\lib\net462\System.Numerics.Vectors.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\.nuget\packages\system.runtime.compilerservices.unsafe\6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Runtime.Serialization.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Windows.Controls.Ribbon.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xaml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Xml.Linq.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationClient.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationClientsideProviders.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationProvider.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\UIAutomationTypes.dll" />
+    <ReferencePath Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ViewModels\bin\Debug\ViewModels.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\WindowsBase.dll" />
+    <ReferencePath Include="C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\Facades\netstandard.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\MainWindow.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\CalendarView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\ChatsView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\CreatePostView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\EditProfileView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\ExerciseView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\FeedView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\HomeView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\LoginView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\LoginView_Dark.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\PostView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\ProfileVIew.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\RegisterSelectionView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\SearchView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TraineeViews\TraineeCalendarView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TraineeViews\TraineeFeedView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TraineeViews\TraineeProfileView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TraineeViews\TraineeRegisterView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TraineeViews\TraineeRegisterView_Dark.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TrainerViews\TrainerCalendarView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TrainerViews\TrainerFeedView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TrainerViews\TrainerProfileView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TrainerViews\TrainerRegisterView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\TrainerViews\TrainerRegisterViewDark.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\WorkoutExerciseView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\WorkoutPlansView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\Views\WorkoutView.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\App.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\ybp0_Content.g.cs" />
+    <Compile Include="C:\Users\Cyber_User\Desktop\SCHOOL\youdbetproj\Ybp0\ybp0\ybp0\obj\Debug\net472\GeneratedInternalTypeHelper.g.cs" />
+  </ItemGroup>
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>
