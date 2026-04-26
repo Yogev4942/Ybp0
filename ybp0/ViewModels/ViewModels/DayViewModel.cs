@@ -81,6 +81,11 @@ namespace ViewModels.ViewModels
 
         public void ApplyWeekPlanDay(WeekPlanDay weekPlanDay)
         {
+            ApplyWeekPlanDay(weekPlanDay, null);
+        }
+
+        public void ApplyWeekPlanDay(WeekPlanDay weekPlanDay, Workout workout)
+        {
             if (weekPlanDay == null)
             {
                 return;
@@ -93,7 +98,7 @@ namespace ViewModels.ViewModels
                 ? weekPlanDay.WorkoutName
                 : IsRestDay ? "Rest Day" : "Workout";
 
-            LoadWorkoutForDay();
+            ApplyWorkout(workout);
         }
 
         public void AddExerciseFromModal(Exercise exercise)
@@ -131,9 +136,25 @@ namespace ViewModels.ViewModels
 
         public void LoadWorkoutForDay()
         {
+            if (!WorkoutId.HasValue)
+            {
+                ApplyWorkout(null);
+                return;
+            }
+
+            ApplyWorkout(_dbService.GetWorkoutById(WorkoutId.Value));
+        }
+
+        private void OnExerciseRequestRemove(object sender, EventArgs e)
+        {
+            RemoveExercise(sender as ExerciseViewModel);
+        }
+
+        private void ApplyWorkout(Workout workout)
+        {
             Exercises.Clear();
 
-            if (!WorkoutId.HasValue)
+            if (workout == null)
             {
                 IsRestDay = true;
                 if (string.IsNullOrWhiteSpace(WorkoutName))
@@ -144,16 +165,8 @@ namespace ViewModels.ViewModels
                 return;
             }
 
-            Workout workout = _dbService.GetWorkoutById(WorkoutId.Value);
-            if (workout == null)
-            {
-                IsRestDay = true;
-                WorkoutName = "Rest Day";
-                WorkoutId = null;
-                return;
-            }
-
             IsRestDay = false;
+            WorkoutId = workout.Id;
             WorkoutName = workout.WorkoutName;
 
             string[] colors = { "#26A69A", "#66BB6A", "#42A5F5", "#AB47BC", "#FF9800", "#7E57C2" };
@@ -167,11 +180,6 @@ namespace ViewModels.ViewModels
                 Exercises.Add(exerciseVm);
                 colorIndex++;
             }
-        }
-
-        private void OnExerciseRequestRemove(object sender, EventArgs e)
-        {
-            RemoveExercise(sender as ExerciseViewModel);
         }
     }
 }

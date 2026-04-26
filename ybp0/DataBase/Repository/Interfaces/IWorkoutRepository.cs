@@ -6,6 +6,7 @@ namespace DataBase.Repository.Interfaces
     public interface IWorkoutRepository
     {
         Workout GetWorkoutById(int workoutId);
+        Dictionary<int, Workout> GetWorkoutsByIds(IEnumerable<int> workoutIds);
         List<Workout> GetWorkoutsByUserId(int userId);
         int CreateWorkout(int userId, string workoutName);
         void UpdateWorkoutName(int workoutId, string workoutName);

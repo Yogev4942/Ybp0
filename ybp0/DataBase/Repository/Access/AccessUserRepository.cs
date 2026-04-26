@@ -5,6 +5,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace DataBase.Repository.Access
 {
@@ -25,6 +26,28 @@ namespace DataBase.Repository.Access
         {
             var dt = _database.ExecuteQuery("SELECT * FROM UserTbl WHERE Id = ?", userId);
             return dt.Rows.Count > 0 ? UserMapper.MapBaseUser(dt.Rows[0]) : null;
+        }
+
+        public Dictionary<int, User> GetByIds(IEnumerable<int> userIds)
+        {
+            List<int> ids = userIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new Dictionary<int, User>();
+            }
+
+            string placeholders = string.Join(", ", ids.Select(_ => "?"));
+            var dt = _database.ExecuteQuery(
+                $"SELECT * FROM UserTbl WHERE Id IN ({placeholders})",
+                ids.Cast<object>().ToArray());
+
+            return dt.Rows.Cast<DataRow>()
+                .Select(UserMapper.MapBaseUser)
+                .GroupBy(user => user.Id)
+                .ToDictionary(group => group.Key, group => group.First());
         }
 
         public User GetByUsername(string username)
@@ -77,10 +100,8 @@ namespace DataBase.Repository.Access
                 isTrainerFlag,
                 DBNull.Value);
 
-            System.Threading.Thread.Sleep(100);
-
             var dt = _database.ExecuteQuery(
-                "SELECT Id FROM UserTbl WHERE Username = ? AND Email = ?",
+                "SELECT TOP 1 Id FROM UserTbl WHERE Username = ? AND Email = ? ORDER BY Id DESC",
                 userData.Username,
                 userData.Email ?? (object)DBNull.Value);
 

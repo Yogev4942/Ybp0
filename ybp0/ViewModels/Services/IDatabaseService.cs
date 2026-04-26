@@ -29,6 +29,7 @@ namespace ViewModels
         bool RegisterTrainer(string username, string email, string password, string specialization, double hourlyRate, int maxTrainees);
         bool UpdateUser(User user);
         User GetUserById(int userId);
+        Dictionary<int, User> GetUsersByIds(IEnumerable<int> userIds);
 
         List<WeekPlanDay> GetWeekPlanDays(int weekPlanId);
         WeekPlanDay GetWeekPlanDayById(int weekPlanDayId);
@@ -36,6 +37,7 @@ namespace ViewModels
         WeekPlanDay UpdateWeekPlanDayWorkout(int weekPlanDayId, int? workoutId, bool restDay);
 
         Workout GetWorkoutById(int workoutId);
+        Dictionary<int, Workout> GetWorkoutsByIds(IEnumerable<int> workoutIds);
         List<Workout> GetWorkoutsByUserId(int userId);
         int CreateWorkout(int userId, string workoutName);
         void UpdateWorkoutName(int workoutId, string workoutName);
@@ -74,6 +76,7 @@ namespace ViewModels
         bool CreatePost(string header, string content, User user);
         bool DeletePost(int postId);
         ObservableCollection<Post> GetAllPosts();
+        HashSet<int> GetLikedPostIds(IEnumerable<int> postIds, int userId);
         bool ToggleLike(int postId, int userId);
         int GetLikeCount(int postId);
         bool IsPostLikedByUser(int postId, int userId);
@@ -82,6 +85,7 @@ namespace ViewModels
         void SendMessage(int senderId, int recipientId, string messageText);
         List<Message> GetConversation(int userIdA, int userIdB);
         Message GetLatestMessage(int userIdA, int userIdB);
+        Dictionary<int, Message> GetLatestMessagesByContacts(int userId, IEnumerable<int> contactIds);
         List<int> GetChatContactIds(int userId);
     }
 }

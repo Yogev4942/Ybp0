@@ -91,11 +91,14 @@ namespace ViewModels.ViewModels
                 .GroupBy(user => user.Id)
                 .Select(group => group.First())
                 .ToList();
+            Dictionary<int, Message> latestMessages = _dbService.GetLatestMessagesByContacts(
+                _currentUser.Id,
+                contacts.Select(user => user.Id));
 
             Chats.Clear();
 
             foreach (ChatPreviewItemViewModel chat in contacts
-                .Select(CreateChatPreview)
+                .Select(user => CreateChatPreview(user, latestMessages))
                 .OrderByDescending(item => item.LastActivity ?? DateTime.MinValue)
                 .ThenBy(item => item.Name))
             {
@@ -117,11 +120,16 @@ namespace ViewModels.ViewModels
 
         private List<User> ResolveContacts(int? selectedChatUserId)
         {
+            var contactIds = new HashSet<int>();
             var contacts = new List<User>();
 
             if (_currentUser.IsTrainer)
             {
-                contacts.AddRange(_dbService.GetTraineesByTrainerId(_currentUser.Id).Cast<User>());
+                foreach (Trainee trainee in _dbService.GetTraineesByTrainerId(_currentUser.Id))
+                {
+                    contactIds.Add(trainee.Id);
+                    contacts.Add(trainee);
+                }
             }
             else
             {
@@ -133,6 +141,7 @@ namespace ViewModels.ViewModels
 
                     if (assignedTrainer != null)
                     {
+                        contactIds.Add(assignedTrainer.Id);
                         contacts.Add(assignedTrainer);
                     }
                 }
@@ -140,28 +149,29 @@ namespace ViewModels.ViewModels
 
             foreach (int contactId in _dbService.GetChatContactIds(_currentUser.Id))
             {
-                User contact = _dbService.GetUserById(contactId);
-                if (contact != null)
-                {
-                    contacts.Add(contact);
-                }
+                contactIds.Add(contactId);
             }
 
             if (selectedChatUserId.HasValue)
             {
-                User selectedUser = _dbService.GetUserById(selectedChatUserId.Value);
-                if (selectedUser != null)
+                contactIds.Add(selectedChatUserId.Value);
+            }
+
+            Dictionary<int, User> extraUsers = _dbService.GetUsersByIds(contactIds);
+            foreach (KeyValuePair<int, User> pair in extraUsers)
+            {
+                if (pair.Value != null && !contacts.Any(user => user.Id == pair.Key))
                 {
-                    contacts.Add(selectedUser);
+                    contacts.Add(pair.Value);
                 }
             }
 
             return contacts;
         }
 
-        private ChatPreviewItemViewModel CreateChatPreview(User user)
+        private ChatPreviewItemViewModel CreateChatPreview(User user, Dictionary<int, Message> latestMessages)
         {
-            Message latestMessage = _dbService.GetLatestMessage(_currentUser.Id, user.Id);
+            latestMessages.TryGetValue(user.Id, out Message latestMessage);
             return new ChatPreviewItemViewModel
             {
                 UserId = user.Id,

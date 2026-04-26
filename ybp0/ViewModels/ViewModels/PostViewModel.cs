@@ -117,7 +117,7 @@ namespace ViewModels.ViewModels
         /// Constructor used by FeedViewModel.LoadPosts() — builds from domain models.
         /// </summary>
         public PostViewModel(Post post, User owner, User currUser, INavigationService navigationService, 
-            IDatabaseService databaseService, Action<PostViewModel> deleteAction = null)
+            IDatabaseService databaseService, bool isLiked, Action<PostViewModel> deleteAction = null)
             : this(navigationService,
                    databaseService,
                    currUser.Id,
@@ -130,7 +130,7 @@ namespace ViewModels.ViewModels
                    GetColorForUser(owner.Username),
                    currUser.Id == owner.Id,
                    post.LikeCount,
-                   databaseService.IsPostLikedByUser(post.Id, currUser.Id),
+                   isLiked,
                    deleteAction)
         {
         }

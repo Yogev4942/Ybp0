@@ -115,5 +115,42 @@ namespace DataBase
                 return schema.Rows.Count > 0;
             }
         }
+
+        public void EnsureIndexes(IEnumerable<(string IndexName, string TableName, string Columns, bool IsUnique)> indexes)
+        {
+            using (var conn = GetConnection())
+            {
+                conn.Open();
+                DataTable existingIndexes = conn.GetSchema("Indexes");
+                DataTable existingTables = conn.GetSchema("Tables");
+
+                foreach ((string indexName, string tableName, string columns, bool isUnique) in indexes)
+                {
+                    bool tableExists = existingTables.Rows.Cast<DataRow>().Any(row =>
+                        string.Equals(row["TABLE_NAME"]?.ToString(), tableName, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(row["TABLE_TYPE"]?.ToString(), "TABLE", StringComparison.OrdinalIgnoreCase));
+
+                    if (!tableExists)
+                    {
+                        continue;
+                    }
+
+                    bool exists = existingIndexes.Rows.Cast<DataRow>().Any(row =>
+                        string.Equals(row["INDEX_NAME"]?.ToString(), indexName, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(row["TABLE_NAME"]?.ToString(), tableName, StringComparison.OrdinalIgnoreCase));
+
+                    if (exists)
+                    {
+                        continue;
+                    }
+
+                    using (var command = conn.CreateCommand())
+                    {
+                        command.CommandText = $"{(isUnique ? "CREATE UNIQUE INDEX" : "CREATE INDEX")} [{indexName}] ON [{tableName}] ({columns})";
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace DataBase.Repository.Interfaces
     public interface IUserRepository
     {
         User GetById(int userId);
+        Dictionary<int, User> GetByIds(IEnumerable<int> userIds);
         User GetByUsername(string username);
         User GetByUsernameAndPassword(string username, string password);
         List<User> GetAllUsers();

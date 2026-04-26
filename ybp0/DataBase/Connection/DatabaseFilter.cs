@@ -23,7 +23,9 @@ namespace DataBase.Connection
                 return sqliteConnection;
             }
 
-            return new global::DataBase.AccessDatabaseConnection();
+            var accessConnection = new global::DataBase.AccessDatabaseConnection();
+            EnsureAccessSchema(accessConnection);
+            return accessConnection;
         }
 
         public static IReadOnlyList<string> SqliteCreateTableStatements { get; } = new[]
@@ -41,6 +43,13 @@ namespace DataBase.Connection
                 [Id] INTEGER PRIMARY KEY AUTOINCREMENT,
                 [PostId] INTEGER NOT NULL,
                 [UserId] INTEGER NOT NULL
+            )",
+            @"CREATE TABLE IF NOT EXISTS [MessagesTbl] (
+                [Id] INTEGER PRIMARY KEY AUTOINCREMENT,
+                [SenderId] INTEGER NOT NULL,
+                [RecipientId] INTEGER NOT NULL,
+                [MessageText] TEXT NOT NULL,
+                [SentAt] TEXT NULL
             )",
             @"CREATE TABLE IF NOT EXISTS [MusclesTbl] (
                 [Id] INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -142,6 +151,23 @@ namespace DataBase.Connection
             )"
         };
 
+        public static IReadOnlyList<string> SqliteCreateIndexStatements { get; } = new[]
+        {
+            @"CREATE INDEX IF NOT EXISTS [IX_PostTbl_OwnerId] ON [PostTbl] ([OwnerId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_LikesTbl_PostId] ON [LikesTbl] ([PostId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_LikesTbl_UserId_PostId] ON [LikesTbl] ([UserId], [PostId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_MessagesTbl_Sender_Recipient_SentAt] ON [MessagesTbl] ([SenderId], [RecipientId], [SentAt])",
+            @"CREATE INDEX IF NOT EXISTS [IX_MessagesTbl_Recipient_Sender_SentAt] ON [MessagesTbl] ([RecipientId], [SenderId], [SentAt])",
+            @"CREATE INDEX IF NOT EXISTS [IX_WorkoutsTbl_UserId] ON [WorkoutsTbl] ([UserId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_WorkoutExercisesTbl_WorkoutId] ON [WorkoutExercisesTbl] ([WorkoutId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_WorkoutSetsTbl_WorkoutExerciseId] ON [WorkoutSetsTbl] ([WorkoutExerciseId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_TraineesTbl_UserId] ON [TraineesTbl] ([UserId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_TraineesTbl_TrainerId] ON [TraineesTbl] ([TrainerId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_TrainersTbl_UserId] ON [TrainersTbl] ([UserId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_WeekPlansTbl_UserId] ON [WeekPlansTbl] ([UserId])",
+            @"CREATE INDEX IF NOT EXISTS [IX_WeekPlanDaysTbl_WeekPlanId] ON [WeekPlanDaysTbl] ([WeekPlanId])"
+        };
+
         public static void EnsureSqliteSchema(IDataBaseConnection connection)
         {
             if (connection == null)
@@ -153,6 +179,36 @@ namespace DataBase.Connection
             {
                 connection.ExecuteNonQuery(statement);
             }
+
+            foreach (string statement in SqliteCreateIndexStatements)
+            {
+                connection.ExecuteNonQuery(statement);
+            }
+        }
+
+        public static void EnsureAccessSchema(global::DataBase.AccessDatabaseConnection connection)
+        {
+            if (connection == null)
+            {
+                throw new ArgumentNullException(nameof(connection));
+            }
+
+            connection.EnsureIndexes(new[]
+            {
+                ("IX_PostTbl_OwnerId", "PostTbl", "[OwnerId]", false),
+                ("IX_LikesTbl_PostId", "LikesTbl", "[PostId]", false),
+                ("IX_LikesTbl_UserId_PostId", "LikesTbl", "[UserId], [PostId]", false),
+                ("IX_MessagesTbl_Sender_Recipient_SentAt", "MessagesTbl", "[SenderId], [RecipientId], [SentAt]", false),
+                ("IX_MessagesTbl_Recipient_Sender_SentAt", "MessagesTbl", "[RecipientId], [SenderId], [SentAt]", false),
+                ("IX_WorkoutsTbl_UserId", "WorkoutsTbl", "[UserId]", false),
+                ("IX_WorkoutExercisesTbl_WorkoutId", "WorkoutExercisesTbl", "[WorkoutId]", false),
+                ("IX_WorkoutSetsTbl_WorkoutExerciseId", "WorkoutSetsTbl", "[WorkoutExerciseId]", false),
+                ("IX_TraineesTbl_UserId", "TraineesTbl", "[UserId]", false),
+                ("IX_TraineesTbl_TrainerId", "TraineesTbl", "[TrainerId]", false),
+                ("IX_TrainersTbl_UserId", "TrainersTbl", "[UserId]", false),
+                ("IX_WeekPlansTbl_UserId", "WeekPlansTbl", "[UserId]", false),
+                ("IX_WeekPlanDaysTbl_WeekPlanId", "WeekPlanDaysTbl", "[WeekPlanId]", false)
+            });
         }
 
         private static string GetDefaultSqlitePath()

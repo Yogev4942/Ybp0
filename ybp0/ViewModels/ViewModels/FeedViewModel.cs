@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 using Models;
 
@@ -42,20 +43,24 @@ namespace ViewModels.ViewModels
             try
             {
                 var posts = _databaseService.GetAllPosts();
+                var owners = _databaseService.GetUsersByIds(posts.Select(post => post.OwnerId));
+                var likedPostIds = _databaseService.GetLikedPostIds(posts.Select(post => post.Id), _activeUser.Id);
                 Posts.Clear();
 
                 foreach (var post in posts)
                 {
-                    // Get the owner for this post
-                    var owner = _databaseService.GetUserById(post.OwnerId);
+                    if (!owners.TryGetValue(post.OwnerId, out User owner) || owner == null)
+                    {
+                        continue;
+                    }
 
-                    // Convert Post to PostViewModel
                     var postViewModel = new PostViewModel(
                         post,
                         owner,
                         _activeUser,
                         _navigationService,
                         _databaseService,
+                        likedPostIds.Contains(post.Id),
                         DeletePost // Pass delete action
                     );
 

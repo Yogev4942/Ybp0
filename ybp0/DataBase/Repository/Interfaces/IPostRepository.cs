@@ -13,5 +13,6 @@ namespace DataBase.Repository.Interfaces
         bool CreatePost(string header, string content, int userId);
         bool DeletePost(int postId);
         ObservableCollection<Post> GetAllPosts();
+        HashSet<int> GetLikedPostIds(IEnumerable<int> postIds, int userId);
     }
 }

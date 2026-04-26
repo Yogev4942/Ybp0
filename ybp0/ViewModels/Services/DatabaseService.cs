@@ -5,6 +5,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ViewModels.Services
 {
@@ -70,6 +71,35 @@ namespace ViewModels.Services
             return user.IsTrainer
                 ? (User)(_trainerRepo.GetTrainerById(userId) ?? user)
                 : (User)(_traineeRepo.GetTraineeById(userId) ?? user);
+        }
+
+        public Dictionary<int, User> GetUsersByIds(IEnumerable<int> userIds)
+        {
+            List<int> ids = userIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new Dictionary<int, User>();
+            }
+
+            Dictionary<int, User> baseUsers = _userRepo.GetByIds(ids);
+            var result = new Dictionary<int, User>();
+
+            foreach (int userId in ids)
+            {
+                if (!baseUsers.TryGetValue(userId, out User user) || user == null)
+                {
+                    continue;
+                }
+
+                result[userId] = user.IsTrainer
+                    ? (User)(_trainerRepo.GetTrainerById(userId) ?? user)
+                    : (User)(_traineeRepo.GetTraineeById(userId) ?? user);
+            }
+
+            return result;
         }
 
         public User GetUserByUsernameAndPassword(string username, string password)
@@ -221,6 +251,11 @@ namespace ViewModels.Services
         public Workout GetWorkoutById(int workoutId)
         {
             return _workoutRepo.GetWorkoutById(workoutId);
+        }
+
+        public Dictionary<int, Workout> GetWorkoutsByIds(IEnumerable<int> workoutIds)
+        {
+            return _workoutRepo.GetWorkoutsByIds(workoutIds);
         }
 
         public List<Workout> GetWorkoutsByUserId(int userId)
@@ -388,6 +423,11 @@ namespace ViewModels.Services
             return _postRepo.GetAllPosts();
         }
 
+        public HashSet<int> GetLikedPostIds(IEnumerable<int> postIds, int userId)
+        {
+            return _postRepo.GetLikedPostIds(postIds, userId);
+        }
+
         public bool ToggleLike(int postId, int userId)
         {
             return _likeRepo.ToggleLike(postId, userId);
@@ -421,6 +461,11 @@ namespace ViewModels.Services
         public Message GetLatestMessage(int userIdA, int userIdB)
         {
             return _messageRepo.GetLatestMessage(userIdA, userIdB);
+        }
+
+        public Dictionary<int, Message> GetLatestMessagesByContacts(int userId, IEnumerable<int> contactIds)
+        {
+            return _messageRepo.GetLatestMessagesByContacts(userId, contactIds);
         }
 
         public List<int> GetChatContactIds(int userId)

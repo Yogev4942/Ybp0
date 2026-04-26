@@ -4,6 +4,7 @@ using Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 
 namespace DataBase.Repository.Access
 {
@@ -44,10 +45,8 @@ namespace DataBase.Repository.Access
 
         public Message GetLatestMessage(int userIdA, int userIdB)
         {
-            // Access doesn't support LIMIT / TOP with UNION easily,
-            // so fetch all and take the last one in code.
             var dt = _database.ExecuteQuery(
-                "SELECT * FROM [MessagesTbl] WHERE ([SenderId] = ? AND [RecipientId] = ?) OR ([SenderId] = ? AND [RecipientId] = ?) ORDER BY [SentAt] DESC",
+                "SELECT TOP 1 * FROM [MessagesTbl] WHERE ([SenderId] = ? AND [RecipientId] = ?) OR ([SenderId] = ? AND [RecipientId] = ?) ORDER BY [SentAt] DESC, [Id] DESC",
                 userIdA, userIdB, userIdB, userIdA);
 
             if (dt.Rows.Count == 0)
@@ -56,6 +55,50 @@ namespace DataBase.Repository.Access
             }
 
             return MapMessage(dt.Rows[0]);
+        }
+
+        public Dictionary<int, Message> GetLatestMessagesByContacts(int userId, IEnumerable<int> contactIds)
+        {
+            List<int> ids = contactIds?
+                .Distinct()
+                .Where(id => id > 0 && id != userId)
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new Dictionary<int, Message>();
+            }
+
+            string contactPredicate = string.Join(
+                " OR ",
+                ids.Select(_ => "([SenderId] = ? AND [RecipientId] = ?) OR ([SenderId] = ? AND [RecipientId] = ?)"));
+
+            var parameters = new List<object>();
+            foreach (int contactId in ids)
+            {
+                parameters.Add(userId);
+                parameters.Add(contactId);
+                parameters.Add(contactId);
+                parameters.Add(userId);
+            }
+
+            var dt = _database.ExecuteQuery(
+                $"SELECT * FROM [MessagesTbl] WHERE {contactPredicate} ORDER BY [SentAt] DESC, [Id] DESC",
+                parameters.ToArray());
+
+            var latestByContact = new Dictionary<int, Message>();
+            foreach (DataRow row in dt.Rows)
+            {
+                Message message = MapMessage(row);
+                int contactId = message.SenderId == userId ? message.RecipientId : message.SenderId;
+
+                if (!latestByContact.ContainsKey(contactId))
+                {
+                    latestByContact[contactId] = message;
+                }
+            }
+
+            return latestByContact;
         }
 
         public List<int> GetChatContactIds(int userId)

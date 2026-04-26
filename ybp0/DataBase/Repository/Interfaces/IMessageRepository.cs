@@ -8,6 +8,7 @@ namespace DataBase.Repository.Interfaces
         void SendMessage(int senderId, int recipientId, string messageText);
         List<Message> GetConversation(int userIdA, int userIdB);
         Message GetLatestMessage(int userIdA, int userIdB);
+        Dictionary<int, Message> GetLatestMessagesByContacts(int userId, IEnumerable<int> contactIds);
         List<int> GetChatContactIds(int userId);
     }
 }

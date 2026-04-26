@@ -1,6 +1,7 @@
 using Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -27,6 +28,7 @@ namespace ViewModels.ViewModels
         private ObservableCollection<WorkoutPlanItemViewModel> _workoutPlans;
         private WorkoutPlanItemViewModel _selectedWorkoutPlan;
         private ObservableCollection<Exercise> _allExercises;
+        private List<Exercise> _exerciseCatalog;
         private Exercise _selectedExerciseToAdd;
         private bool _isExerciseModalOpen;
         private string _editableWorkoutName;
@@ -192,7 +194,16 @@ namespace ViewModels.ViewModels
         {
             string workoutName = BuildNextWorkoutName();
             int newWorkoutId = _dbService.CreateWorkout(_currentUser.Id, workoutName);
-            RefreshWorkoutPlans(newWorkoutId);
+
+            var item = new WorkoutPlanItemViewModel
+            {
+                Id = newWorkoutId,
+                WorkoutName = workoutName
+            };
+
+            WorkoutPlans.Add(item);
+            SelectedWorkoutPlan = item;
+            OnPropertyChanged(nameof(HasSelectedWorkout));
         }
 
         private string BuildNextWorkoutName()
@@ -217,8 +228,13 @@ namespace ViewModels.ViewModels
             }
 
             var existingExerciseIds = SelectedWorkoutPlan.Exercises.Select(ex => ex.ExerciseId).ToHashSet();
+            if (_exerciseCatalog == null)
+            {
+                _exerciseCatalog = _dbService.GetAllExercises();
+            }
+
             AllExercises = new ObservableCollection<Exercise>(
-                _dbService.GetAllExercises().Where(exercise => !existingExerciseIds.Contains(exercise.Id)));
+                _exerciseCatalog.Where(exercise => !existingExerciseIds.Contains(exercise.Id)));
 
             SelectedExerciseToAdd = null;
             IsExerciseModalOpen = true;
@@ -237,9 +253,20 @@ namespace ViewModels.ViewModels
                 return;
             }
 
-            _dbService.AddExerciseToWorkout(SelectedWorkoutPlan.Id, exercise.Id);
+            WorkoutExercise workoutExercise = _dbService.AddExerciseToWorkout(SelectedWorkoutPlan.Id, exercise.Id);
             CloseExerciseModal();
-            ReloadSelectedWorkout();
+
+            if (workoutExercise == null)
+            {
+                return;
+            }
+
+            string[] colors = { "#26A69A", "#32B09B", "#43BAA1", "#5DC7AD", "#77D2BA", "#94DEC9" };
+            string color = colors[SelectedWorkoutPlan.Exercises.Count % colors.Length];
+            var exerciseVm = new ExerciseViewModel(_dbService, workoutExercise, color);
+            exerciseVm.RequestRemove += OnExerciseRequestRemove;
+            SelectedWorkoutPlan.Exercises.Add(exerciseVm);
+            UpdatePreviewState();
         }
 
         private void ReloadSelectedWorkout()
@@ -267,7 +294,8 @@ namespace ViewModels.ViewModels
             }
 
             _dbService.RemoveExerciseFromWorkout(exerciseVm.WorkoutExerciseId.Value);
-            ReloadSelectedWorkout();
+            SelectedWorkoutPlan.Exercises.Remove(exerciseVm);
+            UpdatePreviewState();
         }
 
         private void ScheduleRename()

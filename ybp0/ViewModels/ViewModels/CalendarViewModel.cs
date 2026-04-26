@@ -1,5 +1,6 @@
 using Models;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -18,6 +19,7 @@ namespace ViewModels.ViewModels
         private bool _isExerciseModalOpen;
         private DayViewModel _selectedDayForExercise;
         private ObservableCollection<Exercise> _allExercises;
+        private List<Exercise> _exerciseCatalog;
         private Exercise _selectedExercise;
         private string _displayWeekPlanId;
         private string _weekPlanOwnerLabel;
@@ -129,7 +131,10 @@ namespace ViewModels.ViewModels
 
             DateTime baseDate = DateTime.Today;
             int currentDayOfWeek = (int)baseDate.DayOfWeek;
-            var weekPlanDays = _dbService.GetWeekPlanDays(weekPlanId).ToDictionary(day => day.DayOfWeek, StringComparer.OrdinalIgnoreCase);
+            List<WeekPlanDay> planDays = _dbService.GetWeekPlanDays(weekPlanId);
+            var weekPlanDays = planDays.ToDictionary(day => day.DayOfWeek, StringComparer.OrdinalIgnoreCase);
+            Dictionary<int, Workout> workoutsById = _dbService.GetWorkoutsByIds(
+                planDays.Where(day => day.WorkoutId.HasValue).Select(day => day.WorkoutId.Value));
 
             for (int i = 0; i < 7; i++)
             {
@@ -144,7 +149,13 @@ namespace ViewModels.ViewModels
 
                 if (weekPlanDays.TryGetValue(dayName, out WeekPlanDay planDay))
                 {
-                    dayVm.ApplyWeekPlanDay(planDay);
+                    Workout workout = null;
+                    if (planDay.WorkoutId.HasValue)
+                    {
+                        workoutsById.TryGetValue(planDay.WorkoutId.Value, out workout);
+                    }
+
+                    dayVm.ApplyWeekPlanDay(planDay, workout);
                 }
                 else
                 {
@@ -208,7 +219,12 @@ namespace ViewModels.ViewModels
                 return;
             }
 
-            AllExercises = new ObservableCollection<Exercise>(_dbService.GetAllExercises());
+            if (_exerciseCatalog == null)
+            {
+                _exerciseCatalog = _dbService.GetAllExercises();
+            }
+
+            AllExercises = new ObservableCollection<Exercise>(_exerciseCatalog);
             SelectedDayForExercise = day;
             SelectedExercise = null;
             IsExerciseModalOpen = true;

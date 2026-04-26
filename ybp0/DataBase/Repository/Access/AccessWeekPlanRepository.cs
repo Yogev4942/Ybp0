@@ -29,11 +29,11 @@ namespace DataBase.Repository.Access
         public int CreateEmptyWeekPlan(int userId, string planName)
         {
             _database.ExecuteNonQuery("INSERT INTO WeekPlansTbl (UserId, PlanName) VALUES (?, ?)", userId, planName);
-            System.Threading.Thread.Sleep(100);
 
             int weekPlanId = _database.ExecuteScalar<int>(
-                "SELECT TOP 1 Id FROM WeekPlansTbl WHERE UserId = ? ORDER BY Id DESC",
-                userId);
+                "SELECT TOP 1 Id FROM WeekPlansTbl WHERE UserId = ? AND PlanName = ? ORDER BY Id DESC",
+                userId,
+                planName);
 
             foreach (string dayName in DayNames)
             {

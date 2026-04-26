@@ -1,6 +1,7 @@
 using Models;
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -18,6 +19,7 @@ namespace ViewModels.ViewModels
         private ObservableCollection<ExerciseViewModel> _exercises;
         private ObservableCollection<Workout> _savedWorkouts;
         private ObservableCollection<Exercise> _allExercises;
+        private List<Exercise> _exerciseCatalog;
         private Workout _selectedSavedWorkout;
         private WorkoutSession _activeSession;
         private bool _isExerciseModalOpen;
@@ -336,8 +338,13 @@ namespace ViewModels.ViewModels
             }
 
             var existingExerciseIds = Exercises.Select(ex => ex.ExerciseId).ToHashSet();
+            if (_exerciseCatalog == null)
+            {
+                _exerciseCatalog = _dbService.GetAllExercises();
+            }
+
             AllExercises = new ObservableCollection<Exercise>(
-                _dbService.GetAllExercises().Where(ex => !existingExerciseIds.Contains(ex.Id)));
+                _exerciseCatalog.Where(ex => !existingExerciseIds.Contains(ex.Id)));
 
             SelectedExerciseToAdd = null;
             IsExerciseModalOpen = true;

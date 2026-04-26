@@ -29,25 +29,37 @@ namespace DataBase.Repository.Access
                 return null;
             }
 
-            return new Workout
+            return BuildWorkouts(workoutDt).FirstOrDefault();
+        }
+
+        public Dictionary<int, Workout> GetWorkoutsByIds(IEnumerable<int> workoutIds)
+        {
+            List<int> ids = workoutIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
             {
-                Id = Convert.ToInt32(workoutDt.Rows[0]["Id"]),
-                UserId = Convert.ToInt32(workoutDt.Rows[0]["UserId"]),
-                WorkoutName = workoutDt.Rows[0]["WorkoutName"]?.ToString(),
-                WorkoutExercises = GetWorkoutExercises(workoutId)
-            };
+                return new Dictionary<int, Workout>();
+            }
+
+            string placeholders = string.Join(", ", ids.Select(_ => "?"));
+            var dt = _database.ExecuteQuery(
+                $"SELECT * FROM WorkoutsTbl WHERE Id IN ({placeholders}) ORDER BY WorkoutName",
+                ids.Cast<object>().ToArray());
+
+            return BuildWorkouts(dt)
+                .GroupBy(workout => workout.Id)
+                .ToDictionary(group => group.Key, group => group.First());
         }
 
         public List<Workout> GetWorkoutsByUserId(int userId)
         {
             var dt = _database.ExecuteQuery(
-                "SELECT Id FROM WorkoutsTbl WHERE UserId = ? ORDER BY WorkoutName",
+                "SELECT * FROM WorkoutsTbl WHERE UserId = ? ORDER BY WorkoutName",
                 userId);
 
-            return dt.Rows.Cast<DataRow>()
-                .Select(row => GetWorkoutById(Convert.ToInt32(row["Id"])))
-                .Where(workout => workout != null)
-                .ToList();
+            return BuildWorkouts(dt);
         }
 
         public int CreateWorkout(int userId, string workoutName)
@@ -57,10 +69,10 @@ namespace DataBase.Repository.Access
                 userId,
                 workoutName);
 
-            System.Threading.Thread.Sleep(100);
             return _database.ExecuteScalar<int>(
-                "SELECT TOP 1 Id FROM WorkoutsTbl WHERE UserId = ? ORDER BY Id DESC",
-                userId);
+                "SELECT TOP 1 Id FROM WorkoutsTbl WHERE UserId = ? AND WorkoutName = ? ORDER BY Id DESC",
+                userId,
+                workoutName);
         }
 
         public void UpdateWorkoutName(int workoutId, string workoutName)
@@ -95,10 +107,10 @@ namespace DataBase.Repository.Access
                     exerciseId,
                     nextOrderNumber + 1);
 
-                System.Threading.Thread.Sleep(100);
                 workoutExerciseId = _database.ExecuteScalar<int>(
-                    "SELECT TOP 1 Id FROM WorkoutExercisesTbl WHERE WorkoutId = ? ORDER BY Id DESC",
-                    workoutId);
+                    "SELECT TOP 1 Id FROM WorkoutExercisesTbl WHERE WorkoutId = ? AND ExerciseId = ? ORDER BY Id DESC",
+                    workoutId,
+                    exerciseId);
 
                 _database.ExecuteNonQuery(
                     "INSERT INTO WorkoutSetsTbl (WorkoutExerciseId, SetNumber, Reps, Weight) VALUES (?, ?, ?, ?)",
@@ -161,10 +173,10 @@ namespace DataBase.Repository.Access
                 reps,
                 weight);
 
-            System.Threading.Thread.Sleep(100);
             int newSetId = _database.ExecuteScalar<int>(
-                "SELECT TOP 1 Id FROM WorkoutSetsTbl WHERE WorkoutExerciseId = ? ORDER BY Id DESC",
-                workoutExerciseId);
+                "SELECT TOP 1 Id FROM WorkoutSetsTbl WHERE WorkoutExerciseId = ? AND SetNumber = ? ORDER BY Id DESC",
+                workoutExerciseId,
+                setNumber);
 
             return new WorkoutSet
             {
@@ -181,8 +193,47 @@ namespace DataBase.Repository.Access
             _database.ExecuteNonQuery("DELETE FROM WorkoutSetsTbl WHERE Id = ?", setId);
         }
 
-        private List<WorkoutExercise> GetWorkoutExercises(int workoutId)
+        private List<Workout> BuildWorkouts(DataTable workoutTable)
         {
+            List<Workout> workouts = workoutTable.Rows.Cast<DataRow>()
+                .Select(row => new Workout
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    UserId = Convert.ToInt32(row["UserId"]),
+                    WorkoutName = row["WorkoutName"]?.ToString()
+                })
+                .ToList();
+
+            if (workouts.Count == 0)
+            {
+                return workouts;
+            }
+
+            Dictionary<int, List<WorkoutExercise>> exercisesByWorkoutId = GetWorkoutExercisesByWorkoutIds(
+                workouts.Select(workout => workout.Id));
+
+            foreach (Workout workout in workouts)
+            {
+                if (exercisesByWorkoutId.TryGetValue(workout.Id, out List<WorkoutExercise> exercises))
+                {
+                    workout.WorkoutExercises = exercises;
+                }
+            }
+
+            return workouts;
+        }
+
+        private Dictionary<int, List<WorkoutExercise>> GetWorkoutExercisesByWorkoutIds(IEnumerable<int> workoutIds)
+        {
+            List<int> ids = workoutIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new Dictionary<int, List<WorkoutExercise>>();
+            }
+
             string exerciseTable = ExerciseSchemaHelper.GetExerciseTable(_database);
             string selectSql = ExerciseSchemaHelper.BuildExerciseProjectionSql(_database, "e");
             var joins = ExerciseSchemaHelper.BuildExerciseJoinSql(_database, "e");
@@ -192,16 +243,64 @@ namespace DataBase.Repository.Access
                 fromClause = $"({fromClause}) {join}";
             }
 
+            string placeholders = string.Join(", ", ids.Select(_ => "?"));
             var dt = _database.ExecuteQuery(
                 $@"SELECT we.Id AS WorkoutExerciseId, we.WorkoutId, we.ExerciseId, we.OrderNumber, {selectSql}
                    FROM {fromClause}
-                   WHERE we.WorkoutId = ?
+                   WHERE we.WorkoutId IN ({placeholders})
                    ORDER BY we.OrderNumber, e.ExerciseName",
-                workoutId);
+                ids.Cast<object>().ToArray());
+
+            Dictionary<int, List<WorkoutExercise>> exercisesByWorkoutId = dt.Rows.Cast<DataRow>()
+                .Select(MapWorkoutExercise)
+                .GroupBy(exercise => exercise.WorkoutId)
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+            Dictionary<int, List<WorkoutSet>> setsByExerciseId = GetWorkoutSetsByWorkoutExerciseIds(
+                dt.Rows.Cast<DataRow>().Select(row => Convert.ToInt32(row["WorkoutExerciseId"])));
+
+            foreach (List<WorkoutExercise> exercises in exercisesByWorkoutId.Values)
+            {
+                foreach (WorkoutExercise exercise in exercises)
+                {
+                    if (setsByExerciseId.TryGetValue(exercise.Id, out List<WorkoutSet> sets))
+                    {
+                        exercise.Sets = sets;
+                    }
+                }
+            }
+
+            return exercisesByWorkoutId;
+        }
+
+        private List<WorkoutExercise> GetWorkoutExercises(int workoutId)
+        {
+            return GetWorkoutExercisesByWorkoutIds(new[] { workoutId })
+                .TryGetValue(workoutId, out List<WorkoutExercise> exercises)
+                ? exercises
+                : new List<WorkoutExercise>();
+        }
+
+        private Dictionary<int, List<WorkoutSet>> GetWorkoutSetsByWorkoutExerciseIds(IEnumerable<int> workoutExerciseIds)
+        {
+            List<int> ids = workoutExerciseIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new Dictionary<int, List<WorkoutSet>>();
+            }
+
+            string placeholders = string.Join(", ", ids.Select(_ => "?"));
+            var dt = _database.ExecuteQuery(
+                $"SELECT * FROM WorkoutSetsTbl WHERE WorkoutExerciseId IN ({placeholders}) ORDER BY WorkoutExerciseId, SetNumber",
+                ids.Cast<object>().ToArray());
 
             return dt.Rows.Cast<DataRow>()
-                .Select(MapWorkoutExercise)
-                .ToList();
+                .Select(MapWorkoutSet)
+                .GroupBy(set => set.WorkoutExerciseId)
+                .ToDictionary(group => group.Key, group => group.ToList());
         }
 
         private WorkoutExercise MapWorkoutExercise(DataRow row)
@@ -216,8 +315,6 @@ namespace DataBase.Repository.Access
                 SecondaryMuscleGroup = row["SecondaryMuscleGroup"]?.ToString(),
                 OrderNumber = Convert.ToInt32(row["OrderNumber"])
             };
-
-            workoutExercise.Sets = GetWorkoutSets(workoutExercise.Id);
             return workoutExercise;
         }
 

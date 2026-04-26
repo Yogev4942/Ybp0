@@ -4,6 +4,8 @@ using Models;
 using System;
 using System.Collections.ObjectModel;
 using System.Data;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DataBase.Repository.Access
 {
@@ -36,24 +38,54 @@ namespace DataBase.Repository.Access
 
         public ObservableCollection<Post> GetAllPosts()
         {
-            var dt = _database.ExecuteQuery("SELECT * FROM PostTbl ORDER BY Id DESC");
+            var dt = _database.ExecuteQuery(@"
+                SELECT p.*,
+                       COUNT(l.Id) AS LikeCount
+                FROM PostTbl AS p
+                LEFT JOIN LikesTbl AS l ON p.Id = l.PostId
+                GROUP BY p.Id, p.OwnerId, p.Header, p.Content, p.PostTime
+                ORDER BY p.Id DESC");
             var posts = new ObservableCollection<Post>();
 
             foreach (DataRow row in dt.Rows)
             {
-                int postId = Convert.ToInt32(row["Id"]);
                 posts.Add(new Post
                 {
-                    Id = postId,
+                    Id = Convert.ToInt32(row["Id"]),
                     OwnerId = Convert.ToInt32(row["OwnerId"]),
                     Header = Convert.ToString(row["Header"]),
                     Content = Convert.ToString(row["Content"]),
                     PostTime = Convert.ToDateTime(row["PostTime"]),
-                    LikeCount = GetLikeCount(postId)
+                    LikeCount = row["LikeCount"] != DBNull.Value ? Convert.ToInt32(row["LikeCount"]) : 0
                 });
             }
 
             return posts;
+        }
+
+        public HashSet<int> GetLikedPostIds(IEnumerable<int> postIds, int userId)
+        {
+            List<int> ids = postIds?
+                .Distinct()
+                .ToList() ?? new List<int>();
+
+            if (ids.Count == 0)
+            {
+                return new HashSet<int>();
+            }
+
+            string placeholders = string.Join(", ", ids.Select(_ => "?"));
+            object[] parameters = new object[] { userId }
+                .Concat(ids.Cast<object>())
+                .ToArray();
+
+            var dt = _database.ExecuteQuery(
+                $"SELECT PostId FROM LikesTbl WHERE UserId = ? AND PostId IN ({placeholders})",
+                parameters);
+
+            return dt.Rows.Cast<DataRow>()
+                .Select(row => Convert.ToInt32(row["PostId"]))
+                .ToHashSet();
         }
 
         public bool ToggleLike(int postId, int userId)
