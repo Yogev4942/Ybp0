@@ -1,0 +1,32 @@
+﻿[
+    {
+        "Id":  1,
+        "UserId":  1,
+        "Specialization":  "WeightLifting",
+        "HourlyRate":  23,
+        "MaxTrainees":  10,
+        "TotalTrainees":  0,
+        "Rating":  0,
+        "TotalRatings":  0
+    },
+    {
+        "Id":  2,
+        "UserId":  4,
+        "Specialization":  "callisthenics",
+        "HourlyRate":  500,
+        "MaxTrainees":  10,
+        "TotalTrainees":  0,
+        "Rating":  0,
+        "TotalRatings":  0
+    },
+    {
+        "Id":  3,
+        "UserId":  12,
+        "Specialization":  "t",
+        "HourlyRate":  2,
+        "MaxTrainees":  1,
+        "TotalTrainees":  0,
+        "Rating":  0,
+        "TotalRatings":  0
+    }
+]

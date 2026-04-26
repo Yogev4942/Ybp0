@@ -40,19 +40,19 @@ namespace ViewModels.Services
 
         public DatabaseService()
         {
-            _connection = DatabaseFilter.CreateConnection();
-            _userRepo = new AccessUserRepository(_connection);
-            _traineeRepo = new AccessTraineeRepository(_connection);
-            _trainerRepo = new AccessTrainerRepository(_connection);
-            _exerciseRepo = new AccessExerciseRepository(_connection);
-            _muscleRepo = new AccessMusclesRepository(_connection);
-            _workoutRepo = new AccessWorkoutRepository(_connection);
-            _workoutSessionRepo = new AccessWorkoutSessionRepository(_connection);
-            _weekPlanRepo = new AccessWeekPlanRepository(_connection);
-            _trainerRequestRepo = new AccessTrainerRequestRepository(_connection);
-            _postRepo = new AccessPostRepository(_connection);
-            _likeRepo = new AccessLikeRepository(_connection);
-            _messageRepo = new AccessMessageRepository(_connection);
+            _connection = SqliteDatabaseConnection.CreateDefault();
+            _userRepo = new UserRepository(_connection);
+            _traineeRepo = new TraineeRepository(_connection);
+            _trainerRepo = new TrainerRepository(_connection);
+            _exerciseRepo = new ExerciseRepository(_connection);
+            _muscleRepo = new MuscleRepository(_connection);
+            _workoutRepo = new WorkoutRepository(_connection);
+            _workoutSessionRepo = new WorkoutSessionRepository(_connection);
+            _weekPlanRepo = new WeekPlanRepository(_connection);
+            _trainerRequestRepo = new TrainerRequestRepository(_connection);
+            _postRepo = new PostRepository(_connection);
+            _likeRepo = new LikeRepository(_connection);
+            _messageRepo = new MessageRepository(_connection);
         }
 
         public bool ValidateLogin(string username, string password)

@@ -1,0 +1,79 @@
+using DataBase.Connection;
+using DataBase.Mappers;
+using DataBase.Repository.Interfaces;
+using Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+
+namespace DataBase.Repository.Access
+{
+    public class TraineeRepository : ITraineeRepository
+    {
+        private readonly IDataBaseConnection _database;
+
+        public TraineeRepository() : this(SqliteDatabaseConnection.CreateDefault())
+        {
+        }
+
+        public TraineeRepository(IDataBaseConnection database)
+        {
+            _database = database ?? SqliteDatabaseConnection.CreateDefault();
+        }
+
+        public Trainee GetTraineeById(int userId)
+        {
+            string query = @"
+                SELECT u.*, t.Id AS TraineeProfileId, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
+                FROM UserTbl u
+                INNER JOIN TraineesTbl t ON u.Id = t.UserId
+                WHERE u.Id = ?";
+
+            var dt = _database.ExecuteQuery(query, userId);
+            return dt.Rows.Count > 0 ? UserMapper.MapTrainee(dt.Rows[0]) : null;
+        }
+
+        public List<Trainee> GetTraineesByTrainerId(int trainerUserId)
+        {
+            string query = @"
+                SELECT u.*, t.Id AS TraineeProfileId, t.TrainerId, t.FitnessGoal, t.CurrentWeight, t.Height
+                FROM (UserTbl u
+                INNER JOIN TraineesTbl t ON u.Id = t.UserId)
+                INNER JOIN TrainersTbl tr ON t.TrainerId = tr.Id
+                WHERE tr.UserId = ?";
+
+            var dt = _database.ExecuteQuery(query, trainerUserId);
+            var trainees = new List<Trainee>();
+            foreach (DataRow row in dt.Rows)
+            {
+                trainees.Add(UserMapper.MapTrainee(row));
+            }
+
+            return trainees;
+        }
+
+        public bool CreateTraineeProfile(int userId, string fitnessGoal, double currentWeight, double height)
+        {
+            int affected = _database.ExecuteNonQuery(
+                "INSERT INTO TraineesTbl ([UserId], [TrainerId], [FitnessGoal], [CurrentWeight], [Height]) VALUES (?, NULL, ?, ?, ?)",
+                userId, fitnessGoal, currentWeight, height);
+            return affected > 0;
+        }
+
+        public bool UpdateTraineeProfile(Trainee trainee)
+        {
+            int affected = _database.ExecuteNonQuery(
+                "UPDATE TraineesTbl SET FitnessGoal = ?, CurrentWeight = ?, Height = ? WHERE UserId = ?",
+                trainee.FitnessGoal, trainee.CurrentWeight, trainee.Height, trainee.Id);
+            return affected > 0;
+        }
+
+        public bool AssignTrainer(int traineeUserId, int trainerId)
+        {
+            int affected = _database.ExecuteNonQuery(
+                "UPDATE TraineesTbl SET TrainerId = ? WHERE UserId = ?",
+                trainerId, traineeUserId);
+            return affected > 0;
+        }
+    }
+}

@@ -17,23 +17,20 @@ namespace DataBase
         private const string AccessProvider = "Microsoft.ACE.OLEDB.12.0";
 
         public AccessDatabaseConnection()
+            : this(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBase", "DB.accdb"))
         {
-            #region HardcodedDB
-            string dbFileName = "DB.accdb";
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            // Use the database file recreated in the bin directory (Output Path)
-            _dbPath = Path.Combine(baseDir, "DataBase", dbFileName);
-            
+        }
+
+        public AccessDatabaseConnection(string dbPath)
+        {
+            _dbPath = dbPath;
+
             if (!File.Exists(_dbPath))
             {
-                // Fallback or detailed error for debugging
                 throw new FileNotFoundException($"Database not found at: {_dbPath}");
             }
-            _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
-            #endregion
-            #region DebugDBCopy
 
-            #endregion
+            _connectionString = $"Provider={AccessProvider};Data Source={_dbPath}";
         }
         private OleDbConnection GetConnection()
         {

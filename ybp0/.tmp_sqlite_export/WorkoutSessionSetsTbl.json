@@ -1,0 +1,218 @@
+﻿[
+    {
+        "Id":  1,
+        "WorkoutSessionId":  1,
+        "ExerciseId":  5,
+        "SetNumber":  1,
+        "Reps":  12,
+        "Weight":  110,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  2,
+        "WorkoutSessionId":  1,
+        "ExerciseId":  5,
+        "SetNumber":  2,
+        "Reps":  11,
+        "Weight":  110,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  3,
+        "WorkoutSessionId":  1,
+        "ExerciseId":  1,
+        "SetNumber":  1,
+        "Reps":  1,
+        "Weight":  100,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  4,
+        "WorkoutSessionId":  1,
+        "ExerciseId":  1,
+        "SetNumber":  2,
+        "Reps":  12,
+        "Weight":  75,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  5,
+        "WorkoutSessionId":  1,
+        "ExerciseId":  1,
+        "SetNumber":  2,
+        "Reps":  1,
+        "Weight":  100,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  6,
+        "WorkoutSessionId":  15,
+        "ExerciseId":  1,
+        "SetNumber":  1,
+        "Reps":  2,
+        "Weight":  10,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  7,
+        "WorkoutSessionId":  15,
+        "ExerciseId":  1,
+        "SetNumber":  2,
+        "Reps":  32,
+        "Weight":  12,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  8,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  1,
+        "SetNumber":  1,
+        "Reps":  123,
+        "Weight":  123,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  9,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  3,
+        "SetNumber":  1,
+        "Reps":  123,
+        "Weight":  4124,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  10,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  3,
+        "SetNumber":  2,
+        "Reps":  32,
+        "Weight":  1,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  11,
+        "WorkoutSessionId":  24,
+        "ExerciseId":  5,
+        "SetNumber":  1,
+        "Reps":  11,
+        "Weight":  110,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  12,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  4,
+        "SetNumber":  1,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  13,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  2,
+        "SetNumber":  1,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  14,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  2,
+        "SetNumber":  2,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  15,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  2,
+        "SetNumber":  3,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  16,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  2,
+        "SetNumber":  4,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  17,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  4,
+        "SetNumber":  2,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  18,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  4,
+        "SetNumber":  3,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  19,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  4,
+        "SetNumber":  4,
+        "Reps":  0,
+        "Weight":  0,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  20,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  3,
+        "SetNumber":  3,
+        "Reps":  32,
+        "Weight":  1,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  21,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  1,
+        "SetNumber":  2,
+        "Reps":  123,
+        "Weight":  123,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  22,
+        "WorkoutSessionId":  22,
+        "ExerciseId":  1,
+        "SetNumber":  3,
+        "Reps":  123,
+        "Weight":  123,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  24,
+        "WorkoutSessionId":  45,
+        "ExerciseId":  4,
+        "SetNumber":  1,
+        "Reps":  3,
+        "Weight":  14,
+        "IsCompleted":  0
+    },
+    {
+        "Id":  25,
+        "WorkoutSessionId":  44,
+        "ExerciseId":  1,
+        "SetNumber":  1,
+        "Reps":  20,
+        "Weight":  40,
+        "IsCompleted":  0
+    }
+]

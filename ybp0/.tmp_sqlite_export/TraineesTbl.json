@@ -1,0 +1,66 @@
+﻿[
+    {
+        "Id":  1,
+        "UserId":  3,
+        "TrainerId":  null,
+        "FitnessGoal":  "3",
+        "CurrentWeight":  3,
+        "Height":  3
+    },
+    {
+        "Id":  2,
+        "UserId":  11,
+        "TrainerId":  null,
+        "FitnessGoal":  "g",
+        "CurrentWeight":  1,
+        "Height":  33
+    },
+    {
+        "Id":  3,
+        "UserId":  13,
+        "TrainerId":  null,
+        "FitnessGoal":  "x",
+        "CurrentWeight":  3,
+        "Height":  3
+    },
+    {
+        "Id":  4,
+        "UserId":  14,
+        "TrainerId":  null,
+        "FitnessGoal":  "tes",
+        "CurrentWeight":  12,
+        "Height":  32
+    },
+    {
+        "Id":  5,
+        "UserId":  15,
+        "TrainerId":  null,
+        "FitnessGoal":  "tes",
+        "CurrentWeight":  12,
+        "Height":  12
+    },
+    {
+        "Id":  6,
+        "UserId":  16,
+        "TrainerId":  null,
+        "FitnessGoal":  "0% body fat",
+        "CurrentWeight":  20,
+        "Height":  2
+    },
+    {
+        "Id":  7,
+        "UserId":  17,
+        "TrainerId":  null,
+        "FitnessGoal":  "Achieved sub 2 sec loading calendar view, hope it will stay that way",
+        "CurrentWeight":  11,
+        "Height":  22
+    },
+    {
+        "Id":  8,
+        "UserId":  18,
+        "TrainerId":  null,
+        "FitnessGoal":  "gg",
+        "CurrentWeight":  12,
+        "Height":  32
+    }
+]

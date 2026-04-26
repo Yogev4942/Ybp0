@@ -1,0 +1,32 @@
+﻿[
+    {
+        "Id":  1,
+        "ExerciseName":  "Bench press",
+        "PrimaryMuscleId":  2,
+        "SecondaryMuscleId":  null
+    },
+    {
+        "Id":  2,
+        "ExerciseName":  "Pec deck",
+        "PrimaryMuscleId":  2,
+        "SecondaryMuscleId":  null
+    },
+    {
+        "Id":  3,
+        "ExerciseName":  "Cable Pushdown",
+        "PrimaryMuscleId":  9,
+        "SecondaryMuscleId":  null
+    },
+    {
+        "Id":  4,
+        "ExerciseName":  "Overhead press",
+        "PrimaryMuscleId":  5,
+        "SecondaryMuscleId":  null
+    },
+    {
+        "Id":  5,
+        "ExerciseName":  "Pullups",
+        "PrimaryMuscleId":  4,
+        "SecondaryMuscleId":  null
+    }
+]

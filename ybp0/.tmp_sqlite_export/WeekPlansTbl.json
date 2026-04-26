@@ -1,0 +1,47 @@
+﻿[
+    {
+        "Id":  1,
+        "UserId":  1,
+        "PlanName":  "upperlower"
+    },
+    {
+        "Id":  2,
+        "UserId":  3,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  3,
+        "UserId":  11,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  4,
+        "UserId":  13,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  5,
+        "UserId":  14,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  6,
+        "UserId":  15,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  7,
+        "UserId":  16,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  8,
+        "UserId":  17,
+        "PlanName":  "My Week Plan"
+    },
+    {
+        "Id":  9,
+        "UserId":  18,
+        "PlanName":  "My Week Plan"
+    }
+]

@@ -1,0 +1,492 @@
+﻿[
+    {
+        "Id":  1,
+        "UserId":  3,
+        "WeekPlanDayId":  2,
+        "WorkoutId":  2,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  2,
+        "UserId":  3,
+        "WeekPlanDayId":  3,
+        "WorkoutId":  3,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  3,
+        "UserId":  3,
+        "WeekPlanDayId":  4,
+        "WorkoutId":  4,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  4,
+        "UserId":  3,
+        "WeekPlanDayId":  5,
+        "WorkoutId":  5,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  5,
+        "UserId":  3,
+        "WeekPlanDayId":  6,
+        "WorkoutId":  6,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  6,
+        "UserId":  3,
+        "WeekPlanDayId":  7,
+        "WorkoutId":  7,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  7,
+        "UserId":  3,
+        "WeekPlanDayId":  8,
+        "WorkoutId":  8,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  8,
+        "UserId":  11,
+        "WeekPlanDayId":  9,
+        "WorkoutId":  9,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  9,
+        "UserId":  11,
+        "WeekPlanDayId":  10,
+        "WorkoutId":  10,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  10,
+        "UserId":  11,
+        "WeekPlanDayId":  11,
+        "WorkoutId":  11,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  11,
+        "UserId":  11,
+        "WeekPlanDayId":  12,
+        "WorkoutId":  12,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  12,
+        "UserId":  11,
+        "WeekPlanDayId":  13,
+        "WorkoutId":  13,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  13,
+        "UserId":  11,
+        "WeekPlanDayId":  14,
+        "WorkoutId":  14,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  14,
+        "UserId":  11,
+        "WeekPlanDayId":  15,
+        "WorkoutId":  15,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  15,
+        "UserId":  13,
+        "WeekPlanDayId":  16,
+        "WorkoutId":  16,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  16,
+        "UserId":  13,
+        "WeekPlanDayId":  17,
+        "WorkoutId":  17,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  17,
+        "UserId":  13,
+        "WeekPlanDayId":  18,
+        "WorkoutId":  18,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  18,
+        "UserId":  13,
+        "WeekPlanDayId":  19,
+        "WorkoutId":  19,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  19,
+        "UserId":  13,
+        "WeekPlanDayId":  20,
+        "WorkoutId":  20,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  20,
+        "UserId":  13,
+        "WeekPlanDayId":  21,
+        "WorkoutId":  21,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  21,
+        "UserId":  13,
+        "WeekPlanDayId":  22,
+        "WorkoutId":  22,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  22,
+        "UserId":  16,
+        "WeekPlanDayId":  37,
+        "WorkoutId":  23,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  23,
+        "UserId":  16,
+        "WeekPlanDayId":  38,
+        "WorkoutId":  24,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  24,
+        "UserId":  16,
+        "WeekPlanDayId":  39,
+        "WorkoutId":  25,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  25,
+        "UserId":  16,
+        "WeekPlanDayId":  40,
+        "WorkoutId":  26,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  26,
+        "UserId":  16,
+        "WeekPlanDayId":  41,
+        "WorkoutId":  27,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  27,
+        "UserId":  16,
+        "WeekPlanDayId":  42,
+        "WorkoutId":  28,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  28,
+        "UserId":  16,
+        "WeekPlanDayId":  43,
+        "WorkoutId":  29,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  29,
+        "UserId":  17,
+        "WeekPlanDayId":  44,
+        "WorkoutId":  30,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  30,
+        "UserId":  17,
+        "WeekPlanDayId":  45,
+        "WorkoutId":  31,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  31,
+        "UserId":  17,
+        "WeekPlanDayId":  46,
+        "WorkoutId":  32,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  32,
+        "UserId":  17,
+        "WeekPlanDayId":  47,
+        "WorkoutId":  33,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  33,
+        "UserId":  17,
+        "WeekPlanDayId":  48,
+        "WorkoutId":  34,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  34,
+        "UserId":  17,
+        "WeekPlanDayId":  49,
+        "WorkoutId":  35,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  35,
+        "UserId":  17,
+        "WeekPlanDayId":  50,
+        "WorkoutId":  36,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  36,
+        "UserId":  18,
+        "WeekPlanDayId":  51,
+        "WorkoutId":  37,
+        "SessionDate":  "2026-01-18 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  37,
+        "UserId":  18,
+        "WeekPlanDayId":  52,
+        "WorkoutId":  38,
+        "SessionDate":  "2026-01-19 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  38,
+        "UserId":  18,
+        "WeekPlanDayId":  53,
+        "WorkoutId":  39,
+        "SessionDate":  "2026-01-20 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  39,
+        "UserId":  18,
+        "WeekPlanDayId":  54,
+        "WorkoutId":  40,
+        "SessionDate":  "2026-01-21 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  40,
+        "UserId":  18,
+        "WeekPlanDayId":  55,
+        "WorkoutId":  41,
+        "SessionDate":  "2026-01-22 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  41,
+        "UserId":  18,
+        "WeekPlanDayId":  56,
+        "WorkoutId":  42,
+        "SessionDate":  "2026-01-23 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  42,
+        "UserId":  18,
+        "WeekPlanDayId":  57,
+        "WorkoutId":  43,
+        "SessionDate":  "2026-01-24 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  43,
+        "UserId":  16,
+        "WeekPlanDayId":  37,
+        "WorkoutId":  44,
+        "SessionDate":  "2026-01-25 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  44,
+        "UserId":  16,
+        "WeekPlanDayId":  38,
+        "WorkoutId":  45,
+        "SessionDate":  "2026-01-26 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  45,
+        "UserId":  16,
+        "WeekPlanDayId":  39,
+        "WorkoutId":  46,
+        "SessionDate":  "2026-01-27 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  46,
+        "UserId":  16,
+        "WeekPlanDayId":  40,
+        "WorkoutId":  47,
+        "SessionDate":  "2026-01-28 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  47,
+        "UserId":  16,
+        "WeekPlanDayId":  41,
+        "WorkoutId":  48,
+        "SessionDate":  "2026-01-29 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  48,
+        "UserId":  16,
+        "WeekPlanDayId":  42,
+        "WorkoutId":  49,
+        "SessionDate":  "2026-01-30 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    },
+    {
+        "Id":  49,
+        "UserId":  16,
+        "WeekPlanDayId":  43,
+        "WorkoutId":  50,
+        "SessionDate":  "2026-01-31 00:00:00",
+        "IsCompleted":  0,
+        "StartTime":  null,
+        "EndTime":  null
+    }
+]

@@ -1,0 +1,134 @@
+﻿[
+    {
+        "Id":  3,
+        "Email":  "3",
+        "Username":  "3",
+        "Password":  "3",
+        "JoinDate":  "2026-01-18 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  null
+    },
+    {
+        "Id":  4,
+        "Email":  "amitvanaelal5@gmail.com",
+        "Username":  "BigVana",
+        "Password":  "BiggerVana",
+        "JoinDate":  "2026-01-18 00:00:00",
+        "IsTrainer":  1,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  null
+    },
+    {
+        "Id":  11,
+        "Email":  "g",
+        "Username":  "g",
+        "Password":  "g",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  3
+    },
+    {
+        "Id":  12,
+        "Email":  "t",
+        "Username":  "t",
+        "Password":  "t",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  1,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  null
+    },
+    {
+        "Id":  13,
+        "Email":  "x",
+        "Username":  "x",
+        "Password":  "x",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  4
+    },
+    {
+        "Id":  14,
+        "Email":  "Testing",
+        "Username":  "tes",
+        "Password":  "test",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  5
+    },
+    {
+        "Id":  15,
+        "Email":  "tes",
+        "Username":  "test",
+        "Password":  "tes",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  6
+    },
+    {
+        "Id":  16,
+        "Email":  "33@gmail.com",
+        "Username":  "33",
+        "Password":  "33",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  "Bench press demon",
+        "Gender":  null,
+        "CurrentWeekPlanId":  7
+    },
+    {
+        "Id":  17,
+        "Email":  "speedtest@gmail.com",
+        "Username":  "speedtest",
+        "Password":  "speedtest",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  "Loaded CalendarView in very short time, sub 2 seconds.",
+        "Gender":  null,
+        "CurrentWeekPlanId":  8
+    },
+    {
+        "Id":  18,
+        "Email":  "gg",
+        "Username":  "gg",
+        "Password":  "gg",
+        "JoinDate":  "2026-01-21 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  "ding",
+        "Gender":  null,
+        "CurrentWeekPlanId":  9
+    },
+    {
+        "Id":  1,
+        "Email":  "1",
+        "Username":  "1",
+        "Password":  "1",
+        "JoinDate":  "1111-01-01 00:00:00",
+        "IsTrainer":  1,
+        "Bio":  "Biggest Back user",
+        "Gender":  "Male",
+        "CurrentWeekPlanId":  null
+    },
+    {
+        "Id":  2,
+        "Email":  "2",
+        "Username":  "2",
+        "Password":  "2",
+        "JoinDate":  "2222-02-02 00:00:00",
+        "IsTrainer":  0,
+        "Bio":  null,
+        "Gender":  null,
+        "CurrentWeekPlanId":  null
+    }
+]

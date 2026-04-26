@@ -1,0 +1,122 @@
+﻿[
+    {
+        "Id":  15,
+        "MuscleName":  "Forearm Extensors",
+        "BodyRegion":  "Forearms",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  16,
+        "MuscleName":  "Abs (Rectus Abdominis)",
+        "BodyRegion":  "Core",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  17,
+        "MuscleName":  "Obliques",
+        "BodyRegion":  "Core",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  18,
+        "MuscleName":  "Lower Back (Erector Spinae)",
+        "BodyRegion":  "Back",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  19,
+        "MuscleName":  "Glutes",
+        "BodyRegion":  "Legs/Hips",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  20,
+        "MuscleName":  "Adductors",
+        "BodyRegion":  "Legs",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  1,
+        "MuscleName":  "Upper Chest",
+        "BodyRegion":  "Chest",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  2,
+        "MuscleName":  "Chest",
+        "BodyRegion":  "Chest",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  3,
+        "MuscleName":  "Trapezius",
+        "BodyRegion":  "Back",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  4,
+        "MuscleName":  "Latissimus Dorsi",
+        "BodyRegion":  "Back",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  5,
+        "MuscleName":  "Front Delts",
+        "BodyRegion":  "Shoulders",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  6,
+        "MuscleName":  "Side Delts",
+        "BodyRegion":  "Shoulders",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  7,
+        "MuscleName":  "Posterior Delts",
+        "BodyRegion":  "Shoulders",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  8,
+        "MuscleName":  "Biceps",
+        "BodyRegion":  "Arms",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  9,
+        "MuscleName":  "Triceps",
+        "BodyRegion":  "Arms",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  10,
+        "MuscleName":  "Quads",
+        "BodyRegion":  "Legs",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  11,
+        "MuscleName":  "Hamstrings",
+        "BodyRegion":  "Legs",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  12,
+        "MuscleName":  "Calves",
+        "BodyRegion":  "Legs",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  13,
+        "MuscleName":  "Forearms Flexors",
+        "BodyRegion":  "Forearms",
+        "DiagramZoneId":  0
+    },
+    {
+        "Id":  14,
+        "MuscleName":  "Brachioradialis",
+        "BodyRegion":  "Forearms",
+        "DiagramZoneId":  0
+    }
+]
