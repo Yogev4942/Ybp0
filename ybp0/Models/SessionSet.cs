@@ -15,5 +15,7 @@ namespace Models
         public int Reps { get => reps; set => reps = value; }
         public double Weight { get => weight; set => weight = value; }
         public bool IsCompleted { get => isCompleted; set => isCompleted = value; }
+        public WorkoutSession WorkoutSession { get; set; }
+        public Exercise Exercise { get; set; }
     }
 }

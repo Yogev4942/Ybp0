@@ -19,6 +19,7 @@ namespace Models
         public string SecondaryMuscleGroup { get => secondaryMuscleGroup; set => secondaryMuscleGroup = value; }
         public int OrderNumber { get => orderNumber; set => orderNumber = value; }
         public List<WorkoutSet> Sets { get => sets; set => sets = value; }
+        public Workout Workout { get; set; }
         public Exercise Exercise { get; set; }
     }
 }

@@ -9,5 +9,7 @@ namespace Models
         public int RecipientId { get; set; }
         public string MessageText { get; set; }
         public DateTime SentAt { get; set; }
+        public User Sender { get; set; }
+        public User Recipient { get; set; }
     }
 }

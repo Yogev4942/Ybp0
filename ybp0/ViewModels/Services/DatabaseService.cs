@@ -115,6 +115,11 @@ namespace ViewModels.Services
                 : (User)(_traineeRepo.GetTraineeById(user.Id) ?? user);
         }
 
+        public User AuthenticateUser(string username, string password)
+        {
+            return GetUserByUsernameAndPassword(username, password);
+        }
+
         public bool UserExist(string username, string email)
         {
             return _userRepo.UserExists(username, email);

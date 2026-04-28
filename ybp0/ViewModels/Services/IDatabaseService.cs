@@ -22,6 +22,7 @@ namespace ViewModels
         IMessageRepository MessageRepo { get; }
 
         User GetUserByUsernameAndPassword(string username, string password);
+        User AuthenticateUser(string username, string password);
         bool ValidateLogin(string username, string password);
         bool UserExist(string username, string email);
         bool RegisterUser(string username, string email, string password);

@@ -33,5 +33,9 @@ namespace Models
         public SessionMode Mode { get => mode; set => mode = value; }
         public string WorkoutName { get => workoutName; set => workoutName = value; }
         public List<WorkoutSessionExercise> Exercises { get => exercises; set => exercises = value; }
+        public User User { get; set; }
+        public Workout Workout { get; set; }
+        public WeekPlanDay WeekPlanDay { get; set; }
+        public List<WorkoutSessionSet> SessionSets { get; set; } = new List<WorkoutSessionSet>();
     }
 }

@@ -9,6 +9,7 @@ namespace Models
     public class Post : BaseEntity
     {
         public int OwnerId { get; set; }
+        public User Owner { get; set; }
         public string Header { get; set; }
         public string Content { get; set; }
         public DateTime PostTime { get; set; }

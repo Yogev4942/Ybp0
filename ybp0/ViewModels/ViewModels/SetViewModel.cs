@@ -12,7 +12,7 @@ namespace ViewModels.ViewModels
         private readonly int? _workoutSessionId;
         private readonly int? _exerciseId;
         private readonly bool _isSessionMode;
-        private readonly Timer _saveTimer;
+        private readonly System.Timers.Timer _saveTimer;
         private bool _isInitializing;
 
         private int _id;
@@ -101,9 +101,9 @@ namespace ViewModels.ViewModels
             ApplySessionSet(workoutSessionSet);
         }
 
-        private Timer CreateSaveTimer()
+        private System.Timers.Timer CreateSaveTimer()
         {
-            var timer = new Timer(500);
+            var timer = new System.Timers.Timer(500);
             timer.AutoReset = false;
             timer.Elapsed += SaveTimerElapsed;
             return timer;

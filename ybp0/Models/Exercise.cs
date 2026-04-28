@@ -43,5 +43,8 @@ namespace Models
                 secondaryMuscleGroup = value?.MuscleName;
             }
         }
+
+        public List<WorkoutExercise> WorkoutExercises { get; set; } = new List<WorkoutExercise>();
+        public List<WorkoutSessionSet> WorkoutSessionSets { get; set; } = new List<WorkoutSessionSet>();
     }
 }

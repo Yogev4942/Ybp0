@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Models
 {
@@ -16,6 +17,8 @@ namespace Models
         public double CurrentWeight { get => currentWeight; set => currentWeight = value; }
         public double Height { get => height; set => height = value; }
         public Trainer AssignedTrainer { get; set; }
+        public List<Message> SentMessages { get; set; } = new List<Message>();
+        public List<Message> ReceivedMessages { get; set; } = new List<Message>();
 
         public double BMI => height > 0 ? currentWeight / Math.Pow(height / 100.0, 2) : 0;
 

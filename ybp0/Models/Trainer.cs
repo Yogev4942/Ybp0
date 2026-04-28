@@ -21,6 +21,8 @@ namespace Models
         public int TotalRatings { get => totalRatings; set => totalRatings = value; }
 
         public List<Trainee> AssignedTrainees { get; set; } = new List<Trainee>();
+        public List<Message> SentMessages { get; set; } = new List<Message>();
+        public List<Message> ReceivedMessages { get; set; } = new List<Message>();
 
         public bool CanAcceptMoreTrainees => totalTrainees < maxTrainees;
         public string RatingDisplay => totalRatings > 0

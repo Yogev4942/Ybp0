@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Models
 {
@@ -34,6 +35,10 @@ namespace Models
         public bool IsTrainer { get => isTrainer; set => isTrainer = value; }
         public bool IsAdmin { get => isAdmin; set => isAdmin = value; }
         public int? CurrentWeekPlanId { get => currentWeekPlanId; set => currentWeekPlanId = value; }
+
+        public List<Workout> Workouts { get; set; } = new List<Workout>();
+        public List<WorkoutSession> WorkoutSessions { get; set; } = new List<WorkoutSession>();
+        public List<WeekPlan> WeekPlans { get; set; } = new List<WeekPlan>();
 
         public abstract string GetUserType();
 
