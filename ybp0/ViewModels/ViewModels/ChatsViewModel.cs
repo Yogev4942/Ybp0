@@ -38,6 +38,7 @@ namespace ViewModels.ViewModels
                 if (SetProperty(ref _selectedChat, value))
                 {
                     LoadMessagesForSelectedChat();
+                    (NavigateToSelectedProfileCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -51,6 +52,7 @@ namespace ViewModels.ViewModels
 
         public ICommand SelectChatCommand { get; }
         public ICommand SendMessageCommand { get; }
+        public ICommand NavigateToSelectedProfileCommand { get; }
 
         public ChatsViewModel(IDatabaseService dbService, INavigationService navigationService, User currentUser, User initialChatUser = null)
         {
@@ -64,6 +66,9 @@ namespace ViewModels.ViewModels
             Messages = new ObservableCollection<ChatMessageItemViewModel>();
             SelectChatCommand = new RelayCommand(param => SelectChat(param as ChatPreviewItemViewModel));
             SendMessageCommand = new RelayCommand(_ => SendMessage());
+            NavigateToSelectedProfileCommand = new RelayCommand(
+                _ => NavigateToSelectedProfile(),
+                _ => SelectedChat != null);
 
             LoadChats();
         }
@@ -227,6 +232,14 @@ namespace ViewModels.ViewModels
             _preferredChatUserId = selectedChatUserId;
             LoadChats();
             SelectedChat = Chats.FirstOrDefault(chat => chat.UserId == selectedChatUserId);
+        }
+
+        private void NavigateToSelectedProfile()
+        {
+            if (SelectedChat != null)
+            {
+                _navigationService.NavigateToProfile(SelectedChat.UserId);
+            }
         }
 
         private static string GetColorForUser(string username)

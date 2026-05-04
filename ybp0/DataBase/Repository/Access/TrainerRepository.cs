@@ -19,6 +19,7 @@ namespace DataBase.Repository.Access
         public TrainerRepository(IDataBaseConnection database)
         {
             _database = database ?? SqliteDatabaseConnection.CreateDefault();
+            EnsureSchema();
         }
 
         public Trainer GetTrainerById(int userId)
@@ -68,6 +69,76 @@ namespace DataBase.Repository.Access
                 "UPDATE TrainersTbl SET Specialization = ?, HourlyRate = ?, MaxTrainees = ? WHERE UserId = ?",
                 trainer.Specialization, trainer.HourlyRate, trainer.MaxTrainees, trainer.Id);
             return affected > 0;
+        }
+
+        public int? GetTraineeRatingForTrainer(int traineeUserId, int trainerUserId)
+        {
+            var dt = _database.ExecuteQuery(
+                @"SELECT Rating
+                  FROM TrainerRatingsTbl
+                  WHERE TraineeUserId = ? AND TrainerUserId = ?",
+                traineeUserId,
+                trainerUserId);
+
+            return dt.Rows.Count > 0 && dt.Rows[0]["Rating"] != DBNull.Value
+                ? Convert.ToInt32(dt.Rows[0]["Rating"])
+                : (int?)null;
+        }
+
+        public bool RateTrainer(int traineeUserId, int trainerUserId, int rating)
+        {
+            if (rating < 1 || rating > 5)
+            {
+                return false;
+            }
+
+            int affected = _database.ExecuteNonQuery(
+                @"INSERT OR REPLACE INTO TrainerRatingsTbl (TraineeUserId, TrainerUserId, Rating, RatedAt)
+                  VALUES (?, ?, ?, ?)",
+                traineeUserId,
+                trainerUserId,
+                rating,
+                DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            if (affected <= 0)
+            {
+                return false;
+            }
+
+            _database.ExecuteNonQuery(
+                @"UPDATE TrainersTbl
+                  SET Rating = (
+                          SELECT AVG(Rating)
+                          FROM TrainerRatingsTbl
+                          WHERE TrainerUserId = ?
+                      ),
+                      TotalRatings = (
+                          SELECT COUNT(*)
+                          FROM TrainerRatingsTbl
+                          WHERE TrainerUserId = ?
+                      )
+                  WHERE UserId = ?",
+                trainerUserId,
+                trainerUserId,
+                trainerUserId);
+
+            return true;
+        }
+
+        private void EnsureSchema()
+        {
+            _database.ExecuteNonQuery(
+                @"CREATE TABLE IF NOT EXISTS [TrainerRatingsTbl] (
+                    [TraineeUserId] INTEGER NOT NULL,
+                    [TrainerUserId] INTEGER NOT NULL,
+                    [Rating] INTEGER NOT NULL,
+                    [RatedAt] TEXT NULL,
+                    PRIMARY KEY ([TraineeUserId], [TrainerUserId])
+                  )");
+
+            _database.ExecuteNonQuery(
+                @"CREATE INDEX IF NOT EXISTS [IX_TrainerRatingsTbl_TrainerUserId]
+                  ON [TrainerRatingsTbl] ([TrainerUserId])");
         }
     }
 }

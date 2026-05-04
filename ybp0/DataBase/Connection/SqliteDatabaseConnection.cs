@@ -334,6 +334,7 @@ namespace DataBase.Connection
                 @"CREATE TABLE IF NOT EXISTS [MusclesTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [MuscleName] TEXT NULL, [BodyRegion] TEXT NULL, [DiagramZoneId] INTEGER NULL)",
                 @"CREATE TABLE IF NOT EXISTS [PostTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [OwnerId] INTEGER NULL, [Header] TEXT NULL, [Content] TEXT NULL, [PostTime] TEXT NULL)",
                 @"CREATE TABLE IF NOT EXISTS [TraineesTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [UserId] INTEGER NULL, [TrainerId] INTEGER NULL, [FitnessGoal] TEXT NULL, [CurrentWeight] INTEGER NULL, [Height] INTEGER NULL)",
+                @"CREATE TABLE IF NOT EXISTS [TrainerRatingsTbl] ([TraineeUserId] INTEGER NOT NULL, [TrainerUserId] INTEGER NOT NULL, [Rating] INTEGER NOT NULL, [RatedAt] TEXT NULL, PRIMARY KEY ([TraineeUserId], [TrainerUserId]))",
                 @"CREATE TABLE IF NOT EXISTS [TrainerRequestsTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [TraineeUserId] INTEGER NULL, [TrainerUserId] INTEGER NULL, [Status] TEXT NULL, [RequestDate] TEXT NULL)",
                 @"CREATE TABLE IF NOT EXISTS [TrainersTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [UserId] INTEGER NULL, [Specialization] TEXT NULL, [HourlyRate] INTEGER NULL, [MaxTrainees] INTEGER NULL, [TotalTrainees] INTEGER NULL, [Rating] INTEGER NULL, [TotalRatings] INTEGER NULL)",
                 @"CREATE TABLE IF NOT EXISTS [UserTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Email] TEXT NULL, [Username] TEXT NULL, [Password] TEXT NULL, [JoinDate] TEXT NULL, [IsTrainer] INTEGER NULL, [Bio] TEXT NULL, [Gender] TEXT NULL, [CurrentWeekPlanId] INTEGER NULL)",
@@ -361,6 +362,7 @@ namespace DataBase.Connection
                 @"CREATE INDEX IF NOT EXISTS [IX_WorkoutSetsTbl_WorkoutExerciseId] ON [WorkoutSetsTbl] ([WorkoutExerciseId])",
                 @"CREATE INDEX IF NOT EXISTS [IX_TraineesTbl_UserId] ON [TraineesTbl] ([UserId])",
                 @"CREATE INDEX IF NOT EXISTS [IX_TraineesTbl_TrainerId] ON [TraineesTbl] ([TrainerId])",
+                @"CREATE INDEX IF NOT EXISTS [IX_TrainerRatingsTbl_TrainerUserId] ON [TrainerRatingsTbl] ([TrainerUserId])",
                 @"CREATE INDEX IF NOT EXISTS [IX_TrainersTbl_UserId] ON [TrainersTbl] ([UserId])",
                 @"CREATE INDEX IF NOT EXISTS [IX_WeekPlansTbl_UserId] ON [WeekPlansTbl] ([UserId])",
                 @"CREATE INDEX IF NOT EXISTS [IX_WeekPlanDaysTbl_WeekPlanId] ON [WeekPlanDaysTbl] ([WeekPlanId])"

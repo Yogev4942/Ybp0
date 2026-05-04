@@ -92,7 +92,13 @@ namespace DataBase.Repository.Access
             _database.ExecuteNonQuery(
                 @"DELETE FROM WorkoutSessionSetsTbl
                   WHERE WorkoutSessionId = ?
-                    AND (IsCompleted = 0 OR IsCompleted IS NULL)",
+                    AND (Reps IS NULL OR Reps <= 0 OR Weight IS NULL OR Weight <= 0)",
+                workoutSessionId);
+
+            _database.ExecuteNonQuery(
+                @"UPDATE WorkoutSessionSetsTbl
+                  SET IsCompleted = 1
+                  WHERE WorkoutSessionId = ?",
                 workoutSessionId);
 
             _database.ExecuteNonQuery(
@@ -232,7 +238,14 @@ namespace DataBase.Repository.Access
                 workoutSessionId,
                 exerciseId) ?? 0) + 1;
 
-            return SaveSessionSet(workoutSessionId, exerciseId, nextSetNumber, reps, weight, false);
+            WorkoutSessionSet previousSet = reps > 0 && weight > 0
+                ? null
+                : GetPreviousCompletedSet(workoutSessionId, exerciseId, nextSetNumber);
+
+            int resolvedReps = reps > 0 ? reps : previousSet?.Reps ?? 0;
+            double resolvedWeight = weight > 0 ? weight : previousSet?.Weight ?? 0;
+
+            return SaveSessionSet(workoutSessionId, exerciseId, nextSetNumber, resolvedReps, resolvedWeight, false);
         }
 
         public void DeleteSessionSet(int setId)
@@ -250,7 +263,14 @@ namespace DataBase.Repository.Access
 
             if (existingDt.Rows.Count == 0)
             {
-                SaveSessionSet(workoutSessionId, exerciseId, 1, 0, 0, false);
+                WorkoutSessionSet previousSet = GetPreviousCompletedSet(workoutSessionId, exerciseId, 1);
+                SaveSessionSet(
+                    workoutSessionId,
+                    exerciseId,
+                    1,
+                    previousSet?.Reps ?? 0,
+                    previousSet?.Weight ?? 0,
+                    false);
             }
         }
 
@@ -331,17 +351,67 @@ namespace DataBase.Repository.Access
 
                 foreach (DataRow setRow in setDt.Rows)
                 {
+                    WorkoutSessionSet previousSet = GetPreviousCompletedSet(workoutSessionId, exerciseId, Convert.ToInt32(setRow["SetNumber"]));
                     _database.ExecuteNonQuery(
                         @"INSERT INTO WorkoutSessionSetsTbl (WorkoutSessionId, ExerciseId, SetNumber, Reps, Weight, IsCompleted)
                           VALUES (?, ?, ?, ?, ?, ?)",
                         workoutSessionId,
                         exerciseId,
                         Convert.ToInt32(setRow["SetNumber"]),
-                        Convert.ToInt32(setRow["Reps"]),
-                        Convert.ToDouble(setRow["Weight"]),
+                        previousSet?.Reps ?? 0,
+                        previousSet?.Weight ?? 0,
                         0);
                 }
             }
+        }
+
+        private WorkoutSessionSet GetPreviousCompletedSet(int currentWorkoutSessionId, int exerciseId, int setNumber)
+        {
+            int? userId = _database.ExecuteScalar<int?>(
+                "SELECT UserId FROM WorkoutSessionTbl WHERE Id = ?",
+                currentWorkoutSessionId);
+
+            if (!userId.HasValue)
+            {
+                return null;
+            }
+
+            var dt = _database.ExecuteQuery(
+                @"SELECT TOP 1 wss.*
+                  FROM WorkoutSessionSetsTbl wss
+                  INNER JOIN WorkoutSessionTbl ws ON wss.WorkoutSessionId = ws.Id
+                  WHERE ws.UserId = ?
+                    AND ws.Id <> ?
+                    AND ws.IsCompleted = True
+                    AND wss.ExerciseId = ?
+                    AND wss.SetNumber = ?
+                    AND wss.Reps > 0
+                    AND wss.Weight > 0
+                  ORDER BY ws.SessionDate DESC, ws.StartTime DESC, ws.Id DESC",
+                userId.Value,
+                currentWorkoutSessionId,
+                exerciseId,
+                setNumber);
+
+            if (dt.Rows.Count == 0)
+            {
+                dt = _database.ExecuteQuery(
+                    @"SELECT TOP 1 wss.*
+                      FROM WorkoutSessionSetsTbl wss
+                      INNER JOIN WorkoutSessionTbl ws ON wss.WorkoutSessionId = ws.Id
+                      WHERE ws.UserId = ?
+                        AND ws.Id <> ?
+                        AND ws.IsCompleted = True
+                        AND wss.ExerciseId = ?
+                        AND wss.Reps > 0
+                        AND wss.Weight > 0
+                      ORDER BY ws.SessionDate DESC, ws.StartTime DESC, ws.Id DESC, wss.SetNumber DESC",
+                    userId.Value,
+                    currentWorkoutSessionId,
+                    exerciseId);
+            }
+
+            return dt.Rows.Count > 0 ? MapSessionSet(dt.Rows[0]) : null;
         }
 
         private WorkoutSession MapWorkoutSession(DataRow row)

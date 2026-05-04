@@ -413,6 +413,16 @@ namespace ViewModels.Services
             return _trainerRequestRepo.GetPendingRequests(trainerId);
         }
 
+        public int? GetTraineeRatingForTrainer(int traineeId, int trainerId)
+        {
+            return _trainerRepo.GetTraineeRatingForTrainer(traineeId, trainerId);
+        }
+
+        public bool RateTrainer(int traineeId, int trainerId, int rating)
+        {
+            return _trainerRepo.RateTrainer(traineeId, trainerId, rating);
+        }
+
         public bool CreatePost(string header, string content, User user)
         {
             return _postRepo.CreatePost(header, content, user.Id);

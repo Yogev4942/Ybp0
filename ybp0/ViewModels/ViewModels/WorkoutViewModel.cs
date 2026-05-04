@@ -313,6 +313,24 @@ namespace ViewModels.ViewModels
                 return;
             }
 
+            if (Exercises.Count == 0 || Exercises.Any(exercise => !exercise.AreSetsFilled))
+            {
+                SessionSubtitle = "Fill reps and weight for every set before finishing.";
+                return;
+            }
+
+            bool saved = true;
+            foreach (ExerciseViewModel exercise in Exercises)
+            {
+                saved = exercise.SaveSetsNow() && saved;
+            }
+
+            if (!saved)
+            {
+                SessionSubtitle = "Some sets could not be saved yet. Check reps and weight, then try again.";
+                return;
+            }
+
             _dbService.FinishWorkoutSession(ActiveSession.Id);
             CloseExerciseModal();
             RefreshViewState();

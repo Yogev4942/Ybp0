@@ -32,6 +32,10 @@ namespace ViewModels.ViewModels
         public string TraineesDisplay => $"{(ViewedUser as Trainer)?.TotalTrainees} / {(ViewedUser as Trainer)?.MaxTrainees}";
         public string HourlyRateDisplay => $"${(ViewedUser as Trainer)?.HourlyRate}/hr";
         public double AverageRating => (ViewedUser as Trainer)?.Rating ?? 0;
+        public string AverageRatingDisplay => AverageRating > 0 ? $"{AverageRating:F1}" : "New";
+        public string TotalRatingsDisplay => (ViewedUser as Trainer)?.TotalRatings > 0
+            ? $"{(ViewedUser as Trainer).TotalRatings} reviews"
+            : "No reviews yet";
 
         public bool IsAcceptingTrainees 
         {
@@ -62,7 +66,38 @@ namespace ViewModels.ViewModels
         /// <summary>Show "✅ Your Trainer" label</summary>
         public bool IsRequestApproved => IsTraineeViewing && RequestStatus == "Approved";
 
+        public bool CanRateTrainer
+        {
+            get
+            {
+                var activeTrainee = ActiveUser as Trainee ?? _database.GetUserById(ActiveUser?.Id ?? 0) as Trainee;
+                var trainer = ViewedUser as Trainer;
+                return IsTraineeViewing
+                    && activeTrainee?.TrainerId != null
+                    && trainer != null
+                    && activeTrainee.TrainerId.Value == trainer.TrainerProfileId;
+            }
+        }
+
+        private int? _myRating;
+        public int? MyRating
+        {
+            get => _myRating;
+            set
+            {
+                if (SetProperty(ref _myRating, value))
+                {
+                    OnPropertyChanged(nameof(MyRatingDisplay));
+                }
+            }
+        }
+
+        public string MyRatingDisplay => MyRating.HasValue
+            ? $"Your rating: {MyRating.Value}/5"
+            : "Tap a score to rate";
+
         public ICommand RequestTrainerCommand { get; }
+        public ICommand RateTrainerCommand { get; }
 
         // Commands for request management (trainer's own profile)
         public ICommand ApproveRequestCommand { get; }
@@ -76,9 +111,11 @@ namespace ViewModels.ViewModels
             RejectRequestCommand = new RelayCommand(p => HandleRequest(p as Trainee, "Rejected"));
             ToggleRequestsCommand = new RelayCommand(_ => IsRequestsPopupOpen = !IsRequestsPopupOpen);
             RequestTrainerCommand = new RelayCommand(_ => RequestTrainer());
+            RateTrainerCommand = new RelayCommand(param => RateTrainer(param), _ => CanRateTrainer);
 
             LoadPendingRequests();
             LoadRequestStatus();
+            LoadMyRating();
         }
 
         private void LoadPendingRequests()
@@ -98,6 +135,14 @@ namespace ViewModels.ViewModels
             }
         }
 
+        private void LoadMyRating()
+        {
+            if (CanRateTrainer)
+            {
+                MyRating = _database.GetTraineeRatingForTrainer(ActiveUser.Id, ViewedUser.Id);
+            }
+        }
+
         private void RequestTrainer()
         {
             if (_database.SendTrainerRequest(ActiveUser.Id, ViewedUser.Id))
@@ -105,6 +150,29 @@ namespace ViewModels.ViewModels
                 RequestStatus = "Pending";
                 OnPropertyChanged(nameof(CanRequestTrainer));
                 OnPropertyChanged(nameof(IsRequestPending));
+            }
+        }
+
+        private void RateTrainer(object parameter)
+        {
+            if (!CanRateTrainer || !int.TryParse(parameter?.ToString(), out int rating))
+            {
+                return;
+            }
+
+            if (_database.RateTrainer(ActiveUser.Id, ViewedUser.Id, rating))
+            {
+                MyRating = rating;
+
+                Trainer refreshedTrainer = _database.GetUserById(ViewedUser.Id) as Trainer;
+                if (refreshedTrainer != null && ViewedUser is Trainer trainer)
+                {
+                    trainer.Rating = refreshedTrainer.Rating;
+                    trainer.TotalRatings = refreshedTrainer.TotalRatings;
+                    OnPropertyChanged(nameof(AverageRating));
+                    OnPropertyChanged(nameof(AverageRatingDisplay));
+                    OnPropertyChanged(nameof(TotalRatingsDisplay));
+                }
             }
         }
 

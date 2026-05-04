@@ -202,7 +202,7 @@
                                           FontSize="16"
                                           Foreground="#FFD700"
                                           VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding AverageRating}" 
+                                <TextBlock Text="{Binding AverageRatingDisplay}" 
                                           FontSize="16"
                                           FontWeight="Bold"
                                           Foreground="White" 
@@ -267,6 +267,30 @@
                                                FontSize="14"
                                                FontWeight="SemiBold"
                                                Foreground="White"/>
+                                </Border>
+
+                                <Border Background="#24FFFFFF"
+                                        BorderBrush="#55FFFFFF"
+                                        BorderThickness="1"
+                                        CornerRadius="14"
+                                        Padding="14,10"
+                                        HorizontalAlignment="Left"
+                                        Margin="0,10,0,0"
+                                        Visibility="{Binding CanRateTrainer, Converter={StaticResource BoolToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding MyRatingDisplay}"
+                                                   FontSize="13"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="White"
+                                                   Margin="0,0,0,8"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Content="1" Command="{Binding RateTrainerCommand}" CommandParameter="1" Style="{DynamicResource NavButtonStyle}" Padding="10,5" Margin="0,0,6,0" FontSize="13"/>
+                                            <Button Content="2" Command="{Binding RateTrainerCommand}" CommandParameter="2" Style="{DynamicResource NavButtonStyle}" Padding="10,5" Margin="0,0,6,0" FontSize="13"/>
+                                            <Button Content="3" Command="{Binding RateTrainerCommand}" CommandParameter="3" Style="{DynamicResource NavButtonStyle}" Padding="10,5" Margin="0,0,6,0" FontSize="13"/>
+                                            <Button Content="4" Command="{Binding RateTrainerCommand}" CommandParameter="4" Style="{DynamicResource NavButtonStyle}" Padding="10,5" Margin="0,0,6,0" FontSize="13"/>
+                                            <Button Content="5" Command="{Binding RateTrainerCommand}" CommandParameter="5" Style="{DynamicResource NavButtonStyle}" Padding="10,5" Margin="0" FontSize="13"/>
+                                        </StackPanel>
+                                    </StackPanel>
                                 </Border>
                             </StackPanel>
                         </StackPanel>
@@ -502,7 +526,7 @@
                                                Foreground="#666"
                                                VerticalAlignment="Center"/>
                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                        <TextBlock Text="{Binding AverageRating}" 
+                                        <TextBlock Text="{Binding AverageRatingDisplay}" 
                                                    FontSize="18" 
                                                    FontWeight="Bold" 
                                                    Foreground="#26A69A"

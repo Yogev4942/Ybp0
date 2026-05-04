@@ -41,6 +41,7 @@ namespace ViewModels.ViewModels
             {
                 if (SetProperty(ref _reps, value))
                 {
+                    OnPropertyChanged(nameof(IsFilled));
                     TriggerAutoSave();
                 }
             }
@@ -53,6 +54,7 @@ namespace ViewModels.ViewModels
             {
                 if (SetProperty(ref _weight, value))
                 {
+                    OnPropertyChanged(nameof(IsFilled));
                     TriggerAutoSave();
                 }
             }
@@ -71,6 +73,8 @@ namespace ViewModels.ViewModels
         }
 
         public bool IsSessionMode => _isSessionMode;
+        public bool IsFilled => int.TryParse(Reps, out int reps) && reps > 0
+            && double.TryParse(Weight, out double weight) && weight > 0;
 
         public string SetColor
         {
@@ -119,8 +123,8 @@ namespace ViewModels.ViewModels
             _isInitializing = true;
             Id = workoutSet.Id;
             SetNumber = workoutSet.SetNumber;
-            Reps = workoutSet.Reps.ToString();
-            Weight = workoutSet.Weight.ToString();
+            Reps = workoutSet.Reps > 0 ? workoutSet.Reps.ToString() : string.Empty;
+            Weight = workoutSet.Weight > 0 ? workoutSet.Weight.ToString() : string.Empty;
             IsCompleted = false;
             _isInitializing = false;
         }
@@ -135,8 +139,8 @@ namespace ViewModels.ViewModels
             _isInitializing = true;
             Id = workoutSessionSet.Id;
             SetNumber = workoutSessionSet.SetNumber;
-            Reps = workoutSessionSet.Reps.ToString();
-            Weight = workoutSessionSet.Weight.ToString();
+            Reps = workoutSessionSet.Reps > 0 ? workoutSessionSet.Reps.ToString() : string.Empty;
+            Weight = workoutSessionSet.Weight > 0 ? workoutSessionSet.Weight.ToString() : string.Empty;
             IsCompleted = workoutSessionSet.IsCompleted;
             _isInitializing = false;
         }
@@ -162,15 +166,21 @@ namespace ViewModels.ViewModels
             SaveToDatabase();
         }
 
-        private void SaveToDatabase()
+        public bool SaveNow()
+        {
+            return SaveToDatabase();
+        }
+
+        private bool SaveToDatabase()
         {
             if (!int.TryParse(Reps, out int reps) || !double.TryParse(Weight, out double weight))
             {
-                return;
+                return false;
             }
 
             try
             {
+                bool isFilled = reps > 0 && weight > 0;
                 if (_isSessionMode && _workoutSessionId.HasValue && _exerciseId.HasValue)
                 {
                     WorkoutSessionSet savedSet = _dbService.SaveSessionSet(
@@ -179,11 +189,14 @@ namespace ViewModels.ViewModels
                         SetNumber,
                         reps,
                         weight,
-                        IsCompleted);
+                        isFilled);
 
                     if (savedSet != null)
                     {
                         Id = savedSet.Id;
+                        _isCompleted = savedSet.IsCompleted;
+                        OnPropertyChanged(nameof(IsCompleted));
+                        return true;
                     }
                 }
                 else if (_workoutExerciseId.HasValue)
@@ -197,6 +210,7 @@ namespace ViewModels.ViewModels
                     if (savedSet != null)
                     {
                         Id = savedSet.Id;
+                        return true;
                     }
                 }
             }
@@ -204,6 +218,8 @@ namespace ViewModels.ViewModels
             {
                 System.Diagnostics.Debug.WriteLine($"Error saving set: {ex.Message}");
             }
+
+            return false;
         }
     }
 }

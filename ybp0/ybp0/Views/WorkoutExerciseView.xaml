@@ -69,7 +69,6 @@
             <Grid Grid.Row="1" Margin="0,0,0,8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="70"/>
-                    <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="40"/>
@@ -81,17 +80,11 @@
                            Foreground="#8DA6A0"
                            HorizontalAlignment="Center"/>
                 <TextBlock Grid.Column="1"
-                           Text="done"
-                           FontStyle="Italic"
-                           Foreground="#8DA6A0"
-                           HorizontalAlignment="Center"
-                           Visibility="{Binding IsSessionMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
-                <TextBlock Grid.Column="2"
                            Text="reps"
                            FontStyle="Italic"
                            Foreground="#8DA6A0"
                            HorizontalAlignment="Center"/>
-                <TextBlock Grid.Column="3"
+                <TextBlock Grid.Column="2"
                            Text="weight"
                            FontStyle="Italic"
                            Foreground="#8DA6A0"
@@ -105,7 +98,6 @@
                             <Grid Margin="0,0,0,10">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="70"/>
-                                    <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="40"/>
@@ -125,16 +117,10 @@
                                                VerticalAlignment="Center"/>
                                 </Border>
 
-                                <CheckBox Grid.Column="1"
-                                          IsChecked="{Binding IsCompleted, UpdateSourceTrigger=PropertyChanged}"
-                                          HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Visibility="{Binding IsSessionMode, Converter={StaticResource BoolToVisibilityConverter}}"/>
-
-                                <Border Grid.Column="2"
+                                <Border Grid.Column="1"
                                         Margin="6,0"
                                         Padding="10,8"
-                                        Background="White"
+                                        Background="#BFFFFFFF"
                                         BorderBrush="#E2EEEA"
                                         BorderThickness="1"
                                         CornerRadius="12">
@@ -143,25 +129,60 @@
                                              Background="Transparent"
                                              FontSize="16"
                                              Foreground="#35564F"
-                                             TextAlignment="Center"/>
+                                             TextAlignment="Center">
+                                        <TextBox.Style>
+                                            <Style TargetType="TextBox">
+                                                <Setter Property="Opacity" Value="1"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="Text" Value="">
+                                                        <Setter Property="Opacity" Value="0.45"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBox.Style>
+                                    </TextBox>
                                 </Border>
 
-                                <Border Grid.Column="3"
+                                <Border Grid.Column="2"
                                         Margin="6,0"
-                                        Padding="10,8"
-                                        Background="White"
+                                        Padding="10,8,12,8"
+                                        Background="#BFFFFFFF"
                                         BorderBrush="#E2EEEA"
                                         BorderThickness="1"
                                         CornerRadius="12">
-                                    <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}"
-                                             BorderThickness="0"
-                                             Background="Transparent"
-                                             FontSize="16"
-                                             Foreground="#35564F"
-                                             TextAlignment="Center"/>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}"
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 FontSize="16"
+                                                 Foreground="#35564F"
+                                                 TextAlignment="Center">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="Opacity" Value="1"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text" Value="">
+                                                            <Setter Property="Opacity" Value="0.45"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="kg"
+                                                   FontSize="12"
+                                                   Foreground="#8DA6A0"
+                                                   FontWeight="SemiBold"
+                                                   VerticalAlignment="Center"
+                                                   Margin="8,0,0,0"/>
+                                    </Grid>
                                 </Border>
 
-                                <Button Grid.Column="4"
+                                <Button Grid.Column="3"
                                         Content="-"
                                         Command="{Binding DataContext.RemoveSetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                         CommandParameter="{Binding}"

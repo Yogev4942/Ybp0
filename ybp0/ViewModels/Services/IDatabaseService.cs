@@ -73,6 +73,8 @@ namespace ViewModels
         bool SendTrainerRequest(int traineeId, int trainerId);
         bool HandleTrainerRequest(int traineeId, int trainerId, string status);
         List<Trainee> GetPendingRequests(int trainerId);
+        int? GetTraineeRatingForTrainer(int traineeId, int trainerId);
+        bool RateTrainer(int traineeId, int trainerId, int rating);
 
         bool CreatePost(string header, string content, User user);
         bool DeletePost(int postId);

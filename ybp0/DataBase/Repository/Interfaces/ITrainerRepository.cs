@@ -13,5 +13,7 @@ namespace DataBase.Repository.Interfaces
         List<Trainer> SearchTrainers(string query);
         bool CreateTrainerProfile(int userId, string specialization, double hourlyRate, int maxTrainees);
         bool UpdateTrainerProfile(Trainer trainer);
+        int? GetTraineeRatingForTrainer(int traineeUserId, int trainerUserId);
+        bool RateTrainer(int traineeUserId, int trainerUserId, int rating);
     }
 }

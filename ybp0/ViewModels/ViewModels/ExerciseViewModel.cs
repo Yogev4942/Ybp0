@@ -49,6 +49,7 @@ namespace ViewModels.ViewModels
         public int ExerciseId => _exerciseId;
         public int? WorkoutExerciseId => _workoutExerciseId;
         public bool IsSessionMode => _isSessionMode;
+        public bool AreSetsFilled => Sets != null && Sets.Count > 0 && Sets.All(set => set.IsFilled);
 
         public event EventHandler RequestRemove;
 
@@ -147,6 +148,17 @@ namespace ViewModels.ViewModels
             {
                 Sets.Add(new SetViewModel(_dbService, _workoutSessionId.Value, _exerciseId, savedSet, _setColor));
             }
+        }
+
+        public bool SaveSetsNow()
+        {
+            bool allSaved = true;
+            foreach (SetViewModel set in Sets)
+            {
+                allSaved = set.SaveNow() && allSaved;
+            }
+
+            return allSaved;
         }
 
         private void RemoveTemplateSet(SetViewModel set)
