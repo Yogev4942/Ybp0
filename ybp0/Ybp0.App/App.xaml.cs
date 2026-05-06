@@ -1,17 +1,23 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Ybp0.App.Pages;
 
-namespace Ybp0.App
+namespace Ybp0.App;
+
+public partial class App : Application
 {
-    public partial class App : Application
-    {
-        public App()
-        {
-            InitializeComponent();
-        }
+    private readonly LoginPage _loginPage;
 
-        protected override Window CreateWindow(IActivationState? activationState)
+    public App(LoginPage loginPage)
+    {
+        InitializeComponent();
+        _loginPage = loginPage;
+    }
+
+    protected override Window CreateWindow(IActivationState? activationState)
+    {
+        return new Window(new NavigationPage(_loginPage)
         {
-            return new Window(new AppShell());
-        }
+            BarBackgroundColor = Colors.Transparent,
+            BarTextColor = Colors.Transparent
+        });
     }
 }

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ybp0.App.Pages.HomePage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource AppMint}">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="24,28,24,108" Spacing="22">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Border WidthRequest="48" HeightRequest="48" StrokeThickness="0" BackgroundColor="{StaticResource AppDark}" StrokeShape="RoundRectangle 24">
+                        <Label Text="{Binding Initial}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                    </Border>
+                    <VerticalStackLayout Grid.Column="1" Spacing="1" Padding="12,0,0,0" VerticalOptions="Center">
+                        <Label Text="{Binding Greeting}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                        <Label Text="{Binding RoleLabel}" FontSize="12" TextColor="{StaticResource AppMuted}"/>
+                    </VerticalStackLayout>
+                    <Button Grid.Column="2" Text="Profile" Command="{Binding OpenProfileCommand}" Style="{StaticResource SmallPillButton}"/>
+                </Grid>
+
+                <Border StrokeThickness="0" StrokeShape="RoundRectangle 28" Padding="22">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#8FE8DC" Offset="0"/>
+                            <GradientStop Color="#FFF1A8" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Daily challenge" FontSize="28" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                            <Label Text="Plan a focused session and keep the streak alive." FontSize="13" TextColor="{StaticResource AppInk}" Opacity="0.7"/>
+                            <HorizontalStackLayout Spacing="8" Margin="0,8,0,0">
+                                <Border BackgroundColor="{StaticResource AppDark}" StrokeThickness="0" StrokeShape="RoundRectangle 18" Padding="12,7">
+                                    <Label Text="Workout" TextColor="White" FontSize="12" FontAttributes="Bold"/>
+                                </Border>
+                                <Border BackgroundColor="#55FFFFFF" StrokeThickness="0" StrokeShape="RoundRectangle 18" Padding="12,7">
+                                    <Label Text="Nutrition" TextColor="{StaticResource AppInk}" FontSize="12" FontAttributes="Bold"/>
+                                </Border>
+                            </HorizontalStackLayout>
+                        </VerticalStackLayout>
+                        <Label Grid.Column="1" Text="YBP" FontSize="34" FontAttributes="Bold" TextColor="{StaticResource AppDark}" Opacity="0.28" VerticalOptions="Center"/>
+                    </Grid>
+                </Border>
+
+                <Grid ColumnDefinitions="*,12,*">
+                    <Border Style="{StaticResource StatCard}">
+                        <VerticalStackLayout>
+                            <Label Text="Current" Style="{StaticResource TinyCaps}"/>
+                            <Label Text="{Binding FocusMetric}" Style="{StaticResource StatValue}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource StatCard}" BackgroundColor="{StaticResource AppBlueSoft}">
+                        <VerticalStackLayout>
+                            <Label Text="Goal" Style="{StaticResource TinyCaps}"/>
+                            <Label Text="{Binding GoalMetric}" Style="{StaticResource StatValue}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </Grid>
+
+                <Label Text="Trainers" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                <CollectionView ItemsSource="{Binding Trainers}" HeightRequest="170">
+                    <CollectionView.EmptyView>
+                        <Border Style="{StaticResource GlassCard}" Padding="18">
+                            <Label Text="No trainers yet. Register a trainer from the API or create one in the app." TextColor="{StaticResource AppMuted}"/>
+                        </Border>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal" ItemSpacing="12"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Border WidthRequest="230" StrokeThickness="0" StrokeShape="RoundRectangle 24" Padding="16" BackgroundColor="White">
+                                <VerticalStackLayout Spacing="8">
+                                    <Border WidthRequest="44" HeightRequest="44" StrokeThickness="0" BackgroundColor="{StaticResource AppTealSoft}" StrokeShape="RoundRectangle 22">
+                                        <Label Text="T" TextColor="{StaticResource AppTeal}" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center"/>
+                                    </Border>
+                                    <Label Text="{Binding Username}" FontSize="17" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                                    <Label Text="{Binding Specialization}" FontSize="12" TextColor="{StaticResource AppMuted}"/>
+                                    <HorizontalStackLayout Spacing="8">
+                                        <Label Text="{Binding Rating, StringFormat='{}{0:0.0} ★'}" FontSize="12" TextColor="{StaticResource AppDark}"/>
+                                        <Label Text="{Binding HourlyRate, StringFormat='{}{0:0} ILS'}" FontSize="12" TextColor="{StaticResource AppMuted}"/>
+                                    </HorizontalStackLayout>
+                                </VerticalStackLayout>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+
+                <Label Text="{Binding ErrorMessage}" TextColor="{StaticResource AppError}"/>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="1" Style="{StaticResource BottomNav}">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <Button Text="⌂" Style="{StaticResource NavIconActive}"/>
+                <Button Grid.Column="1" Text="▦" Style="{StaticResource NavIcon}"/>
+                <Button Grid.Column="2" Text="▥" Style="{StaticResource NavIcon}"/>
+                <Button Grid.Column="3" Text="◌" Command="{Binding OpenProfileCommand}" Style="{StaticResource NavIcon}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>

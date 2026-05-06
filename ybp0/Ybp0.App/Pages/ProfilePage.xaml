@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Ybp0.App.Pages.ProfilePage"
+             Shell.NavBarIsVisible="False"
+             BackgroundColor="{StaticResource AppMint}">
+    <Grid RowDefinitions="*,Auto">
+        <ScrollView>
+            <VerticalStackLayout Padding="24,28,24,108" Spacing="20">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Button Text="‹" Command="{Binding BackHomeCommand}" Style="{StaticResource CircleButton}"/>
+                    <Label Grid.Column="1" Text="Profile" HorizontalOptions="Center" VerticalOptions="Center" FontSize="20" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                    <Button Grid.Column="2" Text="⎋" Command="{Binding SignOutCommand}" Style="{StaticResource CircleButton}"/>
+                </Grid>
+
+                <Border Style="{StaticResource GlassCard}">
+                    <VerticalStackLayout Spacing="18">
+                        <HorizontalStackLayout Spacing="14">
+                            <Border WidthRequest="72" HeightRequest="72" StrokeThickness="0" BackgroundColor="{StaticResource AppDark}" StrokeShape="RoundRectangle 36">
+                                <Label Text="{Binding Initial}" TextColor="White" FontAttributes="Bold" FontSize="26" HorizontalOptions="Center" VerticalOptions="Center"/>
+                            </Border>
+                            <VerticalStackLayout VerticalOptions="Center" Spacing="3">
+                                <Label Text="{Binding Username}" FontSize="22" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                                <Label Text="{Binding Email}" FontSize="13" TextColor="{StaticResource AppMuted}"/>
+                                <Border BackgroundColor="{StaticResource AppTealSoft}" StrokeThickness="0" StrokeShape="RoundRectangle 14" Padding="10,4" HorizontalOptions="Start">
+                                    <Label Text="{Binding Role}" FontSize="12" FontAttributes="Bold" TextColor="{StaticResource AppTeal}"/>
+                                </Border>
+                            </VerticalStackLayout>
+                        </HorizontalStackLayout>
+
+                        <Label Text="{Binding Bio}" TextColor="{StaticResource AppMuted}" FontSize="14" LineBreakMode="WordWrap"/>
+
+                        <Grid ColumnDefinitions="*,10,*,10,*">
+                            <Border Style="{StaticResource ProfileMetric}" BackgroundColor="{StaticResource AppGreenSoft}">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding FirstMetricTitle}" Style="{StaticResource TinyCaps}"/>
+                                    <Label Text="{Binding FirstMetricValue}" Style="{StaticResource MetricText}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="2" Style="{StaticResource ProfileMetric}" BackgroundColor="{StaticResource AppBlueSoft}">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding SecondMetricTitle}" Style="{StaticResource TinyCaps}"/>
+                                    <Label Text="{Binding SecondMetricValue}" Style="{StaticResource MetricText}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                            <Border Grid.Column="4" Style="{StaticResource ProfileMetric}" BackgroundColor="{StaticResource AppYellowSoft}">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding ThirdMetricTitle}" Style="{StaticResource TinyCaps}"/>
+                                    <Label Text="{Binding ThirdMetricValue}" Style="{StaticResource MetricText}"/>
+                                </VerticalStackLayout>
+                            </Border>
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <VerticalStackLayout Spacing="12">
+                    <Border Style="{StaticResource ListRow}">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Text="◷" FontSize="20" TextColor="{StaticResource AppTeal}"/>
+                            <VerticalStackLayout Grid.Column="1" Padding="12,0">
+                                <Label Text="Physical activity" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                                <Label Text="Recent sessions and completed plans" TextColor="{StaticResource AppMuted}" FontSize="12"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="24" TextColor="{StaticResource AppMuted}"/>
+                        </Grid>
+                    </Border>
+                    <Border Style="{StaticResource ListRow}">
+                        <Grid ColumnDefinitions="Auto,*,Auto">
+                            <Label Text="▥" FontSize="20" TextColor="{StaticResource AppTeal}"/>
+                            <VerticalStackLayout Grid.Column="1" Padding="12,0">
+                                <Label Text="Statistics" FontAttributes="Bold" TextColor="{StaticResource AppInk}"/>
+                                <Label Text="Workouts, goals and training history" TextColor="{StaticResource AppMuted}" FontSize="12"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="2" Text="›" FontSize="24" TextColor="{StaticResource AppMuted}"/>
+                        </Grid>
+                    </Border>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <Border Grid.Row="1" Style="{StaticResource BottomNav}">
+            <Grid ColumnDefinitions="*,*,*,*">
+                <Button Text="⌂" Command="{Binding BackHomeCommand}" Style="{StaticResource NavIcon}"/>
+                <Button Grid.Column="1" Text="▦" Style="{StaticResource NavIcon}"/>
+                <Button Grid.Column="2" Text="▥" Style="{StaticResource NavIcon}"/>
+                <Button Grid.Column="3" Text="◌" Style="{StaticResource NavIconActive}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</ContentPage>
