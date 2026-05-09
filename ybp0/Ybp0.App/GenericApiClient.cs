@@ -66,10 +66,6 @@ public static class GenericApiClient
 
     private static string GetDefaultBaseUrl()
     {
-#if ANDROID
-        return "http://10.0.2.2:59992/api/";
-#else
-        return "http://127.0.0.1:59992/api/";
-#endif
+        return "http://localhost:59992/api/";
     }
 }

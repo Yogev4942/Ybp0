@@ -48,7 +48,7 @@ namespace ViewModels.ViewModels
             set => SetProperty(ref _exerciseProgressCards, value);
         }
 
-        public string UserName => _activeUser?.Username ?? "Guest";
+        public string Username => _activeUser?.Username ?? "Guest";
 
         private static readonly Random _random = new Random();
 
@@ -188,17 +188,17 @@ namespace ViewModels.ViewModels
             var messages = _activeUser.IsTrainer
                 ? new List<string>
                 {
-                    $"Welcome back, Coach {UserName}!",
-                    $"Ready to lead the grind, {UserName}?",
-                    $"Back in command, {UserName}.",
-                    $"The gym missed you, Coach {UserName}."
+                    $"Welcome back, Coach {Username}!",
+                    $"Ready to lead the grind, {Username}?",
+                    $"Back in command, {Username}.",
+                    $"The gym missed you, Coach {Username}."
                 }
                 : new List<string>
                 {
-                    $"Welcome back, {UserName}!",
-                    $"Ready to crush it today, {UserName}?",
-                    $"Back at it again, {UserName}.",
-                    $"Another day, another gain, {UserName}."
+                    $"Welcome back, {Username}!",
+                    $"Ready to crush it today, {Username}?",
+                    $"Back at it again, {Username}.",
+                    $"Another day, another gain, {Username}."
                 };
 
             return messages[_random.Next(messages.Count)];

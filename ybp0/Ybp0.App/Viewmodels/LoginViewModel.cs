@@ -52,6 +52,10 @@ public class LoginViewModel : BaseViewModel
         {
             ErrorMessage = "Invalid username or password.";
         }
+        catch (InvalidOperationException exception)
+        {
+            ErrorMessage = exception.Message;
+        }
         catch (Exception exception)
         {
             ErrorMessage = $"Could not sign in. {exception.Message}";

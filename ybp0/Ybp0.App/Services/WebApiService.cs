@@ -10,7 +10,7 @@ public class WebApiService : IApiService
         UserDto? user = await TryLoginAsync("user/TraineeLogin", request)
             ?? await TryLoginAsync("user/TrainerLogin", request);
 
-        CurrentUser = user ?? throw new InvalidOperationException("The server returned an empty login response.");
+        CurrentUser = user ?? throw new InvalidOperationException("Invalid username or password.");
         return CurrentUser;
     }
 
@@ -20,7 +20,9 @@ public class WebApiService : IApiService
         {
             return await GenericApiClient.PostAsync<LoginRequest, UserDto>(path, request);
         }
-        catch (HttpRequestException exception) when (exception.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        catch (HttpRequestException exception) when (
+            exception.StatusCode == System.Net.HttpStatusCode.BadRequest ||
+            exception.StatusCode == System.Net.HttpStatusCode.Unauthorized)
         {
             return null;
         }
