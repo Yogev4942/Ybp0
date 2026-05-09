@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.OleDb;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -23,6 +24,7 @@ namespace DataBase.Connection
         {
             if (!_sqliteInitialized)
             {
+                EnsureNativeSqliteLibraryVisible();
                 Batteries_V2.Init();
                 _sqliteInitialized = true;
             }
@@ -217,6 +219,111 @@ namespace DataBase.Connection
             return "\"" + identifier.Replace("\"", "\"\"") + "\"";
         }
 
+        private static void EnsureNativeSqliteLibraryVisible()
+        {
+            if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                return;
+            }
+
+            foreach (string directory in GetNativeSqliteSearchDirectories())
+            {
+                string nativePath = Path.Combine(directory, "e_sqlite3.dll");
+                EnsureNativeSqliteAtRoot(directory);
+
+                if (File.Exists(nativePath))
+                {
+                    SetDllDirectory(directory);
+                    string path = Environment.GetEnvironmentVariable("PATH") ?? string.Empty;
+                    if (path.IndexOf(directory, StringComparison.OrdinalIgnoreCase) < 0)
+                    {
+                        Environment.SetEnvironmentVariable("PATH", directory + Path.PathSeparator + path);
+                    }
+
+                    return;
+                }
+            }
+        }
+
+        private static IEnumerable<string> GetNativeSqliteSearchDirectories()
+        {
+            var yielded = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (string path in ExpandSearchPath(AppDomain.CurrentDomain.RelativeSearchPath))
+            {
+                if (!string.IsNullOrWhiteSpace(path))
+                {
+                    string fullPath = Path.GetFullPath(path);
+                    if (Directory.Exists(fullPath) && yielded.Add(fullPath))
+                    {
+                        yield return fullPath;
+                    }
+                }
+            }
+
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (!string.IsNullOrWhiteSpace(baseDirectory))
+            {
+                string binDirectory = Path.Combine(baseDirectory, "bin");
+                if (Directory.Exists(binDirectory) && yielded.Add(Path.GetFullPath(binDirectory)))
+                {
+                    yield return Path.GetFullPath(binDirectory);
+                }
+
+                if (Directory.Exists(baseDirectory) && yielded.Add(Path.GetFullPath(baseDirectory)))
+                {
+                    yield return Path.GetFullPath(baseDirectory);
+                }
+            }
+
+            string assemblyDirectory = Path.GetDirectoryName(typeof(SqliteDatabaseConnection).Assembly.Location);
+            if (!string.IsNullOrWhiteSpace(assemblyDirectory) && Directory.Exists(assemblyDirectory) && yielded.Add(Path.GetFullPath(assemblyDirectory)))
+            {
+                yield return Path.GetFullPath(assemblyDirectory);
+            }
+        }
+
+        private static IEnumerable<string> ExpandSearchPath(string searchPath)
+        {
+            if (string.IsNullOrWhiteSpace(searchPath))
+            {
+                yield break;
+            }
+
+            foreach (string path in searchPath.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                yield return path;
+            }
+        }
+
+        private static void EnsureNativeSqliteAtRoot(string directory)
+        {
+            string destination = Path.Combine(directory, "e_sqlite3.dll");
+            if (File.Exists(destination))
+            {
+                return;
+            }
+
+            string architecture = Environment.Is64BitProcess ? "win-x64" : "win-x86";
+            string source = Path.Combine(directory, "runtimes", architecture, "native", "e_sqlite3.dll");
+            if (!File.Exists(source))
+            {
+                return;
+            }
+
+            try
+            {
+                File.Copy(source, destination, false);
+            }
+            catch
+            {
+                // If the host directory is read-only, SQLitePCL can still try the runtime path.
+            }
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetDllDirectory(string lpPathName);
+
         private static void InitializeDefaultDatabase(string dbPath)
         {
             bool sqliteExists = File.Exists(dbPath);
@@ -404,7 +511,18 @@ namespace DataBase.Connection
 
         private static string GetDefaultDatabasePath()
         {
-            return Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBase", "DB.sqlite");
+            string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBase", "DB.sqlite");
+            string assemblyDirectory = Path.GetDirectoryName(typeof(SqliteDatabaseConnection).Assembly.Location);
+            string assemblyDirectoryPath = string.IsNullOrWhiteSpace(assemblyDirectory)
+                ? null
+                : Path.Combine(assemblyDirectory, "DataBase", "DB.sqlite");
+
+            if (!string.IsNullOrWhiteSpace(assemblyDirectoryPath) && File.Exists(assemblyDirectoryPath))
+            {
+                return assemblyDirectoryPath;
+            }
+
+            return baseDirectoryPath;
         }
 
         private static string GetDefaultAccessPath(string sqlitePath)

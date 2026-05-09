@@ -1,5 +1,7 @@
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace Ybp0.App;
 
@@ -8,7 +10,8 @@ public static class GenericApiClient
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = null,
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        Converters = { new AspNetDateTimeConverter() }
     };
 
     private static HttpClient? _httpClient;
@@ -67,5 +70,36 @@ public static class GenericApiClient
     private static string GetDefaultBaseUrl()
     {
         return "http://localhost:59992/api/";
+    }
+}
+
+public class AspNetDateTimeConverter : JsonConverter<DateTime>
+{
+    private static readonly Regex AspNetDateRegex = new(@"^/Date\((-?\d+)([+-]\d{4})?\)/$", RegexOptions.Compiled);
+
+    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType == JsonTokenType.String)
+        {
+            string value = reader.GetString() ?? string.Empty;
+            Match match = AspNetDateRegex.Match(value);
+
+            if (match.Success && long.TryParse(match.Groups[1].Value, out long milliseconds))
+            {
+                return DateTimeOffset.FromUnixTimeMilliseconds(milliseconds).LocalDateTime;
+            }
+
+            if (DateTime.TryParse(value, out DateTime dateTime))
+            {
+                return dateTime;
+            }
+        }
+
+        return reader.GetDateTime();
+    }
+
+    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
+    {
+        writer.WriteStringValue(value);
     }
 }
