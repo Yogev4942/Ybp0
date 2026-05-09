@@ -1,4 +1,3 @@
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ybp0.App.Services;
 
@@ -16,10 +15,8 @@ public class HomeViewModel : BaseViewModel
         _navigation = navigation;
         OpenProfileCommand = new AsyncCommand(_navigation.GoToProfileAsync);
         RefreshCommand = new AsyncCommand(LoadAsync);
-        Trainers = new ObservableCollection<TrainerDto>();
     }
 
-    public ObservableCollection<TrainerDto> Trainers { get; }
     public ICommand OpenProfileCommand { get; }
     public ICommand RefreshCommand { get; }
 
@@ -41,12 +38,6 @@ public class HomeViewModel : BaseViewModel
             IsBusy = true;
             ErrorMessage = null;
             _user = _api.CurrentUser;
-
-            Trainers.Clear();
-            foreach (TrainerDto trainer in await _api.GetTrainersAsync())
-            {
-                Trainers.Add(trainer);
-            }
 
             OnPropertyChanged(nameof(Greeting));
             OnPropertyChanged(nameof(RoleLabel));

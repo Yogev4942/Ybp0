@@ -8,6 +8,7 @@ internal static class Ui
     public static readonly Color Ink = Color.FromArgb("#13231F");
     public static readonly Color Muted = Color.FromArgb("#63756F");
     public static readonly Color Teal = Color.FromArgb("#009688");
+    public static readonly Color SoftTeal = Color.FromArgb("#A8E4D7");
     public static readonly Color Dark = Color.FromArgb("#101418");
     public static readonly Color Error = Color.FromArgb("#D64545");
 
@@ -46,6 +47,27 @@ internal static class Ui
             CornerRadius = 18,
             HasShadow = false,
             Padding = new Thickness(14, 2)
+        };
+    }
+
+    public static Grid UnderlineField(View content)
+    {
+        return new Grid
+        {
+            RowDefinitions =
+            {
+                new RowDefinition(GridLength.Auto),
+                new RowDefinition(new GridLength(1))
+            },
+            Children =
+            {
+                content,
+                AddRow(new BoxView
+                {
+                    HeightRequest = 1,
+                    Color = Color.FromArgb("#44009688")
+                }, 1)
+            }
         };
     }
 
@@ -88,6 +110,28 @@ internal static class Ui
             HeightRequest = 48,
             WidthRequest = 58
         };
+    }
+
+    public static Button ProfileButton()
+    {
+        return new Button
+        {
+            Text = "P",
+            TextColor = Colors.White,
+            BackgroundColor = Teal,
+            CornerRadius = 24,
+            FontAttributes = FontAttributes.Bold,
+            FontSize = 18,
+            Padding = 0,
+            HeightRequest = 48,
+            WidthRequest = 48
+        };
+    }
+
+    private static T AddRow<T>(T view, int row) where T : View
+    {
+        Grid.SetRow(view, row);
+        return view;
     }
 }
 #pragma warning restore CS0618

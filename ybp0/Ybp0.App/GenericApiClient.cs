@@ -1,52 +1,63 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace Ybp0.App;
 
 public static class GenericApiClient
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNamingPolicy = null,
+        PropertyNameCaseInsensitive = true
+    };
+
     private static HttpClient? _httpClient;
-    private static string _baseUrl = GetDefaultBaseUrl();
+    private static readonly string _baseUrl = GetDefaultBaseUrl();
 
     public static string BaseUrl => _baseUrl;
 
-    public static void Configure(string baseUrl)
+    public static void Init()
     {
-        _baseUrl = baseUrl.EndsWith("/", StringComparison.Ordinal) ? baseUrl : baseUrl + "/";
-        _httpClient = null;
+        if (_httpClient == null)
+        {
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(_baseUrl),
+                Timeout = TimeSpan.FromSeconds(20)
+            };
+        }
     }
 
     public static async Task<TResponse?> GetAsync<TResponse>(string path)
     {
-        HttpResponseMessage response = await Client.GetAsync(NormalizePath(path));
+        Init();
+        HttpResponseMessage response = await _httpClient!.GetAsync(NormalizePath(path));
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<TResponse>();
+        return await response.Content.ReadFromJsonAsync<TResponse>(JsonOptions);
     }
 
     public static async Task<TResponse?> PostAsync<TRequest, TResponse>(string path, TRequest data)
     {
-        HttpResponseMessage response = await Client.PostAsJsonAsync(NormalizePath(path), data);
+        Init();
+        HttpResponseMessage response = await _httpClient!.PostAsJsonAsync(NormalizePath(path), data, JsonOptions);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<TResponse>();
+        return await response.Content.ReadFromJsonAsync<TResponse>(JsonOptions);
     }
 
     public static async Task<TResponse?> PutAsync<TRequest, TResponse>(string path, TRequest data)
     {
-        HttpResponseMessage response = await Client.PutAsJsonAsync(NormalizePath(path), data);
+        Init();
+        HttpResponseMessage response = await _httpClient!.PutAsJsonAsync(NormalizePath(path), data, JsonOptions);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<TResponse>();
+        return await response.Content.ReadFromJsonAsync<TResponse>(JsonOptions);
     }
 
     public static async Task DeleteAsync(string path)
     {
-        HttpResponseMessage response = await Client.DeleteAsync(NormalizePath(path));
+        Init();
+        HttpResponseMessage response = await _httpClient!.DeleteAsync(NormalizePath(path));
         response.EnsureSuccessStatusCode();
     }
-
-    private static HttpClient Client => _httpClient ??= new HttpClient
-    {
-        BaseAddress = new Uri(_baseUrl),
-        Timeout = TimeSpan.FromSeconds(20)
-    };
 
     private static string NormalizePath(string path)
     {

@@ -16,7 +16,6 @@ public class LoginViewModel : BaseViewModel
         _api = api;
         _navigation = navigation;
         LoginCommand = new AsyncCommand(LoginAsync);
-        GoToRegisterCommand = new AsyncCommand(_navigation.GoToRegisterAsync);
     }
 
     public string Username
@@ -32,7 +31,6 @@ public class LoginViewModel : BaseViewModel
     }
 
     public ICommand LoginCommand { get; }
-    public ICommand GoToRegisterCommand { get; }
 
     private async Task LoginAsync()
     {
