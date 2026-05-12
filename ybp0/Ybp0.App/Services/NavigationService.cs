@@ -28,6 +28,12 @@ public class NavigationService : INavigationService
         return Task.CompletedTask;
     }
 
+    public Task GoToWorkoutPlansAsync()
+    {
+        SetRoot(_services.GetRequiredService<WorkoutPlansPage>());
+        return Task.CompletedTask;
+    }
+
     public Task GoToProfileAsync()
     {
         return CurrentNavigation.PushAsync(_services.GetRequiredService<ProfilePage>());

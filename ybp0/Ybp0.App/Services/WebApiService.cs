@@ -52,8 +52,68 @@ public class WebApiService : IApiService
         return CurrentUser?.Id == id ? CurrentUser : null;
     }
 
+    public async Task<IReadOnlyList<WorkoutPlanDto>> GetWorkoutPlansAsync()
+    {
+        EnsureSignedIn();
+        return await GenericApiClient.GetAsync<IReadOnlyList<WorkoutPlanDto>>($"workoutplans/user/{CurrentUser!.Id}")
+            ?? Array.Empty<WorkoutPlanDto>();
+    }
+
+    public async Task<WorkoutPlanDto> CreateWorkoutPlanAsync(string workoutName)
+    {
+        EnsureSignedIn();
+        CreateWorkoutPlanRequest request = new(CurrentUser!.Id, workoutName);
+        return await GenericApiClient.PostAsync<CreateWorkoutPlanRequest, WorkoutPlanDto>("workoutplans", request)
+            ?? throw new InvalidOperationException("The API did not return the created workout plan.");
+    }
+
+    public async Task<WorkoutPlanDto> RenameWorkoutPlanAsync(int workoutId, string workoutName)
+    {
+        RenameWorkoutPlanRequest request = new(workoutName);
+        return await GenericApiClient.PutAsync<RenameWorkoutPlanRequest, WorkoutPlanDto>($"workoutplans/{workoutId}/name", request)
+            ?? throw new InvalidOperationException("The API did not return the renamed workout plan.");
+    }
+
+    public async Task<WorkoutPlanExerciseDto> AddExerciseToWorkoutPlanAsync(int workoutId, int exerciseId)
+    {
+        AddWorkoutExerciseRequest request = new(exerciseId);
+        return await GenericApiClient.PostAsync<AddWorkoutExerciseRequest, WorkoutPlanExerciseDto>($"workoutplans/{workoutId}/exercises", request)
+            ?? throw new InvalidOperationException("The API did not return the added exercise.");
+    }
+
+    public Task DeleteWorkoutPlanExerciseAsync(int workoutExerciseId)
+    {
+        return GenericApiClient.DeleteAsync($"workoutplans/exercises/{workoutExerciseId}");
+    }
+
+    public async Task<WorkoutSetDto> AddWorkoutPlanSetAsync(int workoutExerciseId, int setNumber, int reps, double weight)
+    {
+        SaveWorkoutSetRequest request = new(setNumber, reps, weight);
+        return await GenericApiClient.PostAsync<SaveWorkoutSetRequest, WorkoutSetDto>($"workoutplans/exercises/{workoutExerciseId}/sets", request)
+            ?? throw new InvalidOperationException("The API did not return the added set.");
+    }
+
+    public Task DeleteWorkoutPlanSetAsync(int setId)
+    {
+        return GenericApiClient.DeleteAsync($"workoutplans/sets/{setId}");
+    }
+
+    public async Task<IReadOnlyList<ExerciseDto>> GetExercisesAsync()
+    {
+        return await GenericApiClient.GetAsync<IReadOnlyList<ExerciseDto>>("exercises")
+            ?? Array.Empty<ExerciseDto>();
+    }
+
     public void SignOut()
     {
         CurrentUser = null;
+    }
+
+    private void EnsureSignedIn()
+    {
+        if (CurrentUser == null)
+        {
+            throw new InvalidOperationException("Sign in before loading workout plans.");
+        }
     }
 }

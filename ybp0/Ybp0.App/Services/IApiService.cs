@@ -8,5 +8,13 @@ public interface IApiService
     Task<UserDto> RegisterTrainerAsync(string username, string email, string password, string specialization, double hourlyRate, int maxTrainees);
     Task<IReadOnlyList<TrainerDto>> GetTrainersAsync();
     Task<UserDto?> GetUserAsync(int id);
+    Task<IReadOnlyList<WorkoutPlanDto>> GetWorkoutPlansAsync();
+    Task<WorkoutPlanDto> CreateWorkoutPlanAsync(string workoutName);
+    Task<WorkoutPlanDto> RenameWorkoutPlanAsync(int workoutId, string workoutName);
+    Task<WorkoutPlanExerciseDto> AddExerciseToWorkoutPlanAsync(int workoutId, int exerciseId);
+    Task DeleteWorkoutPlanExerciseAsync(int workoutExerciseId);
+    Task<WorkoutSetDto> AddWorkoutPlanSetAsync(int workoutExerciseId, int setNumber, int reps, double weight);
+    Task DeleteWorkoutPlanSetAsync(int setId);
+    Task<IReadOnlyList<ExerciseDto>> GetExercisesAsync();
     void SignOut();
 }

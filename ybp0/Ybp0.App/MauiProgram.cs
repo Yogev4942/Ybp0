@@ -28,11 +28,13 @@ public static class MauiProgram
         builder.Services.AddTransient<LoginViewModel>();
         builder.Services.AddTransient<RegisterViewModel>();
         builder.Services.AddSingleton<HomeViewModel>();
+        builder.Services.AddSingleton<WorkoutPlansViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();
 
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<HomePage>();
+        builder.Services.AddTransient<WorkoutPlansPage>();
         builder.Services.AddTransient<ProfilePage>();
 
         return builder.Build();

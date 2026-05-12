@@ -64,3 +64,34 @@ public record TrainerDto(
     int TotalTrainees,
     double Rating,
     int TotalRatings);
+
+public record WorkoutSetDto(int Id, int SetNumber, int Reps, double Weight);
+
+public record WorkoutPlanExerciseDto(
+    int Id,
+    int ExerciseId,
+    string? ExerciseName,
+    string? MuscleGroup,
+    string? SecondaryMuscleGroup,
+    int OrderNumber,
+    IReadOnlyList<WorkoutSetDto>? Sets);
+
+public record WorkoutPlanDto(
+    int Id,
+    int UserId,
+    string? WorkoutName,
+    IReadOnlyList<WorkoutPlanExerciseDto>? WorkoutExercises);
+
+public record ExerciseDto(
+    int Id,
+    string? ExerciseName,
+    string? MuscleGroup,
+    string? SecondaryMuscleGroup);
+
+public record CreateWorkoutPlanRequest(int UserId, string WorkoutName);
+
+public record RenameWorkoutPlanRequest(string WorkoutName);
+
+public record AddWorkoutExerciseRequest(int ExerciseId);
+
+public record SaveWorkoutSetRequest(int SetNumber, int Reps, double Weight);

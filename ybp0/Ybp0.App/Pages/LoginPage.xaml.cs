@@ -1,4 +1,5 @@
 using Ybp0.App.Viewmodels;
+using Microsoft.Maui.Controls.Shapes;
 
 namespace Ybp0.App.Pages;
 
@@ -7,8 +8,9 @@ public partial class LoginPage : ContentPage
 {
     public LoginPage(LoginViewModel viewModel)
     {
+        InitializeComponent();
         BindingContext = viewModel;
-        BackgroundColor = Ui.SoftTeal;
+        BackgroundColor = Ui.Mint;
         NavigationPage.SetHasNavigationBar(this, false);
 
         Entry username = new()
@@ -35,115 +37,62 @@ public partial class LoginPage : ContentPage
         Label error = Ui.Text(string.Empty, 13, Ui.Error);
         error.SetBinding(Label.TextProperty, nameof(LoginViewModel.ErrorMessage));
 
-        Button signIn = Ui.Primary("Login");
+        Button signIn = Ui.Primary("Sign in");
         signIn.SetBinding(Button.CommandProperty, nameof(LoginViewModel.LoginCommand));
 
         ActivityIndicator busy = new() { Color = Ui.Teal };
         busy.SetBinding(ActivityIndicator.IsRunningProperty, nameof(LoginViewModel.IsBusy));
         busy.SetBinding(IsVisibleProperty, nameof(LoginViewModel.IsBusy));
 
-        Grid page = new()
+        Content = new Grid
         {
-            RowDefinitions =
-            {
-                new RowDefinition(new GridLength(0.42, GridUnitType.Star)),
-                new RowDefinition(new GridLength(0.58, GridUnitType.Star))
-            },
+            Padding = new Thickness(24),
             Children =
             {
-                new GraphicsView
+                new Border
                 {
-                    Drawable = new LoginHeaderDrawable(),
-                    HeightRequest = 360
-                },
-                AddRow(new Frame
-                {
-                    BackgroundColor = Ui.Card,
-                    BorderColor = Colors.Transparent,
-                    CornerRadius = 42,
-                    HasShadow = false,
-                    Padding = new Thickness(28, 38, 28, 24),
-                    Margin = new Thickness(0, -42, 0, 0),
-                    Content = new ScrollView
+                    BackgroundColor = Colors.White,
+                    StrokeThickness = 0,
+                    StrokeShape = new RoundRectangle { CornerRadius = 30 },
+                    Padding = new Thickness(24),
+                    VerticalOptions = LayoutOptions.Center,
+                    Content = new VerticalStackLayout
                     {
-                        Content = new VerticalStackLayout
+                        Spacing = 16,
+                        Children =
                         {
-                            Spacing = 18,
-                            Children =
+                            new VerticalStackLayout
                             {
-                                new VerticalStackLayout
+                                Spacing = 4,
+                                Children =
                                 {
-                                    Spacing = 2,
-                                    Children =
-                                    {
-                                        Ui.Text("Sign in", 36, Ui.Ink, FontAttributes.Bold),
-                                        new BoxView
-                                        {
-                                            Color = Ui.Teal,
-                                            HeightRequest = 4,
-                                            WidthRequest = 46,
-                                            HorizontalOptions = LayoutOptions.Start
-                                        }
-                                    }
-                                },
-                                Ui.Text("Welcome back to your training space.", 14, Ui.Muted),
-                                error,
-                                Ui.Text("Username", 13, Ui.Muted, FontAttributes.Bold),
-                                Ui.UnderlineField(username),
-                                Ui.Text("Password", 13, Ui.Muted, FontAttributes.Bold),
-                                Ui.UnderlineField(password),
-                                new BoxView { HeightRequest = 22, Opacity = 0 },
-                                signIn,
-                                busy
-                            }
+                                    Ui.Text("YBP", 32, Ui.Ink, FontAttributes.Bold),
+                                    Ui.Text("Sign in to your training space.", 14, Ui.Muted)
+                                }
+                            },
+                            error,
+                            Field(username),
+                            Field(password),
+                            signIn,
+                            busy
                         }
                     }
-                }, 1)
+                }
             }
         };
-
-        Content = page;
     }
 
-    private static T AddRow<T>(T view, int row) where T : View
+    private static Border Field(View content)
     {
-        Grid.SetRow(view, row);
-        return view;
-    }
-
-    private sealed class LoginHeaderDrawable : IDrawable
-    {
-        public void Draw(ICanvas canvas, RectF dirtyRect)
+        return new Border
         {
-            canvas.FillColor = Ui.SoftTeal;
-            canvas.FillRectangle(dirtyRect);
-
-            canvas.StrokeColor = Color.FromArgb("#55FFFFFF");
-            canvas.StrokeSize = 2;
-
-            for (float y = -40; y < dirtyRect.Height + 80; y += 44)
-            {
-                PathF line = new();
-                line.MoveTo(-20, y);
-
-                for (float x = -20; x <= dirtyRect.Width + 40; x += 70)
-                {
-                    line.CurveTo(x + 20, y - 26, x + 52, y + 26, x + 70, y);
-                }
-
-                canvas.DrawPath(line);
-            }
-
-            canvas.FillColor = Ui.Card;
-            PathF wave = new();
-            wave.MoveTo(0, dirtyRect.Height - 58);
-            wave.CurveTo(dirtyRect.Width * 0.22f, dirtyRect.Height - 96, dirtyRect.Width * 0.44f, dirtyRect.Height + 8, dirtyRect.Width * 0.66f, dirtyRect.Height - 36);
-            wave.CurveTo(dirtyRect.Width * 0.82f, dirtyRect.Height - 70, dirtyRect.Width * 0.96f, dirtyRect.Height - 50, dirtyRect.Width, dirtyRect.Height - 58);
-            wave.LineTo(dirtyRect.Width, dirtyRect.Height);
-            wave.LineTo(0, dirtyRect.Height);
-            wave.Close();
-            canvas.FillPath(wave);
-        }
+            BackgroundColor = Color.FromArgb("#F6FFFC"),
+            Stroke = Color.FromArgb("#22009688"),
+            StrokeThickness = 1,
+            StrokeShape = new RoundRectangle { CornerRadius = 18 },
+            Padding = new Thickness(14, 4),
+            Content = content
+        };
     }
 }
 #pragma warning restore CS0618
