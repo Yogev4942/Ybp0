@@ -511,8 +511,14 @@ namespace DataBase.Connection
 
         private static string GetDefaultDatabasePath()
         {
+            string? sourceDatabasePath = FindSourceDatabasePath();
+            if (!string.IsNullOrWhiteSpace(sourceDatabasePath))
+            {
+                return sourceDatabasePath;
+            }
+
             string baseDirectoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "DataBase", "DB.sqlite");
-            string assemblyDirectory = Path.GetDirectoryName(typeof(SqliteDatabaseConnection).Assembly.Location);
+            string? assemblyDirectory = Path.GetDirectoryName(typeof(SqliteDatabaseConnection).Assembly.Location);
             string assemblyDirectoryPath = string.IsNullOrWhiteSpace(assemblyDirectory)
                 ? null
                 : Path.Combine(assemblyDirectory, "DataBase", "DB.sqlite");
@@ -523,6 +529,54 @@ namespace DataBase.Connection
             }
 
             return baseDirectoryPath;
+        }
+
+        private static string? FindSourceDatabasePath()
+        {
+            foreach (string startDirectory in GetDatabaseSearchRoots())
+            {
+                string? currentDirectory = startDirectory;
+
+                while (!string.IsNullOrWhiteSpace(currentDirectory))
+                {
+                    string candidatePath = Path.Combine(currentDirectory, "DataBase", "DataBase", "DB.sqlite");
+                    if (File.Exists(candidatePath) || IsSolutionDatabaseDirectory(candidatePath))
+                    {
+                        return candidatePath;
+                    }
+
+                    DirectoryInfo? parent = Directory.GetParent(currentDirectory);
+                    currentDirectory = parent?.FullName;
+                }
+            }
+
+            return null;
+        }
+
+        private static bool IsSolutionDatabaseDirectory(string candidatePath)
+        {
+            string? databaseDirectory = Path.GetDirectoryName(candidatePath);
+            string? databaseProjectDirectory = string.IsNullOrWhiteSpace(databaseDirectory)
+                ? null
+                : Directory.GetParent(databaseDirectory)?.FullName;
+
+            return !string.IsNullOrWhiteSpace(databaseProjectDirectory) &&
+                   File.Exists(Path.Combine(databaseProjectDirectory, "DataBase.csproj"));
+        }
+
+        private static IEnumerable<string> GetDatabaseSearchRoots()
+        {
+            string baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+            if (!string.IsNullOrWhiteSpace(baseDirectory) && Directory.Exists(baseDirectory))
+            {
+                yield return Path.GetFullPath(baseDirectory);
+            }
+
+            string? assemblyDirectory = Path.GetDirectoryName(typeof(SqliteDatabaseConnection).Assembly.Location);
+            if (!string.IsNullOrWhiteSpace(assemblyDirectory) && Directory.Exists(assemblyDirectory))
+            {
+                yield return Path.GetFullPath(assemblyDirectory);
+            }
         }
 
         private static string GetDefaultAccessPath(string sqlitePath)

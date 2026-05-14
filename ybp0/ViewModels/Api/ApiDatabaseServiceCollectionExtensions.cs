@@ -44,6 +44,6 @@ public static class ApiDatabaseServiceCollectionExtensions
     private static string GetDatabaseProjectSqlitePath(string webServicesContentRootPath)
     {
         string solutionRoot = Path.GetFullPath(Path.Combine(webServicesContentRootPath, ".."));
-        return Path.Combine(solutionRoot, "DataBase", "DataBase", "ybp0.db");
+        return Path.Combine(solutionRoot, "DataBase", "DataBase", "DB.sqlite");
     }
 }
