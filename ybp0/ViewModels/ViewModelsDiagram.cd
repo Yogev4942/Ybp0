@@ -1,0 +1,292 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="ViewModels.RelayCommand">
+    <Position X="0.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQEACAAQAAECAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>RelayCommand.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ViewModels.ViewModels.WorkoutViewModel">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IIgRANMgEWlohVMQIMEUACwoCEAAMIYMAACEAhABAQA=</HashCode>
+      <FileName>ViewModels\WorkoutViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.WorkoutPlansViewModel">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgAAQKgEEAAoAOAIEAAAA4ICAQEYIZdAAIgACAAAAA=</HashCode>
+      <FileName>ViewModels\WorkoutPlansViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.WorkoutPlanItemViewModel">
+    <Position X="5.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAABAAAAAFAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>ViewModels\WorkoutPlanItemViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.SetViewModel">
+    <Position X="7.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAALAQAEQAAAAAACBABAAAaAADASIBCJIQgIAAAAIIA=</HashCode>
+      <FileName>ViewModels\SetViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.SearchViewModel">
+    <Position X="11" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUAAAAAAiCQAgABAAAAAAAAAAAJAAAQAgAgAAAAAABA=</HashCode>
+      <FileName>ViewModels\SearchViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TrainerCardViewModel">
+    <Position X="9.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAQAQCABAAAIABAAAMAABABAAQAAEA=</HashCode>
+      <FileName>ViewModels\SearchViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.RegisterViewModel">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAgECBAAAAAIQAAAAAEAAAAAACCAAIAAEAAAAE=</HashCode>
+      <FileName>ViewModels\RegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.RegisterSelectionViewModel">
+    <Position X="14.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAEAAAAAABIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\RegisterSelectionViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ProfileViewModel">
+    <Position X="16.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAACIAAACQCQCkAAAAAABAAAQIAIEBAIAAAAA=</HashCode>
+      <FileName>ViewModels\ProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.PostViewModel">
+    <Position X="18" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FAQAAIAIAoAAAEFRAQCCAAQABAJAAAIAAAoBAQAAQQA=</HashCode>
+      <FileName>ViewModels\PostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.MainViewModel">
+    <Position X="19.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAKAAEEAAAEAQAQCQAAAAAAAAAAIAAAICEAEAQoA=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.LoginViewModel">
+    <Position X="21.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BQQAAAAAAAAAAAAAIQAAAgIEARAAIAACAAIAAACBAAA=</HashCode>
+      <FileName>ViewModels\LoginViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.HomeViewModel">
+    <Position X="23.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAERAAAAEAAACJAwgAAAQAAABBAQQAAAAEAoAAAAE=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ActivityDayViewModel">
+    <Position X="25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAAAABABAAgAAAgAAAA=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ExerciseProgressCardViewModel">
+    <Position X="25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADAAABAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ExerciseVolumePointViewModel">
+    <Position X="25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CgAAAAAAEAAAAAAAAAAAAAAAAAAAAAABAAIAAAAAAAA=</HashCode>
+      <FileName>ViewModels\HomeViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.FeedViewModel">
+    <Position X="25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQAAAAAQAAAAAQAJAAIAAQAABAAAAAAAAAAAgAAAAA=</HashCode>
+      <FileName>ViewModels\FeedViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ExerciseViewModel">
+    <Position X="23.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACARBQCoAAAAACAAAACBIAFACQAgAJAEgAAgEAYqA=</HashCode>
+      <FileName>ViewModels\ExerciseViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.EditProfileViewModel">
+    <Position X="21.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>wAAgAAAABCCALAAASQAAAAAAAABRBAwAAAJAAQAEgME=</HashCode>
+      <FileName>ViewModels\EditProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.DayViewModel">
+    <Position X="19.75" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAJAEAkAAoAAhAAABAEAUAEAAIAAAgAJQIACAAgAAAQ=</HashCode>
+      <FileName>ViewModels\DayViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.CreatePostViewModel">
+    <Position X="18" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RAADAAQAAgAAAAAAAAAAAAAAEIAAAAAIhAAAAIAAAAA=</HashCode>
+      <FileName>ViewModels\CreatePostViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ChatsViewModel">
+    <Position X="14.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQAAAQgIIAggAAARMGAAABQAAAAgAAAIEAgUAQAAgAA=</HashCode>
+      <FileName>ViewModels\ChatsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ChatPreviewItemViewModel">
+    <Position X="16.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEIAAAAAAAAAAAAAAAAwAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\ChatsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.ChatMessageItemViewModel">
+    <Position X="16.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACACAAAAACABAAAAAAAACABAAAA=</HashCode>
+      <FileName>ViewModels\ChatsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.CalendarViewModel">
+    <Position X="12.75" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAgDAAKgAEBgQAIAAAABBBgIFAAAAIIIRAAAoAAAAAA=</HashCode>
+      <FileName>ViewModels\CalendarViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.BaseViewModel">
+    <Position X="11" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAQAgAEAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\BaseViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TrainerCalendarViewModel">
+    <Position X="5.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABIAAAAAAAAAACyAAAAAkAEgAAAABAAAAAA=</HashCode>
+      <FileName>ViewModels\TrainerViewModels\TrainerCalendarViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TrainerFeedViewModel">
+    <Position X="9.25" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\TrainerViewModels\TrainerFeedViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TrainerProfileViewModel">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAIECEAA0CAIABCgAIIAAABAgAkIAQAADWJCUAAAFA=</HashCode>
+      <FileName>ViewModels\TrainerViewModels\TrainerProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TrainerRegisterViewModel">
+    <Position X="5.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACACAAAAAAAAAAAAAABBAAAAABAAAAAAEA=</HashCode>
+      <FileName>ViewModels\TrainerViewModels\TrainerRegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TraineeCalendarViewModel">
+    <Position X="9.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\TraineeViewModels\TraineeCalendarViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TraineeFeedViewModel">
+    <Position X="7.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\TraineeViewModels\TraineeFeedViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TraineeProfileViewModel">
+    <Position X="11" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAIIAAAABAAAAAAQAAAGICAAAgBE=</HashCode>
+      <FileName>ViewModels\TraineeViewModels\TraineeProfileViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.ViewModels.TraineeRegisterViewModel">
+    <Position X="9.25" Y="8.75" Width="1.5" />
+    <InheritanceLine Type="ViewModels.ViewModels.RegisterViewModel" FixedToPoint="true">
+      <Path>
+        <Point X="13.5" Y="4.944" />
+        <Point X="13.5" Y="5.096" />
+        <Point X="11.833" Y="5.096" Type="JumpStart" />
+        <Point X="11.667" Y="5.096" Type="JumpEnd" />
+        <Point X="10.79" Y="5.096" />
+        <Point X="10.79" Y="8.596" />
+        <Point X="10.312" Y="8.596" />
+        <Point X="10.312" Y="8.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABACAJAAAAAAAAAAAAAARAAAAAAAAAAAAgAA=</HashCode>
+      <FileName>ViewModels\TraineeViewModels\TraineeRegisterViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ViewModels.Services.DatabaseService">
+    <Position X="9.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>0xAAiBgYCagCIoCAAjOCcjTMJaACRIDOoYMrSjIKVBg=</HashCode>
+      <FileName>Services\DatabaseService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ViewModels.NavigationService">
+    <Position X="6.25" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAASAIAIAAAAQAAEFAABCAAAAABA=</HashCode>
+      <FileName>Services\NavigationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="ViewModels.IDatabaseService">
+    <Position X="11.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>0RAAiBgYCKgCIoCAAjOAUiTMJaACQIDOoYMrSjIKQBg=</HashCode>
+      <FileName>Services\IDatabaseService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="ViewModels.INavigationService">
+    <Position X="8" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAIAIAAAAAAAEEAAAAAAAAAAA=</HashCode>
+      <FileName>Services\INavigationService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

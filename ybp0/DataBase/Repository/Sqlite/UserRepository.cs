@@ -145,11 +145,11 @@ namespace DataBase.Repository.Access
             return passwordHash;
         }
 
-        public bool UpdateUserCommon(int userId, string bio, string email)
+        public bool UpdateUserCommon(int userId, string username, string bio, string email)
         {
             int affected = _database.ExecuteNonQuery(
-                "UPDATE UserTbl SET Bio = ?, Email = ? WHERE Id = ?",
-                bio ?? (object)DBNull.Value, email ?? (object)DBNull.Value, userId);
+                "UPDATE UserTbl SET Username = ?, Bio = ?, Email = ? WHERE Id = ?",
+                username, bio ?? (object)DBNull.Value, email ?? (object)DBNull.Value, userId);
             return affected > 0;
         }
 

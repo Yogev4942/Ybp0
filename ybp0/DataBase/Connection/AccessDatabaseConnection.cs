@@ -79,6 +79,8 @@ namespace DataBase
             var command = connection.CreateCommand();
             command.CommandText = query;
 
+            // SQL injection protection: user values are always passed as parameters,
+            // never concatenated into the SQL command text.
             foreach (var param in parameters)
             {
                 if (param is OleDbParameter oleDbParameter)

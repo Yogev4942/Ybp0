@@ -30,12 +30,14 @@ public static class MauiProgram
         builder.Services.AddSingleton<HomeViewModel>();
         builder.Services.AddSingleton<WorkoutPlansViewModel>();
         builder.Services.AddSingleton<ProfileViewModel>();
+        builder.Services.AddTransient<EditProfileViewModel>();
 
         builder.Services.AddTransient<LoginPage>();
         builder.Services.AddTransient<RegisterPage>();
         builder.Services.AddTransient<HomePage>();
         builder.Services.AddTransient<WorkoutPlansPage>();
         builder.Services.AddTransient<ProfilePage>();
+        builder.Services.AddTransient<EditProfilePage>();
 
         return builder.Build();
     }

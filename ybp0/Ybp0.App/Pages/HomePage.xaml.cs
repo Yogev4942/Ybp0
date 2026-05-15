@@ -34,8 +34,9 @@ public partial class HomePage : ContentPage
                         Children =
                         {
                             BuildHeader(),
-                            BuildPlanSummary(),
-                            BuildMetrics(),
+                            BuildHero(),
+                            BuildDashboardGrid(),
+                            BuildProgression(),
                             BuildError()
                         }
                     }
@@ -91,20 +92,56 @@ public partial class HomePage : ContentPage
         };
     }
 
-    private View BuildPlanSummary()
+    private View BuildHero()
     {
-        Label title = Ui.Text(string.Empty, 22, Ui.Ink, FontAttributes.Bold);
-        title.SetBinding(Label.TextProperty, nameof(HomeViewModel.LatestPlanTitle));
+        Label welcome = Ui.Text(string.Empty, 30, Colors.White, FontAttributes.Bold);
+        welcome.SetBinding(Label.TextProperty, nameof(HomeViewModel.WelcomeMessage));
 
-        Label subtitle = Ui.Text(string.Empty, 13, Ui.Muted);
-        subtitle.SetBinding(Label.TextProperty, nameof(HomeViewModel.LatestPlanSubtitle));
+        Label subtitle = Ui.Text("Your last month at a glance, with consistency blocks and strength progression.", 14, Color.FromArgb("#D9FFFA"));
 
-        Label planCount = Ui.Text(string.Empty, 13, Ui.Ink, FontAttributes.Bold);
-        planCount.SetBinding(Label.TextProperty, nameof(HomeViewModel.WorkoutPlansCountText));
+        Label monthSummary = Ui.Text(string.Empty, 18, Colors.White, FontAttributes.Bold);
+        monthSummary.SetBinding(Label.TextProperty, nameof(HomeViewModel.MonthSummary));
 
-        Label exerciseCount = Ui.Text(string.Empty, 13, Ui.Ink, FontAttributes.Bold);
-        exerciseCount.SetBinding(Label.TextProperty, nameof(HomeViewModel.TotalExercisesText));
+        return new Border
+        {
+            BackgroundColor = Ui.Teal,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle { CornerRadius = 26 },
+            Padding = new Thickness(24, 22),
+            Content = new Grid
+            {
+                ColumnDefinitions =
+                {
+                    new ColumnDefinition(GridLength.Star),
+                    new ColumnDefinition(new GridLength(220))
+                },
+                ColumnSpacing = 18,
+                Children =
+                {
+                    new VerticalStackLayout { Spacing = 8, Children = { welcome, subtitle } },
+                    AddColumn(new Border
+                    {
+                        BackgroundColor = Color.FromArgb("#2FFFFFFF"),
+                        StrokeThickness = 0,
+                        StrokeShape = new RoundRectangle { CornerRadius = 20 },
+                        Padding = new Thickness(18, 14),
+                        Content = new VerticalStackLayout
+                        {
+                            Spacing = 6,
+                            Children =
+                            {
+                                Ui.Text("Monthly Focus", 12, Color.FromArgb("#D7FFFA")),
+                                monthSummary
+                            }
+                        }
+                    }, 1)
+                }
+            }
+        };
+    }
 
+    private View BuildDashboardGrid()
+    {
         Button openPlans = new()
         {
             Text = "Workout plans",
@@ -117,69 +154,265 @@ public partial class HomePage : ContentPage
         };
         openPlans.SetBinding(Button.CommandProperty, nameof(HomeViewModel.OpenWorkoutPlansCommand));
 
-        return new Border
-        {
-            BackgroundColor = Colors.White,
-            StrokeThickness = 0,
-            StrokeShape = new RoundRectangle { CornerRadius = 24 },
-            Padding = 18,
-            Content = new VerticalStackLayout
-            {
-                Spacing = 12,
-                Children =
-                {
-                    new Grid
-                    {
-                        ColumnDefinitions =
-                        {
-                            new ColumnDefinition(GridLength.Star),
-                            new ColumnDefinition(GridLength.Auto)
-                        },
-                        Children =
-                        {
-                            new VerticalStackLayout { Spacing = 4, Children = { title, subtitle } },
-                            AddColumn(openPlans, 1)
-                        }
-                    },
-                    new Grid
-                    {
-                        ColumnDefinitions =
-                        {
-                            new ColumnDefinition(GridLength.Star),
-                            new ColumnDefinition(GridLength.Star)
-                        },
-                        ColumnSpacing = 10,
-                        Children =
-                        {
-                            StatPill("Plans", planCount),
-                            AddColumn(StatPill("Exercises", exerciseCount), 1)
-                        }
-                    }
-                }
-            }
-        };
-    }
-
-    private View BuildMetrics()
-    {
-        Label focus = Ui.Text(string.Empty, 22, Ui.Ink, FontAttributes.Bold);
-        focus.SetBinding(Label.TextProperty, nameof(HomeViewModel.FocusMetric));
-
-        Label goal = Ui.Text(string.Empty, 16, Ui.Ink, FontAttributes.Bold);
-        goal.SetBinding(Label.TextProperty, nameof(HomeViewModel.GoalMetric));
+        Label stats = Ui.Text(string.Empty, 13, Ui.Muted);
+        stats.SetBinding(Label.TextProperty, nameof(HomeViewModel.StatisticsSummary));
 
         return new Grid
         {
             ColumnDefinitions =
             {
-                new ColumnDefinition(GridLength.Star),
-                new ColumnDefinition(GridLength.Star)
+                new ColumnDefinition(new GridLength(1.15, GridUnitType.Star)),
+                new ColumnDefinition(new GridLength(0.85, GridUnitType.Star))
             },
-            ColumnSpacing = 10,
+            ColumnSpacing = 14,
             Children =
             {
-                MetricCard("Current", focus),
-                AddColumn(MetricCard("Goal", goal), 1)
+                BuildActivityCard(),
+                AddColumn(new VerticalStackLayout
+                {
+                    Spacing = 14,
+                    Children =
+                    {
+                        DashboardCard("Progress Metric", stats),
+                        DashboardCard("Chest & Back", BuildPlanMini(openPlans))
+                    }
+                }, 1)
+            }
+        };
+    }
+
+    private View BuildActivityCard()
+    {
+        CollectionView days = new()
+        {
+            SelectionMode = SelectionMode.None,
+            ItemsLayout = new GridItemsLayout(6, ItemsLayoutOrientation.Vertical)
+            {
+                HorizontalItemSpacing = 8,
+                VerticalItemSpacing = 8
+            },
+            ItemTemplate = new DataTemplate(() =>
+            {
+                Label weekday = Ui.Text(string.Empty, 10, Ui.Muted, FontAttributes.Bold);
+                weekday.SetBinding(Label.TextProperty, nameof(ActivityDayViewModel.WeekdayLabel));
+                Label day = Ui.Text(string.Empty, 22, Ui.Ink, FontAttributes.Bold);
+                day.SetBinding(Label.TextProperty, nameof(ActivityDayViewModel.DayLabel));
+
+                Border tile = new()
+                {
+                    StrokeThickness = 0,
+                    StrokeShape = new RoundRectangle { CornerRadius = 14 },
+                    Padding = new Thickness(10, 8),
+                    Content = new VerticalStackLayout { Spacing = 4, Children = { weekday, day } }
+                };
+                tile.SetBinding(Border.BackgroundColorProperty, nameof(ActivityDayViewModel.FillColor));
+                return tile;
+            })
+        };
+        days.SetBinding(ItemsView.ItemsSourceProperty, nameof(HomeViewModel.ActivityDays));
+
+        return new Border
+        {
+            BackgroundColor = Colors.White,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle { CornerRadius = 24 },
+            Padding = 20,
+            Content = new VerticalStackLayout
+            {
+                Spacing = 14,
+                Children =
+                {
+                    Ui.Text("Exercise Blocks", 24, Ui.Ink, FontAttributes.Bold),
+                    Ui.Text("Completed workout history is not available from the current API yet.", 13, Ui.Muted),
+                    days,
+                    EmptyState("No activity data yet")
+                }
+            }
+        };
+    }
+
+    private View BuildPlanMini(Button openPlans)
+    {
+        Label title = Ui.Text(string.Empty, 18, Ui.Ink, FontAttributes.Bold);
+        title.SetBinding(Label.TextProperty, nameof(HomeViewModel.LatestPlanTitle));
+        Label subtitle = Ui.Text(string.Empty, 13, Ui.Muted);
+        subtitle.SetBinding(Label.TextProperty, nameof(HomeViewModel.LatestPlanSubtitle));
+        Label planCount = Ui.Text(string.Empty, 13, Ui.Ink, FontAttributes.Bold);
+        planCount.SetBinding(Label.TextProperty, nameof(HomeViewModel.WorkoutPlansCountText));
+        Label exerciseCount = Ui.Text(string.Empty, 13, Ui.Ink, FontAttributes.Bold);
+        exerciseCount.SetBinding(Label.TextProperty, nameof(HomeViewModel.TotalExercisesText));
+
+        return new VerticalStackLayout
+        {
+            Spacing = 12,
+            Children =
+            {
+                title,
+                subtitle,
+                new Grid
+                {
+                    ColumnDefinitions =
+                    {
+                        new ColumnDefinition(GridLength.Star),
+                        new ColumnDefinition(GridLength.Star)
+                    },
+                    ColumnSpacing = 10,
+                    Children =
+                    {
+                        StatPill("Plans", planCount),
+                        AddColumn(StatPill("Exercises", exerciseCount), 1)
+                    }
+                },
+                openPlans
+            }
+        };
+    }
+
+    private View BuildProgression()
+    {
+        CollectionView cards = new()
+        {
+            SelectionMode = SelectionMode.None,
+            ItemTemplate = new DataTemplate(() =>
+            {
+                Label exercise = Ui.Text(string.Empty, 18, Ui.Ink, FontAttributes.Bold);
+                exercise.SetBinding(Label.TextProperty, nameof(ExerciseProgressCardViewModel.ExerciseName));
+                Label summary = Ui.Text(string.Empty, 13, Ui.Muted);
+                summary.SetBinding(Label.TextProperty, nameof(ExerciseProgressCardViewModel.Summary));
+                Label latest = Ui.Text(string.Empty, 12, Colors.White, FontAttributes.Bold);
+                latest.SetBinding(Label.TextProperty, new Binding(nameof(ExerciseProgressCardViewModel.LatestVolume), stringFormat: "Latest {0:0}"));
+
+                Border latestBadge = new()
+                {
+                    StrokeThickness = 0,
+                    StrokeShape = new RoundRectangle { CornerRadius = 12 },
+                    Padding = new Thickness(12, 7),
+                    Content = latest
+                };
+                latestBadge.SetBinding(Border.BackgroundColorProperty, nameof(ExerciseProgressCardViewModel.AccentColor));
+
+                CollectionView points = new()
+                {
+                    SelectionMode = SelectionMode.None,
+                    ItemsLayout = LinearItemsLayout.Vertical,
+                    ItemTemplate = new DataTemplate(() =>
+                    {
+                        Label label = Ui.Text(string.Empty, 12, Ui.Muted);
+                        label.SetBinding(Label.TextProperty, nameof(ExerciseVolumePointViewModel.Label));
+                        Label volume = Ui.Text(string.Empty, 12, Ui.Ink, FontAttributes.Bold);
+                        volume.SetBinding(Label.TextProperty, nameof(ExerciseVolumePointViewModel.VolumeLabel));
+                        BoxView bar = new()
+                        {
+                            Color = Ui.Teal,
+                            HeightRequest = 16,
+                            CornerRadius = 8,
+                            HorizontalOptions = LayoutOptions.Start
+                        };
+                        bar.SetBinding(VisualElement.WidthRequestProperty, nameof(ExerciseVolumePointViewModel.BarWidth));
+
+                        return new Grid
+                        {
+                            ColumnDefinitions =
+                            {
+                                new ColumnDefinition(new GridLength(70)),
+                                new ColumnDefinition(GridLength.Star),
+                                new ColumnDefinition(new GridLength(48))
+                            },
+                            ColumnSpacing = 8,
+                            Margin = new Thickness(0, 4),
+                            Children =
+                            {
+                                label,
+                                AddColumn(new Border
+                                {
+                                    BackgroundColor = Color.FromArgb("#E1F0EB"),
+                                    StrokeThickness = 0,
+                                    StrokeShape = new RoundRectangle { CornerRadius = 8 },
+                                    HeightRequest = 16,
+                                    Content = bar
+                                }, 1),
+                                AddColumn(volume, 2)
+                            }
+                        };
+                    })
+                };
+                points.SetBinding(ItemsView.ItemsSourceProperty, nameof(ExerciseProgressCardViewModel.Points));
+
+                return new Border
+                {
+                    BackgroundColor = Color.FromArgb("#F6FCFA"),
+                    Stroke = Color.FromArgb("#D9EBE5"),
+                    StrokeThickness = 1,
+                    StrokeShape = new RoundRectangle { CornerRadius = 18 },
+                    Padding = 16,
+                    Margin = new Thickness(0, 0, 0, 12),
+                    Content = new VerticalStackLayout
+                    {
+                        Spacing = 12,
+                        Children =
+                        {
+                            new Grid
+                            {
+                                ColumnDefinitions =
+                                {
+                                    new ColumnDefinition(GridLength.Star),
+                                    new ColumnDefinition(GridLength.Auto)
+                                },
+                                Children =
+                                {
+                                    new VerticalStackLayout { Spacing = 5, Children = { exercise, summary } },
+                                    AddColumn(latestBadge, 1)
+                                }
+                            },
+                            points
+                        }
+                    }
+                };
+            })
+        };
+        cards.SetBinding(ItemsView.ItemsSourceProperty, nameof(HomeViewModel.ExerciseProgressCards));
+
+        return new Border
+        {
+            BackgroundColor = Colors.White,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle { CornerRadius = 24 },
+            Padding = 20,
+            Content = new VerticalStackLayout
+            {
+                Spacing = 14,
+                Children =
+                {
+                    Ui.Text("Exercise Progression", 24, Ui.Ink, FontAttributes.Bold),
+                    Ui.Text("Real progression cards will appear after completed workout sessions are exposed to the app.", 13, Ui.Muted),
+                    cards,
+                    EmptyState("No progression data yet")
+                }
+            }
+        };
+    }
+
+    private static Label EmptyState(string text)
+    {
+        return Ui.Text(text, 14, Ui.Muted, FontAttributes.Bold);
+    }
+
+    private static Border DashboardCard(string title, View body)
+    {
+        return new Border
+        {
+            BackgroundColor = Colors.White,
+            StrokeThickness = 0,
+            StrokeShape = new RoundRectangle { CornerRadius = 24 },
+            Padding = 20,
+            Content = new VerticalStackLayout
+            {
+                Spacing = 10,
+                Children =
+                {
+                    Ui.Text(title, 22, Ui.Ink, FontAttributes.Bold),
+                    body
+                }
             }
         };
     }

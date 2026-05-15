@@ -134,6 +134,8 @@ namespace DataBase.Connection
             var command = connection.CreateCommand();
             command.CommandText = translatedQuery;
 
+            // SQL injection protection: user values are always passed as parameters,
+            // never concatenated into the SQL command text.
             for (int i = 0; i < values.Count; i++)
             {
                 command.Parameters.AddWithValue($"@p{i}", values[i] ?? DBNull.Value);

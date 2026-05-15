@@ -7,4 +7,6 @@ public interface INavigationService
     Task GoToHomeAsync();
     Task GoToWorkoutPlansAsync();
     Task GoToProfileAsync();
+    Task GoToEditProfileAsync();
+    Task GoBackAsync();
 }

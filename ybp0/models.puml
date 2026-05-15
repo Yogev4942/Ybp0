@@ -1,0 +1,358 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+title YBP - Models UML Class Diagram
+
+class BaseEntity {
+    - id: int
+    + Id: int
+}
+
+abstract class User {
+    - email: string
+    - username: string
+    - password: string
+    - passwordSalt: string
+    - joinDate: DateTime
+    - isTrainer: bool
+    - isAdmin: bool
+    - bio: string
+    - gender: string
+    - currentWeekPlanId: int?
+
+    + Email: string
+    + Username: string
+    + Password: string
+    + PasswordSalt: string
+    + JoinDate: DateTime
+    + Bio: string
+    + Gender: string
+    + IsTrainer: bool
+    + IsAdmin: bool
+    + CurrentWeekPlanId: int?
+
+    + Workouts: List~Workout~
+    + WorkoutSessions: List~WorkoutSession~
+    + WeekPlans: List~WeekPlan~
+
+    {abstract} + GetUserType(): string
+    + CanCreatePosts(): bool
+    + CanAccessOtherUserData(): bool
+    + CanModifyOtherUserWorkouts(): bool
+}
+
+class Trainer {
+    - trainerProfileId: int
+    - specialization: string
+    - hourlyRate: double
+    - maxTrainees: int
+    - totalTrainees: int
+    - rating: double
+    - totalRatings: int
+
+    + TrainerProfileId: int
+    + Specialization: string
+    + HourlyRate: double
+    + MaxTrainees: int
+    + TotalTrainees: int
+    + Rating: double
+    + TotalRatings: int
+
+    + AssignedTrainees: List~Trainee~
+    + SentMessages: List~Message~
+    + ReceivedMessages: List~Message~
+
+    + CanAcceptMoreTrainees: bool
+    + RatingDisplay: string
+
+    + GetUserType(): string
+    + CanCreatePosts(): bool
+    + CanAccessOtherUserData(): bool
+    + CanModifyOtherUserWorkouts(): bool
+    + HasCapacity(): bool
+}
+
+class Trainee {
+    - traineeProfileId: int
+    - trainerId: int?
+    - fitnessGoal: string
+    - currentWeight: double
+    - height: double
+
+    + TraineeProfileId: int
+    + TrainerId: int?
+    + FitnessGoal: string
+    + CurrentWeight: double
+    + Height: double
+
+    + AssignedTrainer: Trainer
+    + SentMessages: List~Message~
+    + ReceivedMessages: List~Message~
+
+    + BMI: double
+
+    + GetUserType(): string
+    + CanCreatePosts(): bool
+    + CanAccessOtherUserData(): bool
+    + CanModifyOtherUserWorkouts(): bool
+}
+
+class Muscle {
+    - muscleName: string
+    - bodyRegion: string
+    - diagramZone: int
+    - bodyMapKey: string
+
+    + MuscleName: string
+    + BodyRegion: string
+    + DiagramZone: int
+    + BodyMapKey: string
+
+    + PrimaryExercises: List~Exercise~
+    + SecondaryExercises: List~Exercise~
+}
+
+class Exercise {
+    - primaryMuscleId: int?
+    - secondaryMuscleId: int?
+    - exerciseName: string
+    - muscleGroup: string
+    - secondaryMuscleGroup: string
+
+    + PrimaryMuscleId: int?
+    + SecondaryMuscleId: int?
+    + MuscleId: int?
+    + ExerciseName: string
+    + MuscleGroup: string
+    + SecondaryMuscleGroup: string
+
+    + PrimaryMuscle: Muscle
+    + SecondaryMuscle: Muscle
+
+    + WorkoutExercises: List~WorkoutExercise~
+    + WorkoutSessionSets: List~WorkoutSessionSet~
+}
+
+class Workout {
+    - userId: int
+    - workoutName: string
+    - workoutExercises: List~WorkoutExercise~
+
+    + UserId: int
+    + WorkoutName: string
+    + WorkoutExercises: List~WorkoutExercise~
+
+    + User: User
+    + WorkoutSessions: List~WorkoutSession~
+}
+
+class WorkoutExercise {
+    - workoutId: int
+    - exerciseId: int
+    - exerciseName: string
+    - muscleGroup: string
+    - secondaryMuscleGroup: string
+    - orderNumber: int
+    - sets: List~WorkoutSet~
+
+    + WorkoutId: int
+    + ExerciseId: int
+    + ExerciseName: string
+    + MuscleGroup: string
+    + SecondaryMuscleGroup: string
+    + OrderNumber: int
+    + Sets: List~WorkoutSet~
+
+    + Workout: Workout
+    + Exercise: Exercise
+}
+
+class WorkoutSet {
+    - workoutExerciseId: int
+    - setNumber: int
+    - reps: int
+    - weight: double
+
+    + WorkoutExerciseId: int
+    + SetNumber: int
+    + Reps: int
+    + Weight: double
+
+    + WorkoutExercise: WorkoutExercise
+}
+
+class WeekPlan {
+    - userId: int
+    - planName: string
+
+    + UserId: int
+    + PlanName: string
+
+    + User: User
+    + Days: List~WeekPlanDay~
+}
+
+class WeekPlanDay {
+    - weekPlanId: int
+    - dayOfWeek: string
+    - workoutId: int?
+    - restDay: bool
+    - workoutName: string
+
+    + WeekPlanId: int
+    + DayOfWeek: string
+    + WorkoutId: int?
+    + RestDay: bool
+    + WorkoutName: string
+
+    + WeekPlan: WeekPlan
+    + Workout: Workout
+    + WorkoutSessions: List~WorkoutSession~
+}
+
+enum SessionMode {
+    Plan
+    Saved
+    Freestyle
+}
+
+class WorkoutSession {
+    - userId: int
+    - workoutId: int?
+    - weekPlanDayId: int?
+    - sessionDate: DateTime
+    - startTime: DateTime
+    - endTime: DateTime?
+    - isCompleted: bool
+    - mode: SessionMode
+    - workoutName: string
+    - exercises: List~WorkoutSessionExercise~
+
+    + UserId: int
+    + WorkoutId: int?
+    + WeekPlanDayId: int?
+    + SessionDate: DateTime
+    + StartTime: DateTime
+    + EndTime: DateTime?
+    + IsCompleted: bool
+    + Mode: SessionMode
+    + WorkoutName: string
+    + Exercises: List~WorkoutSessionExercise~
+
+    + User: User
+    + Workout: Workout
+    + WeekPlanDay: WeekPlanDay
+    + SessionSets: List~WorkoutSessionSet~
+}
+
+class WorkoutSessionExercise {
+    - workoutSessionId: int
+    - exerciseId: int
+    - exerciseName: string
+    - muscleGroup: string
+    - secondaryMuscleGroup: string
+    - sets: List~WorkoutSessionSet~
+
+    + WorkoutSessionId: int
+    + ExerciseId: int
+    + ExerciseName: string
+    + MuscleGroup: string
+    + SecondaryMuscleGroup: string
+    + Sets: List~WorkoutSessionSet~
+
+    + Exercise: Exercise
+}
+
+class WorkoutSessionSet {
+    - workoutSessionId: int
+    - exerciseId: int
+    - setNumber: int
+    - reps: int
+    - weight: double
+    - isCompleted: bool
+
+    + WorkoutSessionId: int
+    + ExerciseId: int
+    + SetNumber: int
+    + Reps: int
+    + Weight: double
+    + IsCompleted: bool
+
+    + WorkoutSession: WorkoutSession
+    + Exercise: Exercise
+}
+
+class Post {
+    + OwnerId: int
+    + Owner: User
+    + Header: string
+    + Content: string
+    + PostTime: DateTime
+    + LikeCount: int
+}
+
+class Message {
+    + Id: int
+    + SenderId: int
+    + RecipientId: int
+    + MessageText: string
+    + SentAt: DateTime
+
+    + Sender: User
+    + Recipient: User
+}
+
+' Inheritance
+BaseEntity <|-- User
+BaseEntity <|-- Muscle
+BaseEntity <|-- Exercise
+BaseEntity <|-- Workout
+BaseEntity <|-- WorkoutExercise
+BaseEntity <|-- WorkoutSet
+BaseEntity <|-- WeekPlan
+BaseEntity <|-- WeekPlanDay
+BaseEntity <|-- WorkoutSession
+BaseEntity <|-- WorkoutSessionSet
+BaseEntity <|-- Post
+
+User <|-- Trainer
+User <|-- Trainee
+
+' User relations
+User "1" o-- "0..*" Workout : owns
+User "1" o-- "0..*" WeekPlan : owns
+User "1" o-- "0..*" WorkoutSession : performs
+User "1" <-- "0..*" Post : owner
+User "1" <-- "0..*" Message : sender
+User "1" <-- "0..*" Message : recipient
+
+' Trainer / Trainee
+Trainer "1" o-- "0..*" Trainee : assigned trainees
+Trainee "0..*" --> "0..1" Trainer : assigned trainer
+
+' Muscles and exercises
+Muscle "1" <-- "0..*" Exercise : primary muscle
+Muscle "1" <-- "0..*" Exercise : secondary muscle
+
+' Workout plan structure
+Workout "1" *-- "0..*" WorkoutExercise : contains
+WorkoutExercise "1" *-- "0..*" WorkoutSet : planned sets
+Exercise "1" <-- "0..*" WorkoutExercise : used in
+
+' Weekly plan structure
+WeekPlan "1" *-- "0..*" WeekPlanDay : days
+WeekPlanDay "0..*" --> "0..1" Workout : scheduled workout
+
+' Workout sessions
+Workout "0..1" <-- "0..*" WorkoutSession : based on
+WeekPlanDay "0..1" <-- "0..*" WorkoutSession : scheduled from
+WorkoutSession "1" *-- "0..*" WorkoutSessionExercise : session exercises
+WorkoutSession "1" *-- "0..*" WorkoutSessionSet : performed sets
+WorkoutSessionExercise "1" *-- "0..*" WorkoutSessionSet : sets
+Exercise "1" <-- "0..*" WorkoutSessionExercise : performed exercise
+Exercise "1" <-- "0..*" WorkoutSessionSet : set exercise
+
+WorkoutSession --> SessionMode : uses
+
+@enduml

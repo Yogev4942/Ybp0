@@ -17,7 +17,7 @@ namespace DataBase.Repository.Interfaces
         bool UserExists(string username, string email);
         bool ValidateLogin(string username, string password);
         int CreateUser(User userData);
-        bool UpdateUserCommon(int userId, string bio, string email);
+        bool UpdateUserCommon(int userId, string username, string bio, string email);
         bool UpdateCurrentWeekPlanId(int userId, int weekPlanId);
         void DeleteUser(int userId);
     }

@@ -13,7 +13,8 @@ public class ProfileViewModel : BaseViewModel
     {
         _api = api;
         _navigation = navigation;
-        BackHomeCommand = new AsyncCommand(_navigation.GoToHomeAsync);
+        BackHomeCommand = new AsyncCommand(_navigation.GoBackAsync);
+        EditProfileCommand = new AsyncCommand(_navigation.GoToEditProfileAsync);
         SignOutCommand = new AsyncCommand(SignOutAsync);
     }
 
@@ -30,6 +31,7 @@ public class ProfileViewModel : BaseViewModel
     public string ThirdMetricValue => _user?.IsTrainer == true ? $"{_user.MaxTrainees ?? 0} trainees" : $"{_user?.Height ?? 0:0.#} cm";
 
     public ICommand BackHomeCommand { get; }
+    public ICommand EditProfileCommand { get; }
     public ICommand SignOutCommand { get; }
 
     public Task LoadAsync()

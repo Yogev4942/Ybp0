@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Ybp0.App.Services;
 
@@ -17,6 +18,8 @@ public class HomeViewModel : BaseViewModel
         OpenProfileCommand = new AsyncCommand(_navigation.GoToProfileAsync);
         OpenWorkoutPlansCommand = new AsyncCommand(_navigation.GoToWorkoutPlansAsync);
         RefreshCommand = new AsyncCommand(LoadAsync);
+        ActivityDays = new ObservableCollection<ActivityDayViewModel>();
+        ExerciseProgressCards = new ObservableCollection<ExerciseProgressCardViewModel>();
     }
 
     public ICommand OpenProfileCommand { get; }
@@ -44,6 +47,16 @@ public class HomeViewModel : BaseViewModel
     }
     public string LatestPlanTitle => _plans.FirstOrDefault()?.WorkoutName ?? "No workout plans yet";
     public string LatestPlanSubtitle => _plans.Count == 0 ? "Create your first plan and add exercises." : "Open plans to edit exercises.";
+    public string WelcomeMessage => _user is null
+        ? "Welcome back!"
+        : _user.IsTrainer ? $"Welcome back, Coach {_user.Username}!" : $"Welcome back, {_user.Username}!";
+    public string MonthSummary => "No workout history loaded";
+    public string StatisticsSummary => ExerciseProgressCards.Count == 0
+        ? "Complete workouts to unlock real progression data."
+        : "Volume load = sets x reps x weight, a simple way to track progression over time.";
+
+    public ObservableCollection<ActivityDayViewModel> ActivityDays { get; }
+    public ObservableCollection<ExerciseProgressCardViewModel> ExerciseProgressCards { get; }
 
     public async Task LoadAsync()
     {
@@ -53,6 +66,8 @@ public class HomeViewModel : BaseViewModel
             ErrorMessage = null;
             _user = _api.CurrentUser;
             _plans = _user == null ? Array.Empty<WorkoutPlanDto>() : await _api.GetWorkoutPlansAsync();
+            BuildActivityDays();
+            BuildProgressCards();
 
             OnPropertyChanged(nameof(Greeting));
             OnPropertyChanged(nameof(RoleLabel));
@@ -63,6 +78,9 @@ public class HomeViewModel : BaseViewModel
             OnPropertyChanged(nameof(TotalExercisesText));
             OnPropertyChanged(nameof(LatestPlanTitle));
             OnPropertyChanged(nameof(LatestPlanSubtitle));
+            OnPropertyChanged(nameof(WelcomeMessage));
+            OnPropertyChanged(nameof(MonthSummary));
+            OnPropertyChanged(nameof(StatisticsSummary));
         }
         catch (Exception exception)
         {
@@ -73,4 +91,43 @@ public class HomeViewModel : BaseViewModel
             IsBusy = false;
         }
     }
+
+    private void BuildActivityDays()
+    {
+        ActivityDays.Clear();
+    }
+
+    private void BuildProgressCards()
+    {
+        ExerciseProgressCards.Clear();
+    }
+}
+
+public class ActivityDayViewModel
+{
+    public string DayLabel { get; set; } = string.Empty;
+    public string WeekdayLabel { get; set; } = string.Empty;
+    public Color FillColor { get; set; } = UiColor.Empty;
+}
+
+public class ExerciseProgressCardViewModel
+{
+    public string ExerciseName { get; set; } = string.Empty;
+    public string Summary { get; set; } = string.Empty;
+    public double LatestVolume { get; set; }
+    public Color AccentColor { get; set; } = UiColor.Teal;
+    public ObservableCollection<ExerciseVolumePointViewModel> Points { get; set; } = new();
+}
+
+public class ExerciseVolumePointViewModel
+{
+    public string Label { get; set; } = string.Empty;
+    public string VolumeLabel { get; set; } = string.Empty;
+    public double BarWidth { get; set; }
+}
+
+internal static class UiColor
+{
+    public static readonly Color Teal = Color.FromArgb("#26A69A");
+    public static readonly Color Empty = Color.FromArgb("#DCEBE7");
 }

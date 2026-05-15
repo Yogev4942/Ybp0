@@ -1,0 +1,119 @@
+﻿using System;
+using System.Windows.Input;
+using Models;
+
+namespace ViewModels.ViewModels
+{
+    public class LoginViewModel : BaseViewModel
+    {
+        private readonly IDatabaseService _databaseService;
+        private readonly INavigationService _navigationService;
+
+        private string _username;
+        private string _password;
+        private string _errorMessage;
+
+        public string Username
+        {
+            get => _username;
+            set
+            {
+                SetProperty(ref _username, value);
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+
+        public string Password
+        {
+            get => _password;
+            set
+            {
+                SetProperty(ref _password, value);
+                ((RelayCommand)LoginCommand).RaiseCanExecuteChanged();
+            }
+        }
+
+        public string ErrorMessage
+        {
+            get => _errorMessage;
+            set => SetProperty(ref _errorMessage, value);
+        }
+
+        public ICommand LoginCommand { get; }
+        public ICommand ForgotPasswordCommand { get; }
+        public ICommand NavigateToSignUpCommand { get; }
+
+        public LoginViewModel(IDatabaseService databaseService, INavigationService navigationService)
+        {
+            _databaseService = databaseService;
+            _navigationService = navigationService;
+
+            LoginCommand = new RelayCommand(OnLogin, CanLogin);
+            ForgotPasswordCommand = new RelayCommand(OnForgotPassword);
+            NavigateToSignUpCommand = new RelayCommand(OnNavigateToSignUp);
+        }
+
+        private bool CanLogin(object parameter)
+        {
+            return !string.IsNullOrWhiteSpace(Username)
+                && !string.IsNullOrWhiteSpace(Password);
+        }
+
+        private void OnLogin(object parameter)
+        {
+            try
+            {
+                ErrorMessage = string.Empty;
+                // Validate credentials using your database service
+                bool isValid = _databaseService.ValidateLogin(Username, Password);
+
+                if (isValid)
+                {
+                    // Get the full user object
+                    User currentUser = _databaseService.GetUserByUsernameAndPassword(Username, Password);
+
+                    if (currentUser != null)
+                    {
+                        CleanupStaleWorkoutSession(currentUser);
+                        _navigationService.OnLoginSuccess();
+                        // Login successful - navigate to home/dashboard
+                        _navigationService.NavigateTo<HomeViewModel>(currentUser);
+                    }
+                    else
+                    {
+                        ErrorMessage = "Login failed. Please try again.";
+                    }
+                }
+                else
+                {
+                    ErrorMessage = "Invalid username or password.";
+                }
+                Password = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                ErrorMessage = "An error occurred during login. Please try again.";
+                System.Diagnostics.Debug.WriteLine($"Login error: {ex.Message}");
+            }
+        }
+
+        private void OnForgotPassword(object parameter)
+        {
+            ErrorMessage = "Forgot password feature coming soon!";
+        }
+
+        private void OnNavigateToSignUp(object parameter)
+        {
+            _navigationService.NavigateTo<RegisterSelectionViewModel>();
+        }
+
+        private void CleanupStaleWorkoutSession(User user)
+        {
+            WorkoutSession activeSession = _databaseService.GetActiveSession(user.Id);
+            if (activeSession != null)
+            {
+                _databaseService.CancelWorkoutSession(activeSession.Id);
+            }
+        }
+    }
+}

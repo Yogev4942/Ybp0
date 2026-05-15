@@ -61,6 +61,13 @@ public partial class LoginPage : ContentPage
                         Spacing = 16,
                         Children =
                         {
+                            new Image
+                            {
+                                Source = "arnold_image.png",
+                                Aspect = Aspect.AspectFit,
+                                HeightRequest = 170,
+                                HorizontalOptions = LayoutOptions.Center
+                            },
                             new VerticalStackLayout
                             {
                                 Spacing = 4,

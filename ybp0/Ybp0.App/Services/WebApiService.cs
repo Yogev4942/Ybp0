@@ -52,6 +52,15 @@ public class WebApiService : IApiService
         return CurrentUser?.Id == id ? CurrentUser : null;
     }
 
+    public async Task<UserDto> UpdateProfileAsync(UpdateProfileRequest request)
+    {
+        UserDto updated = await GenericApiClient.PutAsync<UpdateProfileRequest, UserDto>($"user/profile/{request.Id}", request)
+            ?? throw new InvalidOperationException("The API did not return the updated user.");
+
+        CurrentUser = updated;
+        return updated;
+    }
+
     public async Task<IReadOnlyList<WorkoutPlanDto>> GetWorkoutPlansAsync()
     {
         EnsureSignedIn();

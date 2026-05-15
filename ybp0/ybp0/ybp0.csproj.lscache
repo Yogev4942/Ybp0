@@ -1,0 +1,135 @@
+version=1
+
+# This file caches language service data to improve the performance of C# Dev Kit.
+# It is not intended for manual editing. It can safely be deleted and will be
+# regenerated automatically. For more information, see https://aka.ms/lscache
+#
+# To control where cache files are stored, use the following VS Code setting:
+#   "dotnet.projectsystem.cacheInProjectFolder": true
+
+[project]
+language=C#
+primary
+lastDtbSucceeded
+
+[properties]
+AssemblyName=ybp0
+CommandLineArgsForDesignTimeEvaluation=-langversion:7.3 -define:DEBUG;TRACE
+CompilerGeneratedFilesOutputPath=
+MaxSupportedLangVersion=7.3
+ProjectAssetsFile=<PATH>obj/project.assets.json
+RootNamespace=ybp0
+RunAnalyzers=
+RunAnalyzersDuringLiveAnalysis=
+SolutionPath=<PATH>../ybp0.sln
+TargetFrameworkIdentifier=.NETFramework
+TargetPath=<PATH>bin/Debug/net472/ybp0.exe
+TargetRefPath=
+TemporaryDependencyNodeTargetIdentifier=net472
+
+[commandLineArguments]
+/noconfig
+/unsafe-
+/checked-
+/nowarn:1701,1702,1701,1702
+/fullpaths
+/nostdlib+
+/platform:x64
+/errorreport:prompt
+/warn:4
+/define:DEBUG;TRACE;DEBUG;NETFRAMEWORK;NET472;NET30_OR_GREATER;NET35_OR_GREATER;NET40_OR_GREATER;NET45_OR_GREATER;NET451_OR_GREATER;NET452_OR_GREATER;NET46_OR_GREATER;NET461_OR_GREATER;NET462_OR_GREATER;NET47_OR_GREATER;NET471_OR_GREATER;NET472_OR_GREATER
+/highentropyva+
+/debug+
+/debug:portable
+/filealign:512
+/optimize-
+/out:obj\Debug\net472\ybp0.exe
+/subsystemversion:6.00
+/target:winexe
+/warnaserror-
+/utf8output
+/deterministic+
+/langversion:7.3
+/warnaserror+:NU1605
+
+[sourceFiles]
+App.xaml.cs
+Converters/
+ InverseBoolToVisibilityConverter.cs
+ SenderToAlignmentConverter.cs
+ StringToColorBrushConverter.cs
+ StringToVisibilityConverter.cs
+MainWindow.xaml.cs
+obj/Debug/net472/.NETFramework,Version=v4.7.2.AssemblyAttributes.cs
+Properties/
+ AssemblyInfo.cs
+ Resources.Designer.cs
+ Settings.Designer.cs
+Views/
+ CalendarView.xaml.cs
+ ChatsView.xaml.cs
+ CreatePostView.xaml.cs
+ EditProfileView.xaml.cs
+ ExerciseView.xaml.cs
+ FeedView.xaml.cs
+ HomeView.xaml.cs
+ LoginView.xaml.cs
+ PostView.xaml.cs
+ ProfileVIew.xaml.cs
+ RegisterSelectionView.xaml.cs
+ SearchView.xaml.cs
+ TraineeViews/
+  TraineeCalendarView.xaml.cs
+  TraineeFeedView.xaml.cs
+  TraineeProfileView.xaml.cs
+  TraineeRegisterView.xaml.cs
+ TrainerViews/
+  TrainerCalendarView.xaml.cs
+  TrainerFeedView.xaml.cs
+  TrainerProfileView.xaml.cs
+  TrainerRegisterView.xaml.cs
+ WorkoutExerciseView.xaml.cs
+ WorkoutPlansView.xaml.cs
+ WorkoutView.xaml.cs
+
+[metadataReferences]
+../
+ DataBase/bin/Debug/net472/DataBase.dll
+ Models/bin/Debug/net472/Models.dll
+ ViewModels/bin/Debug/net472/ViewModels.dll
+<NETFXREF>/v4.7.2/
+ Facades/netstandard.dll
+ Microsoft.CSharp.dll
+ mscorlib.dll
+ PresentationCore.dll
+ PresentationFramework.dll
+ System.Core.dll
+ System.Data.DataSetExtensions.dll
+ System.Data.dll
+ System.dll
+ System.Drawing.dll
+ System.IO.Compression.FileSystem.dll
+ System.Net.Http.dll
+ System.Numerics.dll
+ System.Runtime.Serialization.dll
+ System.Windows.Controls.Ribbon.dll
+ System.Xaml.dll
+ System.Xml.dll
+ System.Xml.Linq.dll
+ UIAutomationClient.dll
+ UIAutomationClientsideProviders.dll
+ UIAutomationProvider.dll
+ UIAutomationTypes.dll
+ WindowsBase.dll
+<NUGET>/
+ microsoft.data.sqlite.core/9.0.10/lib/netstandard2.0/Microsoft.Data.Sqlite.dll
+ sqlitepclraw.bundle_e_sqlite3/2.1.11/lib/net461/SQLitePCLRaw.batteries_v2.dll
+ sqlitepclraw.core/2.1.11/lib/netstandard2.0/SQLitePCLRaw.core.dll
+ sqlitepclraw.provider.dynamic_cdecl/2.1.11/lib/netstandard2.0/SQLitePCLRaw.provider.dynamic_cdecl.dll
+ system.buffers/4.6.1/lib/net462/System.Buffers.dll
+ system.memory/4.6.3/lib/net462/System.Memory.dll
+ system.numerics.vectors/4.6.1/lib/net462/System.Numerics.Vectors.dll
+ system.runtime.compilerservices.unsafe/6.1.2/lib/net462/System.Runtime.CompilerServices.Unsafe.dll
+
+[analyzerConfigFiles]
+obj/Debug/net472/ybp0.GeneratedMSBuildEditorConfig.editorconfig

@@ -209,7 +209,7 @@ namespace ViewModels.Services
         {
             try
             {
-                bool commonUpdated = _userRepo.UpdateUserCommon(user.Id, user.Bio, user.Email);
+                bool commonUpdated = _userRepo.UpdateUserCommon(user.Id, user.Username, user.Bio, user.Email);
                 if (!commonUpdated)
                 {
                     return false;

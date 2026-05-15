@@ -50,6 +50,18 @@ public record UserDto(
     double? Rating,
     int? TotalRatings);
 
+public record UpdateProfileRequest(
+    int Id,
+    string Username,
+    string? Email,
+    string? Bio,
+    string? FitnessGoal,
+    double? CurrentWeight,
+    double? Height,
+    string? Specialization,
+    double? HourlyRate,
+    int? MaxTrainees);
+
 public record TrainerDto(
     int Id,
     int TrainerProfileId,

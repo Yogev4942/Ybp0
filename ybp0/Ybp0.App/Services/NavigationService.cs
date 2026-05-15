@@ -39,6 +39,16 @@ public class NavigationService : INavigationService
         return CurrentNavigation.PushAsync(_services.GetRequiredService<ProfilePage>());
     }
 
+    public Task GoToEditProfileAsync()
+    {
+        return CurrentNavigation.PushAsync(_services.GetRequiredService<EditProfilePage>());
+    }
+
+    public Task GoBackAsync()
+    {
+        return CurrentNavigation.PopAsync();
+    }
+
     private static INavigation CurrentNavigation
     {
         get
