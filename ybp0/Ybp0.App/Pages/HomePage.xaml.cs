@@ -29,7 +29,7 @@ public partial class HomePage : ContentPage
                 {
                     Content = new VerticalStackLayout
                     {
-                        Padding = new Thickness(22, 24, 22, 104),
+                        Padding = new Thickness(22, 24, 22, 24),
                         Spacing = 14,
                         Children =
                         {
@@ -94,12 +94,15 @@ public partial class HomePage : ContentPage
 
     private View BuildHero()
     {
-        Label welcome = Ui.Text(string.Empty, 30, Colors.White, FontAttributes.Bold);
+        Label welcome = Ui.Text(string.Empty, 28, Colors.White, FontAttributes.Bold);
+        welcome.LineBreakMode = LineBreakMode.WordWrap;
         welcome.SetBinding(Label.TextProperty, nameof(HomeViewModel.WelcomeMessage));
 
         Label subtitle = Ui.Text("Your last month at a glance, with consistency blocks and strength progression.", 14, Color.FromArgb("#D9FFFA"));
+        subtitle.LineBreakMode = LineBreakMode.WordWrap;
 
         Label monthSummary = Ui.Text(string.Empty, 18, Colors.White, FontAttributes.Bold);
+        monthSummary.LineBreakMode = LineBreakMode.WordWrap;
         monthSummary.SetBinding(Label.TextProperty, nameof(HomeViewModel.MonthSummary));
 
         return new Border
@@ -108,18 +111,13 @@ public partial class HomePage : ContentPage
             StrokeThickness = 0,
             StrokeShape = new RoundRectangle { CornerRadius = 26 },
             Padding = new Thickness(24, 22),
-            Content = new Grid
+            Content = new VerticalStackLayout
             {
-                ColumnDefinitions =
-                {
-                    new ColumnDefinition(GridLength.Star),
-                    new ColumnDefinition(new GridLength(220))
-                },
-                ColumnSpacing = 18,
+                Spacing = 18,
                 Children =
                 {
                     new VerticalStackLayout { Spacing = 8, Children = { welcome, subtitle } },
-                    AddColumn(new Border
+                    new Border
                     {
                         BackgroundColor = Color.FromArgb("#2FFFFFFF"),
                         StrokeThickness = 0,
@@ -134,7 +132,7 @@ public partial class HomePage : ContentPage
                                 monthSummary
                             }
                         }
-                    }, 1)
+                    }
                 }
             }
         };
@@ -157,26 +155,14 @@ public partial class HomePage : ContentPage
         Label stats = Ui.Text(string.Empty, 13, Ui.Muted);
         stats.SetBinding(Label.TextProperty, nameof(HomeViewModel.StatisticsSummary));
 
-        return new Grid
+        return new VerticalStackLayout
         {
-            ColumnDefinitions =
-            {
-                new ColumnDefinition(new GridLength(1.15, GridUnitType.Star)),
-                new ColumnDefinition(new GridLength(0.85, GridUnitType.Star))
-            },
-            ColumnSpacing = 14,
+            Spacing = 14,
             Children =
             {
                 BuildActivityCard(),
-                AddColumn(new VerticalStackLayout
-                {
-                    Spacing = 14,
-                    Children =
-                    {
-                        DashboardCard("Progress Metric", stats),
-                        DashboardCard("Chest & Back", BuildPlanMini(openPlans))
-                    }
-                }, 1)
+                DashboardCard("Progress Metric", stats),
+                DashboardCard("Chest & Back", BuildPlanMini(openPlans))
             }
         };
     }
@@ -186,7 +172,7 @@ public partial class HomePage : ContentPage
         CollectionView days = new()
         {
             SelectionMode = SelectionMode.None,
-            ItemsLayout = new GridItemsLayout(6, ItemsLayoutOrientation.Vertical)
+            ItemsLayout = new GridItemsLayout(3, ItemsLayoutOrientation.Vertical)
             {
                 HorizontalItemSpacing = 8,
                 VerticalItemSpacing = 8

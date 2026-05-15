@@ -28,6 +28,12 @@ public static class GenericApiClient
                 BaseAddress = new Uri(_baseUrl),
                 Timeout = TimeSpan.FromSeconds(20)
             };
+
+#if ANDROID
+            // Android emulator reaches the host PC through 10.0.2.2, but IIS Express
+            // is bound to localhost and rejects requests with a 10.0.2.2 Host header.
+            _httpClient.DefaultRequestHeaders.Host = "localhost:59992";
+#endif
         }
     }
 
