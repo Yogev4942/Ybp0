@@ -44,51 +44,54 @@ public partial class LoginPage : ContentPage
         busy.SetBinding(ActivityIndicator.IsRunningProperty, nameof(LoginViewModel.IsBusy));
         busy.SetBinding(IsVisibleProperty, nameof(LoginViewModel.IsBusy));
 
-        Content = new Grid
+        Content = new ScrollView
         {
-            Padding = new Thickness(24),
-            Children =
+            Content = new Grid
             {
-                new Border
+                Padding = new Thickness(24),
+                Children =
                 {
-                    BackgroundColor = Colors.White,
-                    StrokeThickness = 0,
-                    StrokeShape = new RoundRectangle { CornerRadius = 30 },
-                    Padding = new Thickness(24),
-                    VerticalOptions = LayoutOptions.Center,
-                    Content = new VerticalStackLayout
+                    new Border
                     {
-                        Spacing = 16,
-                        Children =
+                        BackgroundColor = Colors.White,
+                        StrokeThickness = 0,
+                        StrokeShape = new RoundRectangle { CornerRadius = 30 },
+                        Padding = new Thickness(24),
+                        VerticalOptions = LayoutOptions.Center,
+                        Content = new VerticalStackLayout
                         {
-                            new Border
+                            Spacing = 16,
+                            Children =
                             {
-                                BackgroundColor = Ui.Teal,
-                                StrokeThickness = 0,
-                                StrokeShape = new RoundRectangle { CornerRadius = 24 },
-                                Padding = new Thickness(8, 12),
-                                Content = new Image
+                                new Border
                                 {
-                                    Source = "arnold_image.png",
-                                    Aspect = Aspect.AspectFit,
-                                    HeightRequest = 260,
-                                    HorizontalOptions = LayoutOptions.Center
-                                }
-                            },
-                            new VerticalStackLayout
-                            {
-                                Spacing = 4,
-                                Children =
+                                    BackgroundColor = Ui.Teal,
+                                    StrokeThickness = 0,
+                                    StrokeShape = new RoundRectangle { CornerRadius = 24 },
+                                    Padding = new Thickness(8, 12),
+                                    Content = new Image
+                                    {
+                                        Source = "arnold_image.png",
+                                        Aspect = Aspect.AspectFit,
+                                        HeightRequest = 260,
+                                        HorizontalOptions = LayoutOptions.Center
+                                    }
+                                },
+                                new VerticalStackLayout
                                 {
-                                    Ui.Text("YBP", 32, Ui.Ink, FontAttributes.Bold),
-                                    Ui.Text("Sign in to your training space.", 14, Ui.Muted)
-                                }
-                            },
-                            error,
-                            Field(username),
-                            Field(password),
-                            signIn,
-                            busy
+                                    Spacing = 4,
+                                    Children =
+                                    {
+                                        Ui.Text("YBP", 32, Ui.Ink, FontAttributes.Bold),
+                                        Ui.Text("Sign in to your training space.", 14, Ui.Muted)
+                                    }
+                                },
+                                error,
+                                Field(username),
+                                Field(password),
+                                signIn,
+                                busy
+                            }
                         }
                     }
                 }

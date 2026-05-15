@@ -40,11 +40,12 @@ namespace DataBase.Repository.Access
                 SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings
                 FROM UserTbl u
                 INNER JOIN TrainersTbl t ON u.Id = t.UserId
-                WHERE u.IsTrainer = True AND u.Username LIKE ?";
+                WHERE u.IsTrainer <> 0
+                  AND (u.Username LIKE ? OR t.Specialization LIKE ?)";
 
             var dt = string.IsNullOrWhiteSpace(searchQuery)
-                ? _database.ExecuteQuery("SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer = True")
-                : _database.ExecuteQuery(query, "%" + searchQuery.Trim() + "%");
+                ? _database.ExecuteQuery("SELECT u.*, t.Id AS TrainerProfileId, t.Specialization, t.HourlyRate, t.MaxTrainees, t.TotalTrainees, t.Rating, t.TotalRatings FROM UserTbl u INNER JOIN TrainersTbl t ON u.Id = t.UserId WHERE u.IsTrainer <> 0")
+                : _database.ExecuteQuery(query, "%" + searchQuery.Trim() + "%", "%" + searchQuery.Trim() + "%");
 
             var results = new List<Trainer>();
             foreach (DataRow row in dt.Rows)

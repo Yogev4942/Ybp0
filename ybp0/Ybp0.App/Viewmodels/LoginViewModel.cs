@@ -52,6 +52,11 @@ public class LoginViewModel : BaseViewModel
         {
             ErrorMessage = "Invalid username or password.";
         }
+        catch (HttpRequestException exception)
+        {
+            string detail = exception.InnerException?.Message ?? exception.Message;
+            ErrorMessage = $"Could not reach Web API at {GenericApiClient.BaseUrl}. Make sure WebServices is running on your PC. {detail}";
+        }
         catch (InvalidOperationException exception)
         {
             ErrorMessage = exception.Message;

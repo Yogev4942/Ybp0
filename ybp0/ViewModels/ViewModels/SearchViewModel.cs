@@ -15,7 +15,7 @@ namespace ViewModels.ViewModels
         private readonly INavigationService _navigation;
         private readonly User _activeUser;
 
-        private string _searchQuery;
+        private string _searchQuery = string.Empty;
         public string SearchQuery
         {
             get => _searchQuery;
