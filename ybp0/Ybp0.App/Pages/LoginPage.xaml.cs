@@ -61,12 +61,19 @@ public partial class LoginPage : ContentPage
                         Spacing = 16,
                         Children =
                         {
-                            new Image
+                            new Border
                             {
-                                Source = "arnold_image.png",
-                                Aspect = Aspect.AspectFit,
-                                HeightRequest = 170,
-                                HorizontalOptions = LayoutOptions.Center
+                                BackgroundColor = Ui.Teal,
+                                StrokeThickness = 0,
+                                StrokeShape = new RoundRectangle { CornerRadius = 24 },
+                                Padding = new Thickness(8, 12),
+                                Content = new Image
+                                {
+                                    Source = "arnold_image.png",
+                                    Aspect = Aspect.AspectFit,
+                                    HeightRequest = 260,
+                                    HorizontalOptions = LayoutOptions.Center
+                                }
                             },
                             new VerticalStackLayout
                             {

@@ -75,7 +75,7 @@ namespace WebServices.Controllers
         public string Email { get; set; }
         public string Bio { get; set; }
         public string FitnessGoal { get; set; }
-        public double? CurrentWeight { get; set; }
+        public double? CurrentWeight { get; set; } = null;
         public double? Height { get; set; }
         public string Specialization { get; set; }
         public double? HourlyRate { get; set; }
