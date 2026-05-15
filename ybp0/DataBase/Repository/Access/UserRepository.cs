@@ -1,6 +1,7 @@
 using DataBase.Connection;
 using DataBase.Mappers;
 using DataBase.Repository.Interfaces;
+using DataBase.Security;
 using Models;
 using System;
 using System.Collections.Generic;
@@ -58,8 +59,27 @@ namespace DataBase.Repository.Access
 
         public User GetByUsernameAndPassword(string username, string password)
         {
-            var dt = _database.ExecuteQuery("SELECT * FROM UserTbl WHERE Username = ? AND Password = ?", username, password);
-            return dt.Rows.Count > 0 ? UserMapper.MapBaseUser(dt.Rows[0]) : null;
+            var dt = _database.ExecuteQuery("SELECT * FROM UserTbl WHERE Username = ?", username);
+            if (dt.Rows.Count == 0)
+            {
+                return null;
+            }
+
+            User user = UserMapper.MapBaseUser(dt.Rows[0]);
+            bool isValid = PasswordHasher.Verify(password, user.Password, user.PasswordSalt, out bool needsUpgrade);
+            if (!isValid)
+            {
+                return null;
+            }
+
+            if (needsUpgrade)
+            {
+                PasswordHash passwordHash = UpdatePasswordHash(user.Id, password);
+                user.Password = passwordHash.Hash;
+                user.PasswordSalt = passwordHash.Salt;
+            }
+
+            return user;
         }
 
         public List<User> GetAllUsers()
@@ -82,20 +102,21 @@ namespace DataBase.Repository.Access
 
         public bool ValidateLogin(string username, string password)
         {
-            var dt = _database.ExecuteQuery("SELECT Id FROM UserTbl WHERE Username = ? AND Password = ?", username, password);
-            return dt.Rows.Count > 0;
+            return GetByUsernameAndPassword(username, password) != null;
         }
 
         public int CreateUser(User userData)
         {
             int isTrainerFlag = userData.IsTrainer ? -1 : 0;
             string joinDate = DateTime.Now.ToString("yyyy-MM-dd");
+            PasswordHash passwordHash = PasswordHasher.Create(userData.Password);
 
             _database.ExecuteNonQuery(
-                "INSERT INTO UserTbl ([Username], [Email], [Password], [JoinDate], [IsTrainer], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?)",
+                "INSERT INTO UserTbl ([Username], [Email], [Password], [PasswordSalt], [JoinDate], [IsTrainer], [CurrentWeekPlanId]) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 userData.Username,
                 userData.Email ?? (object)DBNull.Value,
-                userData.Password,
+                passwordHash.Hash,
+                passwordHash.Salt,
                 joinDate,
                 isTrainerFlag,
                 DBNull.Value);
@@ -111,6 +132,17 @@ namespace DataBase.Repository.Access
             }
 
             return 0;
+        }
+
+        private PasswordHash UpdatePasswordHash(int userId, string password)
+        {
+            PasswordHash passwordHash = PasswordHasher.Create(password);
+            _database.ExecuteNonQuery(
+                "UPDATE UserTbl SET Password = ?, PasswordSalt = ? WHERE Id = ?",
+                passwordHash.Hash,
+                passwordHash.Salt,
+                userId);
+            return passwordHash;
         }
 
         public bool UpdateUserCommon(int userId, string bio, string email)

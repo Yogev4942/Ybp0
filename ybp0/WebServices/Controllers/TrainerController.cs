@@ -43,6 +43,7 @@ namespace WebServices.Controllers
             }
 
             trainer.Password = null;
+            trainer.PasswordSalt = null;
             return Ok(trainer);
         }
     }

@@ -8,6 +8,7 @@ namespace Models
         private string email;
         private string username;
         private string password;
+        private string passwordSalt;
         private DateTime joinDate;
         private bool isTrainer;
         private bool isAdmin;
@@ -18,6 +19,7 @@ namespace Models
         public string Email { get => email; set => email = value; }
         public string Username { get => username; set => username = value; }
         public string Password { get => password; set => password = value; }
+        public string PasswordSalt { get => passwordSalt; set => passwordSalt = value; }
         public DateTime JoinDate { get => joinDate; set => joinDate = value; }
         public string Joindate
         {

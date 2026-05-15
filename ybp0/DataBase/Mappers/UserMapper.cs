@@ -66,6 +66,7 @@ namespace DataBase.Mappers
             user.Username = row["Username"].ToString();
             user.Email = row["Email"]?.ToString();
             user.Password = row["Password"].ToString();
+            user.PasswordSalt = row.Table.Columns.Contains("PasswordSalt") ? row["PasswordSalt"]?.ToString() : null;
             user.JoinDate = row["JoinDate"] != DBNull.Value ? Convert.ToDateTime(row["JoinDate"]) : default(DateTime);
             user.Bio = row["Bio"]?.ToString();
             user.Gender = row["Gender"]?.ToString();

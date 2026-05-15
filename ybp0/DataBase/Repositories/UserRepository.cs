@@ -1,4 +1,5 @@
 using DataBase.Interfaces;
+using DataBase.Security;
 using Microsoft.EntityFrameworkCore;
 using Models;
 
@@ -32,6 +33,10 @@ public class UserRepository : IUserRepository
             item.JoinDate = DateTime.UtcNow;
         }
 
+        PasswordHash passwordHash = PasswordHasher.Create(item.Password);
+        item.Password = passwordHash.Hash;
+        item.PasswordSalt = passwordHash.Salt;
+
         await _context.Users.AddAsync(item);
         await _context.SaveChangesAsync();
     }
@@ -59,9 +64,29 @@ public class UserRepository : IUserRepository
         return _context.Users.FirstOrDefaultAsync(user => user.Username == username);
     }
 
-    public Task<User?> AuthenticateAsync(string username, string password)
+    public async Task<User?> AuthenticateAsync(string username, string password)
     {
-        return _context.Users.FirstOrDefaultAsync(user => user.Username == username && user.Password == password);
+        User? user = await _context.Users.FirstOrDefaultAsync(item => item.Username == username);
+        if (user is null)
+        {
+            return null;
+        }
+
+        bool isValid = PasswordHasher.Verify(password, user.Password, user.PasswordSalt, out bool needsUpgrade);
+        if (!isValid)
+        {
+            return null;
+        }
+
+        if (needsUpgrade)
+        {
+            PasswordHash passwordHash = PasswordHasher.Create(password);
+            user.Password = passwordHash.Hash;
+            user.PasswordSalt = passwordHash.Salt;
+            await _context.SaveChangesAsync();
+        }
+
+        return user;
     }
 
     public Task<bool> UsernameExistsAsync(string username)

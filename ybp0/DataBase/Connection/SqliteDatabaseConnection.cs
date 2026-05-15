@@ -424,9 +424,19 @@ namespace DataBase.Connection
                 connection.ExecuteNonQuery(statement);
             }
 
+            EnsureColumn(connection, "UserTbl", "PasswordSalt", "TEXT NULL");
+
             foreach (string statement in GetCreateIndexStatements())
             {
                 connection.ExecuteNonQuery(statement);
+            }
+        }
+
+        private static void EnsureColumn(SqliteDatabaseConnection connection, string tableName, string columnName, string columnDefinition)
+        {
+            if (!connection.ColumnExists(tableName, columnName))
+            {
+                connection.ExecuteNonQuery($"ALTER TABLE [{tableName}] ADD COLUMN [{columnName}] {columnDefinition}");
             }
         }
 
@@ -444,7 +454,7 @@ namespace DataBase.Connection
                 @"CREATE TABLE IF NOT EXISTS [TrainerRatingsTbl] ([TraineeUserId] INTEGER NOT NULL, [TrainerUserId] INTEGER NOT NULL, [Rating] INTEGER NOT NULL, [RatedAt] TEXT NULL, PRIMARY KEY ([TraineeUserId], [TrainerUserId]))",
                 @"CREATE TABLE IF NOT EXISTS [TrainerRequestsTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [TraineeUserId] INTEGER NULL, [TrainerUserId] INTEGER NULL, [Status] TEXT NULL, [RequestDate] TEXT NULL)",
                 @"CREATE TABLE IF NOT EXISTS [TrainersTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [UserId] INTEGER NULL, [Specialization] TEXT NULL, [HourlyRate] INTEGER NULL, [MaxTrainees] INTEGER NULL, [TotalTrainees] INTEGER NULL, [Rating] INTEGER NULL, [TotalRatings] INTEGER NULL)",
-                @"CREATE TABLE IF NOT EXISTS [UserTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Email] TEXT NULL, [Username] TEXT NULL, [Password] TEXT NULL, [JoinDate] TEXT NULL, [IsTrainer] INTEGER NULL, [Bio] TEXT NULL, [Gender] TEXT NULL, [CurrentWeekPlanId] INTEGER NULL)",
+                @"CREATE TABLE IF NOT EXISTS [UserTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [Email] TEXT NULL, [Username] TEXT NULL, [Password] TEXT NULL, [PasswordSalt] TEXT NULL, [JoinDate] TEXT NULL, [IsTrainer] INTEGER NULL, [Bio] TEXT NULL, [Gender] TEXT NULL, [CurrentWeekPlanId] INTEGER NULL)",
                 @"CREATE TABLE IF NOT EXISTS [WeekPlanDaysTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [WeekPlanId] INTEGER NULL, [DayOfWeek] TEXT NULL, [WorkoutId] INTEGER NULL, [RestDay] INTEGER NULL)",
                 @"CREATE TABLE IF NOT EXISTS [WeekPlansTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [UserId] INTEGER NULL, [PlanName] TEXT NULL)",
                 @"CREATE TABLE IF NOT EXISTS [WorkoutExercisesTbl] ([Id] INTEGER PRIMARY KEY AUTOINCREMENT, [WorkoutId] INTEGER NULL, [ExerciseId] INTEGER NULL, [OrderNumber] INTEGER NULL)",

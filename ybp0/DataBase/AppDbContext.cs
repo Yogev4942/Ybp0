@@ -36,6 +36,7 @@ public class AppDbContext : DbContext
             entity.Ignore(user => user.Joindate);
             entity.Property(user => user.Username).IsRequired();
             entity.Property(user => user.Password).IsRequired();
+            entity.Property(user => user.PasswordSalt);
             entity.HasIndex(user => user.Username).IsUnique();
             entity.HasIndex(user => user.Email).IsUnique();
         });
