@@ -1,9 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net10.0-android</TargetFrameworks>
-		<TargetFrameworks Condition="!$([MSBuild]::IsOSPlatform('linux'))">$(TargetFrameworks);net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+		<PreferredLocalAndroidSdkDirectory>$(LocalAppData)\Ybp0\android-sdk</PreferredLocalAndroidSdkDirectory>
+		<AndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' == '' and Exists('$(PreferredLocalAndroidSdkDirectory)\platforms\android-36\android.jar')">$(PreferredLocalAndroidSdkDirectory)</AndroidSdkDirectory>
+		<DetectedAndroidSdkDirectory Condition="'$(AndroidSdkDirectory)' != ''">$(AndroidSdkDirectory)</DetectedAndroidSdkDirectory>
+		<DetectedAndroidSdkDirectory Condition="'$(DetectedAndroidSdkDirectory)' == '' and $([MSBuild]::IsOSPlatform('windows'))">C:\Program Files (x86)\Android\android-sdk</DetectedAndroidSdkDirectory>
+		<WindowsTargetFramework>net10.0-windows10.0.19041.0</WindowsTargetFramework>
+		<AndroidTargetFramework>net10.0-android36.0</AndroidTargetFramework>
+		<AppleTargetFrameworks>net10.0-ios;net10.0-maccatalyst</AppleTargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(WindowsTargetFramework)</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('osx'))">$(AppleTargetFrameworks)</TargetFrameworks>
+		<TargetFrameworks Condition="Exists('$(DetectedAndroidSdkDirectory)\platforms\android-36\android.jar')">$(TargetFrameworks);$(AndroidTargetFramework)</TargetFrameworks>
 
 		<!-- Note for MacCatalyst:
 		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
