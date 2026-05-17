@@ -42,9 +42,7 @@ namespace WebServices.Controllers
                 return Content(HttpStatusCode.Unauthorized, "Invalid trainer username or password.");
             }
 
-            trainer.Password = null;
-            trainer.PasswordSalt = null;
-            return Ok(trainer);
+            return Ok(UserController.ToUserDto(trainer));
         }
     }
 

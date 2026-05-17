@@ -62,9 +62,38 @@ namespace WebServices.Controllers
                 return Content(HttpStatusCode.InternalServerError, "Profile could not be updated.");
             }
 
-            user.Password = null;
-            user.PasswordSalt = null;
-            return Ok(user);
+            return Ok(ToUserDto(user));
+        }
+
+        internal static object ToUserDto(User user)
+        {
+            Trainee trainee = user as Trainee;
+            Trainer trainer = user as Trainer;
+
+            return new
+            {
+                user.Id,
+                user.Username,
+                user.Email,
+                user.JoinDate,
+                user.Bio,
+                user.Gender,
+                user.IsTrainer,
+                user.IsAdmin,
+                user.CurrentWeekPlanId,
+                TrainerProfileId = trainer == null ? (int?)null : trainer.TrainerProfileId,
+                TraineeProfileId = trainee == null ? (int?)null : trainee.TraineeProfileId,
+                TrainerId = trainee == null ? null : trainee.TrainerId,
+                FitnessGoal = trainee == null ? null : trainee.FitnessGoal,
+                CurrentWeight = trainee == null ? (double?)null : trainee.CurrentWeight,
+                Height = trainee == null ? (double?)null : trainee.Height,
+                Specialization = trainer == null ? null : trainer.Specialization,
+                HourlyRate = trainer == null ? (double?)null : trainer.HourlyRate,
+                MaxTrainees = trainer == null ? (int?)null : trainer.MaxTrainees,
+                TotalTrainees = trainer == null ? (int?)null : trainer.TotalTrainees,
+                Rating = trainer == null ? (double?)null : trainer.Rating,
+                TotalRatings = trainer == null ? (int?)null : trainer.TotalRatings
+            };
         }
     }
 

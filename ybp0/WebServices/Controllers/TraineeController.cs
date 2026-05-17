@@ -42,9 +42,7 @@ namespace WebServices.Controllers
                 return Content(HttpStatusCode.Unauthorized, "Invalid trainee username or password.");
             }
 
-            trainee.Password = null;
-            trainee.PasswordSalt = null;
-            return Ok(trainee);
+            return Ok(UserController.ToUserDto(trainee));
         }
     }
 
