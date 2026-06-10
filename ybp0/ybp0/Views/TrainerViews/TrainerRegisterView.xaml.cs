@@ -1,4 +1,6 @@
 using System.Windows.Controls;
+using System.Windows;
+using ViewModels.ViewModels;
 
 namespace ybp0.Views
 {
@@ -10,6 +12,14 @@ namespace ybp0.Views
         public TrainerRegisterView()
         {
             InitializeComponent();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is RegisterViewModel viewModel && sender is PasswordBox passwordBox)
+            {
+                viewModel.Password = passwordBox.Password;
+            }
         }
     }
 }

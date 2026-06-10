@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Mail;
 using System.Windows.Input;
 using Ybp0.App.Services;
 
@@ -69,6 +70,12 @@ public class RegisterViewModel : BaseViewModel
             return;
         }
 
+        if (!IsValidEmail(Email))
+        {
+            ErrorMessage = "Enter a valid email address.";
+            return;
+        }
+
         try
         {
             IsBusy = true;
@@ -107,6 +114,19 @@ public class RegisterViewModel : BaseViewModel
         finally
         {
             IsBusy = false;
+        }
+    }
+
+    private static bool IsValidEmail(string email)
+    {
+        try
+        {
+            var address = new MailAddress(email.Trim());
+            return address.Address == email.Trim() && address.Host.Contains('.');
+        }
+        catch
+        {
+            return false;
         }
     }
 }

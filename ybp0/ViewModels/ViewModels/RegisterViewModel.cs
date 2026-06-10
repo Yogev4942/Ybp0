@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using System.Net.Mail;
 
 namespace ViewModels.ViewModels
 {
@@ -65,6 +66,12 @@ namespace ViewModels.ViewModels
                 return false;
             }
 
+            if (!IsValidEmail(Email))
+            {
+                ErrorMsg = "Enter a valid email address";
+                return false;
+            }
+
             // Check if user exists
             if (_databaseService.UserExist(Username, Email))
             {
@@ -74,6 +81,19 @@ namespace ViewModels.ViewModels
 
             ErrorMsg = string.Empty;
             return true;
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            try
+            {
+                var address = new MailAddress(email.Trim());
+                return address.Address == email.Trim() && address.Host.Contains(".");
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>

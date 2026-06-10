@@ -36,6 +36,33 @@
             </Setter>
         </Style>
 
+        <Style x:Key="InputPasswordBoxStyle" TargetType="PasswordBox">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="12,9"/>
+            <Setter Property="Background" Value="#F6FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#44009688"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsFocused" Value="True">
+                                <Setter Property="BorderBrush" Value="#009688"/>
+                                <Setter Property="Background" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <Style x:Key="LabelStyle" TargetType="TextBlock">
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -197,9 +224,9 @@
 
                             <StackPanel Margin="0,0,0,12">
                                 <TextBlock Text="Password" Style="{StaticResource LabelStyle}"/>
-                                <TextBox Height="46"
-                                         Text="{Binding Password, UpdateSourceTrigger=PropertyChanged}"
-                                         Style="{StaticResource InputTextBoxStyle}"/>
+                                <PasswordBox Height="46"
+                                             PasswordChanged="PasswordBox_PasswordChanged"
+                                             Style="{StaticResource InputPasswordBoxStyle}"/>
                             </StackPanel>
 
                             <StackPanel Orientation="Horizontal"
